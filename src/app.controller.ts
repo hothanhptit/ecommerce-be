@@ -1,3 +1,4 @@
+import { UploadedFiles } from '@nestjs/common/decorators';
 import { multerOptions } from './config/multer.config';
 import { AppService } from './app.services';
 import {
@@ -9,7 +10,11 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
 import { Express } from 'express';
 import { compessImg } from './utils/convertFile.ultis';
 import { v2 } from 'cloudinary';
@@ -32,15 +37,44 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @UseInterceptors(FileInterceptor('file'))
-  @Post('file')
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    await compessImg(file.path, file.path);
+  @UseInterceptors(FilesInterceptor('files'))
+  @Post('files')
+  async uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
+    // await compessImg(files.path, files.path);
+    console.log('====================================');
+    console.log(files);
+    console.log('====================================');
     return {
-      file: (
-        process.env.HOST || 'http://localhost:4000/' + file.filename
-      ).replace(/\\\\/g, '/'),
+      // files: (
+      //   process.env.HOST || 'http://localhost:4000/' + file.filename
+      // ).replace(/\\\\/g, '/'),
+      files,
     };
+  }
+
+  @Post('upload-multi')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'avatar', maxCount: 1 },
+      { name: 'background', maxCount: 1 },
+    ]),
+  )
+  uploadM(
+    @UploadedFiles()
+    files: {
+      avatar?: Express.Multer.File[];
+      background?: Express.Multer.File[];
+    },
+  ) {
+    console.log(files);
+    return files;
+  }
+
+  @Post('upload')
+  @UseInterceptors(FilesInterceptor('files'))
+  uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
+    console.log(files);
+    return files;
   }
 
   @UseInterceptors(FileInterceptor('file'))
