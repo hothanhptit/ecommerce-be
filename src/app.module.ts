@@ -10,7 +10,7 @@ import { OrderModule } from './order/order.module';
 @Module({
   imports: [AuthModule, ProductModule, TypeOrmModule.forRoot({
     type :"sqlite",
-    database: "ecommerce",
+    database: "ecommerce.sqlite3",
     entities: [__dirname + "/**/*.entity{.ts,.js}"],
     synchronize: true
   }), CartModule, OrderModule],
