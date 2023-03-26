@@ -20,11 +20,16 @@ import { compessImg } from './utils/convertFile.ultis';
 import { v2 } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { v4 as uuidv4 } from 'uuid';
+import { MailerService } from '@nestjs-modules/mailer/dist';
 const sharp = require('sharp');
+const nodemailer = require('nodemailer');
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {
+  constructor(
+    private readonly appService: AppService,
+    private readonly mailerService: MailerService,
+  ) {
     v2.config({
       cloud_name: 'thanhh8nt',
       api_key: '497182279275317',
@@ -41,9 +46,6 @@ export class AppController {
   @Post('files')
   async uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
     // await compessImg(files.path, files.path);
-    console.log('====================================');
-    console.log(files);
-    console.log('====================================');
     return {
       // files: (
       //   process.env.HOST || 'http://localhost:4000/' + file.filename
@@ -72,8 +74,32 @@ export class AppController {
 
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files'))
-  uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
+  async uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
     console.log(files);
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'thanhh8nt@gmail.com',
+        pass: 'pjjuhkhzgghjybba'
+      }
+    });
+    
+    const mailOptions = {
+      from: 'thanhh8nt@gmail.com',
+      to: 'hothanhptit@gmail.com',
+      subject: 'Subject tesing any',
+      text: 'Email content test'
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+     console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+        // do something useful
+      }
+    });
+
     return files;
   }
 

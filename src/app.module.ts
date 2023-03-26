@@ -12,7 +12,17 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { ProductEntity } from './services/product/product.entity';
 import { ProductModule } from './services/product/product.module';
 import { CartModule } from './services/cart/cart.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+const nodemailer = require('nodemailer');
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'thanhh8nt@gmail.com',
+    pass: 'evxapcohbecrptzv'
+  }
+});
 @Module({
   imports: [
     AuthModule,
@@ -38,10 +48,32 @@ import { CartModule } from './services/cart/cart.module';
     // }),
     MulterModule.register(multerOptions),
 
+    MailerModule.forRoot({
+      // transport: {
+      //   host: process.env.EMAIL_HOST,
+      //   port: +process.env.EMAIL_PORT,
+      //   secure: false, // true for 465, false for other ports
+      //   auth: {
+      //     user: process.env.EMAIL_ID, // generated ethereal user
+      //     pass: process.env.EMAIL_PASS, // generated ethereal password
+      //   },
+      // },
+      transport: transporter,
+      defaults: {
+        from: '"nest-modules" <user@outlook.com>', // outgoing email ID
+      },
+      template: {
+        dir: process.cwd() + 'services/mailer/templates/',
+        adapter: new HandlebarsAdapter(), // or new PugAdapter()
+        options: {
+          strict: true,
+        },
+      },
+    }),
+
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
     }),
-
   ],
   controllers: [AppController],
   providers: [AppService],
