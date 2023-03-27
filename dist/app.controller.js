@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const decorators_1 = require("@nestjs/common/decorators");
+const multer_config_1 = require("./config/multer.config");
 const app_services_1 = require("./app.services");
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
@@ -119,7 +120,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "uploadFiles", null);
 __decorate([
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', multer_config_1.multerOptions)),
     (0, common_1.Post)('file/pass-validation'),
     __param(0, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
@@ -127,7 +128,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "uploadFileAndPassValidation", null);
 __decorate([
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', multer_config_1.multerOptions)),
     (0, common_1.Post)('file/fail-validation'),
     __param(0, (0, common_1.UploadedFile)(new common_1.ParseFilePipeBuilder()
         .addFileTypeValidator({

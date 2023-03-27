@@ -21,6 +21,7 @@ import { v2 } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { v4 as uuidv4 } from 'uuid';
 import { MailerService } from '@nestjs-modules/mailer/dist';
+import multer from 'multer';
 const sharp = require('sharp');
 const nodemailer = require('nodemailer');
 
@@ -103,7 +104,7 @@ export class AppController {
     return files;
   }
 
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', multerOptions))
   @Post('file/pass-validation')
   uploadFileAndPassValidation(
     @UploadedFile()
@@ -114,7 +115,7 @@ export class AppController {
     };
   }
 
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', multerOptions))
   @Post('file/fail-validation')
   uploadFileAndFailValidation(
     @UploadedFile(
