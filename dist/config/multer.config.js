@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.multerOptions = exports.multerConfig = void 0;
 const common_1 = require("@nestjs/common");
-const fs_1 = require("fs");
 const multer_1 = require("multer");
 const path_1 = require("path");
 const uuid_1 = require("uuid");
@@ -24,9 +23,6 @@ exports.multerOptions = {
     storage: (0, multer_1.diskStorage)({
         destination: (req, file, cb) => {
             const uploadPath = exports.multerConfig.dest;
-            if (!(0, fs_1.existsSync)(uploadPath)) {
-                (0, fs_1.mkdirSync)(uploadPath);
-            }
             cb(null, uploadPath);
         },
         filename: (req, file, cb) => {
