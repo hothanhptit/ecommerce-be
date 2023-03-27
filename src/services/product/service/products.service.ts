@@ -17,7 +17,6 @@ export class ProductsService {
 
   async create(
     product: ProductEntity,
-    file,
     user: Users,
   ): Promise<ProductEntity> {
     // console.log(file);
