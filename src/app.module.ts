@@ -71,9 +71,9 @@ const transporter = nodemailer.createTransport({
       },
     }),
 
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'uploads'),
+    // }),
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -38,99 +38,99 @@ export class AppController {
     });
   }
 
-  @Get()
-  sayHello() {
-    return this.appService.getHello();
-  }
+  // @Get()
+  // sayHello() {
+  //   return this.appService.getHello();
+  // }
 
-  @UseInterceptors(FilesInterceptor('files'))
-  @Post('files')
-  async uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
-    // await compessImg(files.path, files.path);
-    return {
-      // files: (
-      //   process.env.HOST || 'http://localhost:4000/' + file.filename
-      // ).replace(/\\\\/g, '/'),
-      files,
-    };
-  }
+  // @UseInterceptors(FilesInterceptor('files'))
+  // @Post('files')
+  // async uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
+  //   // await compessImg(files.path, files.path);
+  //   return {
+  //     // files: (
+  //     //   process.env.HOST || 'http://localhost:4000/' + file.filename
+  //     // ).replace(/\\\\/g, '/'),
+  //     files,
+  //   };
+  // }
 
-  @Post('upload-multi')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'avatar', maxCount: 1 },
-      { name: 'background', maxCount: 1 },
-    ]),
-  )
-  uploadM(
-    @UploadedFiles()
-    files: {
-      avatar?: Express.Multer.File[];
-      background?: Express.Multer.File[];
-    },
-  ) {
-    console.log(files);
-    return files;
-  }
+  // @Post('upload-multi')
+  // @UseInterceptors(
+  //   FileFieldsInterceptor([
+  //     { name: 'avatar', maxCount: 1 },
+  //     { name: 'background', maxCount: 1 },
+  //   ]),
+  // )
+  // uploadM(
+  //   @UploadedFiles()
+  //   files: {
+  //     avatar?: Express.Multer.File[];
+  //     background?: Express.Multer.File[];
+  //   },
+  // ) {
+  //   console.log(files);
+  //   return files;
+  // }
 
-  @Post('upload')
-  @UseInterceptors(FilesInterceptor('files'))
-  async uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
-    console.log(files);
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'thanhh8nt@gmail.com',
-        pass: 'pjjuhkhzgghjybba'
-      }
-    });
+  // @Post('upload')
+  // @UseInterceptors(FilesInterceptor('files'))
+  // async uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
+  //   console.log(files);
+  //   const transporter = nodemailer.createTransport({
+  //     service: 'gmail',
+  //     auth: {
+  //       user: 'thanhh8nt@gmail.com',
+  //       pass: 'pjjuhkhzgghjybba'
+  //     }
+  //   });
     
-    const mailOptions = {
-      from: 'thanhh8nt@gmail.com',
-      to: 'hothanhptit@gmail.com',
-      subject: 'Subject tesing any',
-      text: 'Email content test'
-    };
+  //   const mailOptions = {
+  //     from: 'thanhh8nt@gmail.com',
+  //     to: 'hothanhptit@gmail.com',
+  //     subject: 'Subject tesing any',
+  //     text: 'Email content test'
+  //   };
     
-    transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-     console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-        // do something useful
-      }
-    });
+  //   transporter.sendMail(mailOptions, function(error, info){
+  //     if (error) {
+  //    console.log(error);
+  //     } else {
+  //       console.log('Email sent: ' + info.response);
+  //       // do something useful
+  //     }
+  //   });
 
-    return files;
-  }
+  //   return files;
+  // }
 
-  @UseInterceptors(FileInterceptor('file', multerOptions))
-  @Post('file/pass-validation')
-  uploadFileAndPassValidation(
-    @UploadedFile()
-    file?: Express.Multer.File,
-  ) {
-    return {
-      file,
-    };
-  }
+  // @UseInterceptors(FileInterceptor('file', multerOptions))
+  // @Post('file/pass-validation')
+  // uploadFileAndPassValidation(
+  //   @UploadedFile()
+  //   file?: Express.Multer.File,
+  // ) {
+  //   return {
+  //     file,
+  //   };
+  // }
 
-  @UseInterceptors(FileInterceptor('file', multerOptions))
-  @Post('file/fail-validation')
-  uploadFileAndFailValidation(
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: '.jpg',
-        })
-        .build(),
-    )
-    file: Express.Multer.File,
-  ) {
-    return {
-      file: file.buffer.toString(),
-    };
-  }
+  // @UseInterceptors(FileInterceptor('file', multerOptions))
+  // @Post('file/fail-validation')
+  // uploadFileAndFailValidation(
+  //   @UploadedFile(
+  //     new ParseFilePipeBuilder()
+  //       .addFileTypeValidator({
+  //         fileType: '.jpg',
+  //       })
+  //       .build(),
+  //   )
+  //   file: Express.Multer.File,
+  // ) {
+  //   return {
+  //     file: file.buffer.toString(),
+  //   };
+  // }
 
   @Post('files')
   @UseInterceptors(
@@ -150,7 +150,6 @@ export class AppController {
     }),
   )
   async uploadFile1(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
     return { url: file.path };
   }
 }

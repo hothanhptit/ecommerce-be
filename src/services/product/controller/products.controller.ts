@@ -64,13 +64,13 @@ export class ProductsController {
   async Create(
     @Request() req,
     @Body() product: ProductEntity,
-    @UploadedFile() file,
+    // @UploadedFile() file,
   ): Promise<ProductEntity> {
-    console.log('====================================');
-    console.log(file);
-    console.log('====================================');
+    // console.log('====================================');
+    // console.log(file);
+    // console.log('====================================');
 
-    return await this.productsService.create(product, file, req.user);
+    return await this.productsService.create(product, req.user);
   }
   // @Post()
   // @UseInterceptors(
