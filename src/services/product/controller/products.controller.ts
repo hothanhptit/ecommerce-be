@@ -13,7 +13,7 @@ import {
 import { UpdateResult, DeleteResult } from 'typeorm';
 import { ProductsService } from '../service/products.service';
 import { ProductEntity } from '../product.entity';
-import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadedFile, UploadedFiles } from '@nestjs/common/decorators';
 import {

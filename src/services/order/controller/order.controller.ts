@@ -1,7 +1,7 @@
 import { OrderService } from '../service/order.service'
 import { OrderEntity } from '../order.entity';
 import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 
 @Controller('api/v1/order')
 export class OrderController {
