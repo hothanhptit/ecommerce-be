@@ -32,21 +32,21 @@ export const multerOptions = {
     }
   },
   // Storage properties
-  storage: diskStorage({
-    // Destination storage path details
-    destination: (req: any, file: any, cb: any) => {
-      const uploadPath = multerConfig.dest;
-      // Create folder if doesn't exist
-      // if (!existsSync(uploadPath)) {
-      //   mkdirSync(uploadPath);
-      // }
-      cb(null, uploadPath);
-    },
-    // File modification details
-    filename: (req, file, cb) => {
-      const uuid = uuidv4();
-      cb(null, `${uuid}${extname(file.originalname)}`);
-    },
-  }),
-  // storage: { cloudStorage },
+  // storage: diskStorage({
+  //   // Destination storage path details
+  //   destination: (req: any, file: any, cb: any) => {
+  //     const uploadPath = multerConfig.dest;
+  //     // Create folder if doesn't exist
+  //     // if (!existsSync(uploadPath)) {
+  //     //   mkdirSync(uploadPath);
+  //     // }
+  //     cb(null, uploadPath);
+  //   },
+  //   // File modification details
+  //   filename: (req, file, cb) => {
+  //     const uuid = uuidv4();
+  //     cb(null, `${uuid}${extname(file.originalname)}`);
+  //   },
+  // }),
+  storage: { cloudStorage },
 };

@@ -13,14 +13,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductsController = void 0;
+const multer_config_1 = require("./../../../config/multer.config");
 const common_1 = require("@nestjs/common");
 const products_service_1 = require("../service/products.service");
 const product_entity_1 = require("../product.entity");
 const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
 const platform_express_1 = require("@nestjs/platform-express");
 const decorators_1 = require("@nestjs/common/decorators");
-const multer_1 = require("multer");
-const path_1 = require("path");
 let ProductsController = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
@@ -52,18 +51,7 @@ __decorate([
 ], ProductsController.prototype, "GetAll", null);
 __decorate([
     (0, common_1.Post)(),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
-        storage: (0, multer_1.diskStorage)({
-            destination: './uploads',
-            filename: (req, file, cb) => {
-                const randomName = Array(32)
-                    .fill(null)
-                    .map(() => Math.round(Math.random() * 16).toString(16))
-                    .join('');
-                cb(null, `${randomName}${(0, path_1.extname)(file.originalname)}`);
-            },
-        }),
-    })),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', multer_config_1.multerOptions)),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, decorators_1.UploadedFile)()),
