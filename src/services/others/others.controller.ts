@@ -1,9 +1,11 @@
+import { ApiTags } from '@nestjs/swagger/dist';
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { OthersService } from './others.service';
 import { CreateOtherDto } from './dto/create-other.dto';
 import { UpdateOtherDto } from './dto/update-other.dto';
 
-@Controller('others')
+@Controller('api/v1/others')
+@ApiTags('others')
 export class OthersController {
   constructor(private readonly othersService: OthersService) {}
 

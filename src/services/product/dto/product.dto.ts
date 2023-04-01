@@ -4,7 +4,7 @@ import { IsString } from 'class-validator';
 export class ProductDTO {
   @ApiProperty({ example: 'name', description: 'name' })
   @IsString()
-  readonly name: string;
+  name: string;
 
   @ApiProperty({
     type: 'file',
@@ -15,7 +15,7 @@ export class ProductDTO {
       },
     },
   })
-  public readonly file: any;
+  file: any;
 
   // @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
   // files: any[];

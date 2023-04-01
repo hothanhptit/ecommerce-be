@@ -1,3 +1,4 @@
+import { multerOptions } from '../../config/multer.config';
 import {
   Body,
   Controller,
@@ -14,23 +15,23 @@ import { UploadedFile } from '@nestjs/common/decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags, ApiBody } from '@nestjs/swagger';
 import { DeleteResult, UpdateResult } from 'typeorm';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { ProductDTO } from '../dto/product.dto';
-import { ProductEntity } from '../entities/product.entity';
-import { ProductsService } from '../service/products.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ProductDTO } from './dto/product.dto';
+import { Product } from './entities/product.entity';
+import { ProductsService } from './products.service';
 @ApiTags('products')
 @Controller('api/v1/products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Get()
-  async GetAll(): Promise<ProductEntity[]> {
+  async GetAll(): Promise<Product[]> {
     return await this.productsService.getAll();
   }
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', multerOptions))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -51,16 +52,13 @@ export class ProductsController {
     @Request() req,
     @Body() product: ProductDTO,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<String> {
-    console.log(req.user);
-
-    // return await this.productsService.create(product, file);
-    return 'ok';
+  ): Promise<Product> {
+    return await this.productsService.create(product, file, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async GetOne(@Param() id: number): Promise<ProductEntity> {
+  async GetOne(@Param() id: number): Promise<Product> {
     return await this.productsService.getOne(id);
   }
 
@@ -68,7 +66,7 @@ export class ProductsController {
   @Put(':id')
   async Update(
     @Param() id: number,
-    @Body() product: ProductEntity,
+    @Body() product: Product,
     @Request() req,
   ): Promise<UpdateResult> {
     return await this.productsService.update(id, product, req.user);
