@@ -1,6 +1,6 @@
 import { ProductDTO } from '../dto/product.dto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ProductEntity } from '../product.entity';
+import { ProductEntity } from '../entities/product.entity';
 import { Repository, UpdateResult, DeleteResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/services/auth/user.entity';

@@ -6,7 +6,6 @@ export class ProductEntity {
     @PrimaryGeneratedColumn("uuid")
     id!: number
 
-    @ApiProperty({ example: "name", description: 'name' })
     @Column()
     name: string
 

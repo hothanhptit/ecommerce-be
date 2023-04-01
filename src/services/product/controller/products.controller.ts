@@ -16,21 +16,19 @@ import { ApiConsumes, ApiTags, ApiBody } from '@nestjs/swagger';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { ProductDTO } from '../dto/product.dto';
-import { ProductEntity } from '../product.entity';
+import { ProductEntity } from '../entities/product.entity';
 import { ProductsService } from '../service/products.service';
-@ApiTags('api')
+@ApiTags('products')
 @Controller('api/v1/products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
-  // @UseGuards(JwtAuthGuard)
   @Get()
   async GetAll(): Promise<ProductEntity[]> {
     return await this.productsService.getAll();
   }
 
-  // @UseGuards(JwtAuthGuard)
-
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
@@ -39,12 +37,10 @@ export class ProductsController {
       type: 'object',
       properties: {
         file: {
-          // 👈 this property
           type: 'string',
           format: 'binary',
         },
         name: {
-          // 👈 this property
           type: 'string',
           format: 'string',
         },
@@ -56,6 +52,8 @@ export class ProductsController {
     @Body() product: ProductDTO,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<String> {
+    console.log(req.user);
+
     // return await this.productsService.create(product, file);
     return 'ok';
   }

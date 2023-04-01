@@ -14,7 +14,7 @@ import { Users } from './user.entity';
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: process.env.REFRESH_TOKEN_TIMEOUT },
+      signOptions: { expiresIn: '5h' },
     }),
     TypeOrmModule.forFeature([Users]),
   ],
