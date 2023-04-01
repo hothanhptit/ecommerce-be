@@ -10,14 +10,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductEntity = void 0;
+const openapi = require("@nestjs/swagger");
+const swagger_1 = require("@nestjs/swagger");
 const typeorm_1 = require("typeorm");
 let ProductEntity = class ProductEntity {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { id: { required: true, type: () => Number }, name: { required: true, type: () => String }, createdAt: { required: true, type: () => Object }, updtedAt: { required: true, type: () => Object } };
+    }
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
     __metadata("design:type", Number)
 ], ProductEntity.prototype, "id", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: "name", description: 'name' }),
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], ProductEntity.prototype, "name", void 0);

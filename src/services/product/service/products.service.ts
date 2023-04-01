@@ -1,3 +1,4 @@
+import { ProductDTO } from '../dto/product.dto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ProductEntity } from '../product.entity';
 import { Repository, UpdateResult, DeleteResult } from 'typeorm';
@@ -15,12 +16,7 @@ export class ProductsService {
     return await this.productRepository.find();
   }
 
-  async create(
-    product: ProductEntity,
-    user: Users,
-  ): Promise<ProductEntity> {
-    // console.log(file);
-
+  async create(product: ProductDTO, user: Users): Promise<ProductEntity> {
     return await this.productRepository.save(product);
     if (user.role == 'admin') {
       return await this.productRepository.save(product);

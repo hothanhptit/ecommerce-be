@@ -1,36 +1,24 @@
-import { multerOptions } from './../../../config/multer.config';
 import {
-  Controller,
-  Post,
-  Get,
-  Put,
-  Delete,
-  Param,
-  Request,
   Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Request,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { UpdateResult, DeleteResult } from 'typeorm';
-import { ProductsService } from '../service/products.service';
-import { ProductEntity } from '../product.entity';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { UploadedFile } from '@nestjs/common/decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadedFile, UploadedFiles } from '@nestjs/common/decorators';
-import {
-  FileTypeValidator,
-  MaxFileSizeValidator,
-  ParseFilePipe,
-  ParseFilePipeBuilder,
-} from '@nestjs/common/pipes';
-import { HttpStatus } from '@nestjs/common/enums';
-import {
-  FileFieldsInterceptor,
-  FilesInterceptor,
-} from '@nestjs/platform-express/multer';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-
+import { ApiConsumes, ApiTags, ApiBody } from '@nestjs/swagger';
+import { DeleteResult, UpdateResult } from 'typeorm';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { ProductDTO } from '../dto/product.dto';
+import { ProductEntity } from '../product.entity';
+import { ProductsService } from '../service/products.service';
+@ApiTags('api')
 @Controller('api/v1/products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
@@ -42,62 +30,35 @@ export class ProductsController {
   }
 
   // @UseGuards(JwtAuthGuard)
+
   @Post()
-  @UseInterceptors(
-    FileInterceptor(
-      'file',
-      // {
-      //   storage: diskStorage({
-      //     destination: './uploads',
-      //     filename: (req, file, cb) => {
-      //       const randomName = Array(32)
-      //         .fill(null)
-      //         .map(() => Math.round(Math.random() * 16).toString(16))
-      //         .join('');
-      //       cb(null, `${randomName}${extname(file.originalname)}`);
-      //     },
-      //   }),
-      // }
-      multerOptions,
-    ),
-  )
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          // 👈 this property
+          type: 'string',
+          format: 'binary',
+        },
+        name: {
+          // 👈 this property
+          type: 'string',
+          format: 'string',
+        },
+      },
+    },
+  })
   async Create(
     @Request() req,
-    @Body() product: ProductEntity,
-    // @UploadedFile() file,
-  ): Promise<ProductEntity> {
-    // console.log('====================================');
-    // console.log(file);
-    // console.log('====================================');
-
-    return await this.productsService.create(product, req.user);
+    @Body() product: ProductDTO,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<String> {
+    // return await this.productsService.create(product, file);
+    return 'ok';
   }
-  // @Post()
-  // @UseInterceptors(
-  //   FileInterceptor('file', {
-  //     storage: diskStorage({
-  //       destination: './uploads',
-  //       filename: (req, file, cb) => {
-  //         const randomName = Array(32)
-  //           .fill(null)
-  //           .map(() => Math.round(Math.random() * 16).toString(16))
-  //           .join('');
-  //         cb(null, `${randomName}${extname(file.originalname)}`);
-  //       },
-  //     }),
-  //   }),
-  // )
-  // async Create(
-  //   @Request() req,
-  //   @Body() product: ProductEntity,
-  //   @UploadedFile() file,
-  // ): Promise<ProductEntity> {
-  //   console.log('====================================');
-  //   console.log(file);
-  //   console.log('====================================');
-
-  //   return await this.productsService.create(product, file, req.user);
-  // }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
