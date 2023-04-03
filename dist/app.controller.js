@@ -13,8 +13,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
-const decorators_1 = require("@nestjs/common/decorators");
-const multer_config_1 = require("./config/multer.config");
 const app_services_1 = require("./app.services");
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
@@ -34,111 +32,10 @@ let AppController = class AppController {
             api_secret: '1Z6LCdH9opFMOymLO7SNxJWe898',
         });
     }
-    sayHello() {
-        return this.appService.getHello();
-    }
-    async uploadFile(files) {
-        return {
-            files,
-        };
-    }
-    uploadM(files) {
-        console.log(files);
-        return files;
-    }
-    async uploadFiles(files) {
-        console.log(files);
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'thanhh8nt@gmail.com',
-                pass: 'pjjuhkhzgghjybba'
-            }
-        });
-        const mailOptions = {
-            from: 'thanhh8nt@gmail.com',
-            to: 'hothanhptit@gmail.com',
-            subject: 'Subject tesing any',
-            text: 'Email content test'
-        };
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            }
-            else {
-                console.log('Email sent: ' + info.response);
-            }
-        });
-        return files;
-    }
-    uploadFileAndPassValidation(file) {
-        return {
-            file,
-        };
-    }
-    uploadFileAndFailValidation(file) {
-        return {
-            file: file.buffer.toString(),
-        };
-    }
     async uploadFile1(file) {
-        console.log(file);
         return { url: file.path };
     }
 };
-__decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], AppController.prototype, "sayHello", null);
-__decorate([
-    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('files')),
-    (0, common_1.Post)('files'),
-    __param(0, (0, decorators_1.UploadedFiles)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array]),
-    __metadata("design:returntype", Promise)
-], AppController.prototype, "uploadFile", null);
-__decorate([
-    (0, common_1.Post)('upload-multi'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([
-        { name: 'avatar', maxCount: 1 },
-        { name: 'background', maxCount: 1 },
-    ])),
-    __param(0, (0, decorators_1.UploadedFiles)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], AppController.prototype, "uploadM", null);
-__decorate([
-    (0, common_1.Post)('upload'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('files')),
-    __param(0, (0, decorators_1.UploadedFiles)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array]),
-    __metadata("design:returntype", Promise)
-], AppController.prototype, "uploadFiles", null);
-__decorate([
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', multer_config_1.multerOptions)),
-    (0, common_1.Post)('file/pass-validation'),
-    __param(0, (0, common_1.UploadedFile)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], AppController.prototype, "uploadFileAndPassValidation", null);
-__decorate([
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', multer_config_1.multerOptions)),
-    (0, common_1.Post)('file/fail-validation'),
-    __param(0, (0, common_1.UploadedFile)(new common_1.ParseFilePipeBuilder()
-        .addFileTypeValidator({
-        fileType: '.jpg',
-    })
-        .build())),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], AppController.prototype, "uploadFileAndFailValidation", null);
 __decorate([
     (0, common_1.Post)('files'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {

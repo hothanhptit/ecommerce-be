@@ -1,27 +1,26 @@
+import { ForbiddenException } from './../../../utils/existed.exception';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Users } from '../user.entity';
+import { User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(Users) private userRepository: Repository<Users>,
+    @InjectRepository(User) private userRepository: Repository<User>,
     private jwt: JwtService,
   ) {}
 
-  async signup(user: Users): Promise<Users> {
-    console.log('====================================');
-    console.log(user);
-    console.log('====================================');
+  async signup(user: User): Promise<User> {
+    const foundUser = await this.userRepository.findOne({
+      where: { username: user.username },
+    });
+    if (foundUser) throw new ForbiddenException();
     const salt = await bcrypt.genSalt();
-    console.log(salt);
     const hash = await bcrypt.hash(user.password, salt);
     user.password = hash;
-    const saveUser = new Users;
-    Object.assign(saveUser, user)
     return await this.userRepository.save(user);
   }
 

@@ -2,15 +2,19 @@ Prerequisite: nest cli
 Install: yarn
 
 Functionality:
+
     *Landing page - Read:
+
         1. Homepage
             - Why us
             - Customer
             - Services
             - Ours Customer
+
         2. Banner
             - Home banner
             - Page banner
+
         3. Products
             - Featured products
             - Products by category
@@ -22,14 +26,18 @@ Functionality:
                 + Description
                 + Specifications
                 + Similar product
+
         4. Categories
+
         5. 
         6. News
+
             - News
             - News Categories
             - Recently news
             - Technical news
         7. Paging
+
         8. Utils
             - Menu
             - Address

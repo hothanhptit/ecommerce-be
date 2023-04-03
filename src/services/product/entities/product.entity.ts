@@ -1,7 +1,8 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Entity, ManyToMany, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
-export class ProductEntity {
+export class Product {
     @PrimaryGeneratedColumn("uuid")
     id!: number
 
