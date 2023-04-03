@@ -7,6 +7,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
+const others_module_1 = require("./services/others/others.module");
+const news_module_1 = require("./services/news/news.module");
+const customers_module_1 = require("./services/customers/customers.module");
+const categories_module_1 = require("./services/categories/categories.module");
+const banner_module_1 = require("./services/banner/banner.module");
+const banner_entity_1 = require("./services/banner/entities/banner.entity");
+const category_entity_1 = require("./services/categories/entities/category.entity");
+const customer_entity_1 = require("./services/customers/entities/customer.entity");
+const news_entity_1 = require("./services/news/entities/news.entity");
 const user_entity_1 = require("./services/auth/entities/user.entity");
 const mailer_1 = require("@nestjs-modules/mailer");
 const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
@@ -17,10 +26,10 @@ const app_controller_1 = require("./app.controller");
 const app_services_1 = require("./app.services");
 const multer_config_1 = require("./config/multer.config");
 const auth_module_1 = require("./services/auth/auth.module");
-const cart_module_1 = require("./services/cart/cart.module");
-const order_module_1 = require("./services/order/order.module");
 const product_entity_1 = require("./services/product/entities/product.entity");
 const product_module_1 = require("./services/product/product.module");
+const serve_static_1 = require("@nestjs/serve-static");
+const path_1 = require("path");
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -35,13 +44,16 @@ AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             auth_module_1.AuthModule,
+            banner_module_1.BannerModule,
+            categories_module_1.CategoriesModule,
+            customers_module_1.CustomersModule,
+            news_module_1.NewsModule,
             product_module_1.ProductModule,
-            cart_module_1.CartModule,
-            order_module_1.OrderModule,
+            others_module_1.OthersModule,
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'sqlite',
                 database: 'ecommerce.sqlite3',
-                entities: [user_entity_1.User, product_entity_1.Product],
+                entities: [user_entity_1.User, product_entity_1.Product, news_entity_1.News, customer_entity_1.Customer, category_entity_1.Category, banner_entity_1.Banner],
                 synchronize: true,
             }),
             multer_1.MulterModule.register(multer_config_1.multerOptions),
@@ -56,6 +68,28 @@ AppModule = __decorate([
                     options: {
                         strict: true,
                     },
+                },
+            }),
+            serve_static_1.ServeStaticModule.forRootAsync({
+                useFactory: async () => {
+                    return [
+                        {
+                            rootPath: (0, path_1.join)(__dirname, '..', 'uploads'),
+                            serveRoot: '/' + 'uploads' + '/',
+                        },
+                        {
+                            rootPath: (0, path_1.join)(__dirname, '..', '../' + 'uploads'),
+                            serveRoot: '/' + 'uploads' + '/',
+                        },
+                        {
+                            rootPath: (0, path_1.join)(__dirname, '..' + 'public'),
+                            serveRoot: '/public/',
+                        },
+                        {
+                            rootPath: (0, path_1.join)(__dirname, '..', '../' + 'public'),
+                            serveRoot: '/public/',
+                        },
+                    ];
                 },
             }),
         ],

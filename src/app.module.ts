@@ -1,3 +1,12 @@
+import { OthersModule } from './services/others/others.module';
+import { NewsModule } from './services/news/news.module';
+import { CustomersModule } from './services/customers/customers.module';
+import { CategoriesModule } from './services/categories/categories.module';
+import { BannerModule } from './services/banner/banner.module';
+import { Banner } from './services/banner/entities/banner.entity';
+import { Category } from './services/categories/entities/category.entity';
+import { Customer } from './services/customers/entities/customer.entity';
+import { News } from './services/news/entities/news.entity';
 import { User } from './services/auth/entities/user.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
@@ -12,6 +21,8 @@ import { CartModule } from './services/cart/cart.module';
 import { OrderModule } from './services/order/order.module';
 import { Product } from './services/product/entities/product.entity';
 import { ProductModule } from './services/product/product.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
@@ -24,9 +35,12 @@ const transporter = nodemailer.createTransport({
 @Module({
   imports: [
     AuthModule,
+    BannerModule,
+    CategoriesModule,
+    CustomersModule,
+    NewsModule,
     ProductModule,
-    CartModule,
-    OrderModule,
+    OthersModule,
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'ecommerce.sqlite3',
@@ -36,7 +50,7 @@ const transporter = nodemailer.createTransport({
       // password: '18162000THTT',
       // database: 'ecommerce',
       // entities: [__dirname + '/**/*.entity{.ts}'],
-      entities: [User, Product],
+      entities: [User, Product, News, Customer, Category, Banner],
       synchronize: true,
     }),
     // MulterModule.registerAsync({
@@ -69,9 +83,28 @@ const transporter = nodemailer.createTransport({
       },
     }),
 
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'uploads'),
-    // }),
+    ServeStaticModule.forRootAsync({
+      useFactory: async () => {
+        return [
+          {
+            rootPath: join(__dirname, '..', 'uploads'),
+            serveRoot: '/' + 'uploads' + '/',
+          },
+          {
+            rootPath: join(__dirname, '..', '../' + 'uploads'), // added ../ to get one folder back. Default nest looking in dist dir(built ver)
+            serveRoot: '/' + 'uploads' + '/', //last slash was important
+          },
+          {
+            rootPath: join(__dirname, '..' + 'public'),
+            serveRoot: '/public/',
+          },
+          {
+            rootPath: join(__dirname, '..', '../' + 'public'), // added ../ to get one folder back. Default nest looking in dist dir(built ver)
+            serveRoot: '/public/', //last slash was important
+          },
+        ];
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

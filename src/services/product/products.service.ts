@@ -19,18 +19,40 @@ export class ProductsService {
     return await this.productRepository.find();
   }
 
-  async create(
-    product: ProductDTO,
-    file: Express.Multer.File,
-    user: User,
-  ): Promise<Product> {
+  async create(product: ProductDTO, files: any, user: User): Promise<Product> {
     if (user.role == 'admin') {
-      product.file = file.path;
-      return await this.productRepository.save(product);
+      let saveProduct = Object.assign(new Product(), product);
+      const productImages = {};
+      const descriptionImages = {};
+      const specsImages = {};
+      for (const [index, file] of files.productImages.entries()) {
+        productImages[index] =
+          process.env.HOST ||
+          'http://localhost:4000/' + file.path.replace('\\', '/');
+      }
+      for (const [index, file] of files.descriptionImages.entries()) {
+        descriptionImages[index] =
+          process.env.HOST ||
+          'http://localhost:4000/' + file.path.replace('\\', '/');
+      }
+      for (const [index, file] of files.specsImages.entries()) {
+        specsImages[index] =
+          process.env.HOST ||
+          'http://localhost:4000/' + file.path.replace('\\', '/');
+      }
+
+      saveProduct.productImages = JSON.stringify(productImages);
+      saveProduct.descriptionImages = JSON.stringify(descriptionImages);
+      saveProduct.specsImages = JSON.stringify(specsImages);
+      console.log('====================================');
+      console.log(saveProduct instanceof Product);
+      console.log(saveProduct);
+      console.log('====================================');
+
+      return await this.productRepository.save(saveProduct);
     }
     this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
-    console.log(123);
-    
+
     throw new UnauthorizedException();
   }
 

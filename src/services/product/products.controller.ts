@@ -1,18 +1,26 @@
+import { ApiMultiFile } from './../../utils/multiFiles.swagger';
 import { multerOptions } from '../../config/multer.config';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
+  ParseFilePipeBuilder,
   Post,
   Put,
   Request,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { UploadedFile } from '@nestjs/common/decorators';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadedFile, UploadedFiles } from '@nestjs/common/decorators';
+import {
+  AnyFilesInterceptor,
+  FileFieldsInterceptor,
+  FileInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags, ApiBody } from '@nestjs/swagger';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -31,29 +39,79 @@ export class ProductsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  @UseInterceptors(FileInterceptor('file', multerOptions))
   @ApiConsumes('multipart/form-data')
+  @ApiMultiFile('productImages')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
-        file: {
+        name: {
+          type: 'string',
+          format: 'string',
+        },
+        productImages: {
           type: 'string',
           format: 'binary',
         },
-        name: {
+        sumary: {
+          type: 'string',
+          format: 'string',
+        },
+        price: {
+          type: 'string',
+          format: 'string',
+        },
+        description: {
+          type: 'string',
+          format: 'string',
+        },
+        descriptionImages: {
+          type: 'string',
+          format: 'binary',
+        },
+        specs: {
+          type: 'string',
+          format: 'string',
+        },
+        specsImages: {
+          type: 'string',
+          format: 'binary',
+        },
+        detailsDescription: {
+          type: 'string',
+          format: 'string',
+        },
+        categoryId: {
+          type: 'string',
+          format: 'string',
+        },
+        type: {
           type: 'string',
           format: 'string',
         },
       },
     },
   })
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'productImages', maxCount: 2 },
+      { name: 'descriptionImages', maxCount: 2 },
+      { name: 'specsImages', maxCount: 2 },
+    ]),
+  )
   async Create(
     @Request() req,
     @Body() product: ProductDTO,
-    @UploadedFile() file: Express.Multer.File,
+    // @UploadedFiles() specsImages: Array<Express.Multer.File>,
+    // @UploadedFiles() descriptionImages: Array<Express.Multer.File>,
+    @UploadedFiles()
+    files: {
+      productImages?: Express.Multer.File[];
+      descriptionImages?: Express.Multer.File[];
+      specsImages?: Express.Multer.File[];
+    },
   ): Promise<Product> {
-    return await this.productsService.create(product, file, req.user);
+    return await this.productsService.create(product, files, req.user);
   }
 
   @UseGuards(JwtAuthGuard)

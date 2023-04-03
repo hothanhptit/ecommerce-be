@@ -1,4 +1,4 @@
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
+/// <reference types="multer" />
 export declare const multerConfig: {
     dest: string;
 };
@@ -7,7 +7,5 @@ export declare const multerOptions: {
         fileSize: number;
     };
     fileFilter: (req: any, file: any, cb: any) => void;
-    storage: {
-        cloudStorage: CloudinaryStorage;
-    };
+    storage: import("multer").StorageEngine;
 };
