@@ -1,10 +1,10 @@
-import { AuthController } from '../auth/auth.controller';
-import { AuthService } from './../auth/service/auth.service';
 import { Module } from '@nestjs/common';
-import { ProductsService } from './products.service';
-import { ProductsController } from './products.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { LogServices } from './../log4js/log4js.service';
+import { LoggingModule } from './../log4js/logging.module';
 import { Product } from './entities/product.entity';
+import { ProductsController } from './products.controller';
+import { ProductsService } from './products.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Product])],

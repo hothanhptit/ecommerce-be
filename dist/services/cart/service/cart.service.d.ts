@@ -1,4 +1,4 @@
-import { ProductsService } from 'src/services/product/service/products.service';
+import { ProductsService } from 'src/services/product/products.service';
 import { Repository } from 'typeorm';
 import { CartEntity } from '../cart.entity';
 export declare class CartService {

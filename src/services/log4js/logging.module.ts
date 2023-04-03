@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
-import { Log4js } from './log4js.service';
+import { LogServices } from './log4js.service';
 
 @Global()
-@Module({ providers: [Log4js], exports: [Log4js] })
+@Module({ providers: [LogServices], exports: [LogServices] })
 export class LoggingModule {}

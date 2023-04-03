@@ -1,4 +1,4 @@
 export declare class ProductDTO {
-    readonly name: string;
-    readonly file: any;
+    name: string;
+    file: any;
 }

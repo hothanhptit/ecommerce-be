@@ -1,16 +1,16 @@
+import { User } from './services/auth/entities/user.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express/multer';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Users } from 'src/services/auth/user.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.services';
 import { multerOptions } from './config/multer.config';
 import { AuthModule } from './services/auth/auth.module';
 import { CartModule } from './services/cart/cart.module';
 import { OrderModule } from './services/order/order.module';
-import { ProductEntity } from './services/product/product.entity';
+import { Product } from './services/product/entities/product.entity';
 import { ProductModule } from './services/product/product.module';
 const nodemailer = require('nodemailer');
 
@@ -36,7 +36,7 @@ const transporter = nodemailer.createTransport({
       // password: '18162000THTT',
       // database: 'ecommerce',
       // entities: [__dirname + '/**/*.entity{.ts}'],
-      entities: [Users, ProductEntity],
+      entities: [User, Product],
       synchronize: true,
     }),
     // MulterModule.registerAsync({

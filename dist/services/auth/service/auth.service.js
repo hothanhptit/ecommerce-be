@@ -25,26 +25,25 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const typeorm_1 = require("@nestjs/typeorm");
-const typeorm_2 = require("typeorm");
-const user_entity_1 = require("../user.entity");
-const bcrypt = require("bcrypt");
 const jwt_1 = require("@nestjs/jwt");
+const typeorm_1 = require("@nestjs/typeorm");
+const bcrypt = require("bcrypt");
+const typeorm_2 = require("typeorm");
+const user_entity_1 = require("../entities/user.entity");
 let AuthService = class AuthService {
     constructor(userRepository, jwt) {
         this.userRepository = userRepository;
         this.jwt = jwt;
     }
     async signup(user) {
-        console.log('====================================');
-        console.log(user);
-        console.log('====================================');
+        const foundUser = await this.userRepository.findOne({
+            where: { username: user.username },
+        });
+        if (foundUser)
+            throw new common_1.ForbiddenException();
         const salt = await bcrypt.genSalt();
-        console.log(salt);
         const hash = await bcrypt.hash(user.password, salt);
         user.password = hash;
-        const saveUser = new user_entity_1.Users;
-        Object.assign(saveUser, user);
         return await this.userRepository.save(user);
     }
     async validateUser(username, password) {
@@ -69,7 +68,7 @@ let AuthService = class AuthService {
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.Users)),
+    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         jwt_1.JwtService])
 ], AuthService);

@@ -12,13 +12,13 @@ const cart_service_1 = require("./service/cart.service");
 const cart_controller_1 = require("./controller/cart.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const cart_entity_1 = require("./cart.entity");
-const product_entity_1 = require("../product/product.entity");
-const products_service_1 = require("../product/service/products.service");
+const product_entity_1 = require("../product/entities/product.entity");
+const products_service_1 = require("../product/products.service");
 let CartModule = class CartModule {
 };
 CartModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([cart_entity_1.CartEntity, product_entity_1.ProductEntity])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([cart_entity_1.CartEntity, product_entity_1.Product])],
         providers: [cart_service_1.CartService, products_service_1.ProductsService],
         controllers: [cart_controller_1.CartController]
     })

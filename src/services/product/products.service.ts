@@ -1,4 +1,4 @@
-import { Log4js } from './../log4js/log4js.service';
+import { LogServices } from './../log4js/log4js.service';
 import { ProductDTO } from './dto/product.dto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Product } from './entities/product.entity';
@@ -11,8 +11,9 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
-    private logging: Log4js,
   ) {}
+
+  private logging = new LogServices();
 
   async getAll(): Promise<Product[]> {
     return await this.productRepository.find();
@@ -28,6 +29,8 @@ export class ProductsService {
       return await this.productRepository.save(product);
     }
     this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
+    console.log(123);
+    
     throw new UnauthorizedException();
   }
 

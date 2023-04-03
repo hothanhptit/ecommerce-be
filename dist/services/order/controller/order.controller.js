@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderController = void 0;
+const openapi = require("@nestjs/swagger");
 const order_service_1 = require("../service/order.service");
 const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
@@ -30,6 +31,7 @@ let OrderController = class OrderController {
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
+    openapi.ApiResponse({ status: 201, type: require("../order.entity").OrderEntity }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -38,6 +40,7 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)(),
+    openapi.ApiResponse({ status: 200, type: [require("../order.entity").OrderEntity] }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

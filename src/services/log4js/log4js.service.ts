@@ -11,20 +11,35 @@ class DbLogger implements Logger {
    */
   logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner): any {
     this.logger.debug(
-      `query=${query}` + (parameters ? ` parameters: ${JSON.stringify(parameters)}` : ``)
+      `query=${query}` +
+        (parameters ? ` parameters: ${JSON.stringify(parameters)}` : ``),
     );
   }
   /**
    * Logs query that is failed.
    */
-  logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner): any {
-    this.logger.error(`query=${query} parameters: ${JSON.stringify(parameters)}`);
+  logQueryError(
+    error: string,
+    query: string,
+    parameters?: any[],
+    queryRunner?: QueryRunner,
+  ): any {
+    this.logger.error(
+      `query=${query} parameters: ${JSON.stringify(parameters)}`,
+    );
   }
   /**
    * Logs query that is slow.
    */
-  logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner): any {
-    this.logger.warn(`time=${time} query=${query} parameters: ${JSON.stringify(parameters)}`);
+  logQuerySlow(
+    time: number,
+    query: string,
+    parameters?: any[],
+    queryRunner?: QueryRunner,
+  ): any {
+    this.logger.warn(
+      `time=${time} query=${query} parameters: ${JSON.stringify(parameters)}`,
+    );
   }
   /**
    * Logs events from the schema build process.
@@ -38,13 +53,17 @@ class DbLogger implements Logger {
    * Perform logging using given logger, or by default to the console.
    * Log has its own level and message.
    */
-  log(level: 'log' | 'info' | 'warn', message: any, queryRunner?: QueryRunner): any {
+  log(
+    level: 'log' | 'info' | 'warn',
+    message: any,
+    queryRunner?: QueryRunner,
+  ): any {
     this.logger[level](message);
   }
 }
 
 @Injectable()
-export class Log4js {
+export class LogServices {
   constructor() {
     configure({
       appenders: {
