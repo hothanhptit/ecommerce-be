@@ -7,29 +7,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
-const multer_config_1 = require("./config/multer.config");
-const app_services_1 = require("./app.services");
-const app_controller_1 = require("./app.controller");
-const user_entity_1 = require("./services/auth/user.entity");
-const common_1 = require("@nestjs/common");
-const auth_module_1 = require("./services/auth/auth.module");
-const typeorm_1 = require("@nestjs/typeorm");
-const order_module_1 = require("./services/order/order.module");
-const multer_1 = require("@nestjs/platform-express/multer");
-const path_1 = require("path");
-const serve_static_1 = require("@nestjs/serve-static");
-const product_entity_1 = require("./services/product/product.entity");
-const product_module_1 = require("./services/product/product.module");
-const cart_module_1 = require("./services/cart/cart.module");
+const user_entity_1 = require("./services/auth/entities/user.entity");
 const mailer_1 = require("@nestjs-modules/mailer");
 const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
+const common_1 = require("@nestjs/common");
+const multer_1 = require("@nestjs/platform-express/multer");
+const typeorm_1 = require("@nestjs/typeorm");
+const app_controller_1 = require("./app.controller");
+const app_services_1 = require("./app.services");
+const multer_config_1 = require("./config/multer.config");
+const auth_module_1 = require("./services/auth/auth.module");
+const cart_module_1 = require("./services/cart/cart.module");
+const order_module_1 = require("./services/order/order.module");
+const product_entity_1 = require("./services/product/entities/product.entity");
+const product_module_1 = require("./services/product/product.module");
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'thanhh8nt@gmail.com',
-        pass: 'evxapcohbecrptzv'
-    }
+        pass: 'evxapcohbecrptzv',
+    },
 });
 let AppModule = class AppModule {
 };
@@ -43,7 +41,7 @@ AppModule = __decorate([
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'sqlite',
                 database: 'ecommerce.sqlite3',
-                entities: [user_entity_1.Users, product_entity_1.ProductEntity],
+                entities: [user_entity_1.User, product_entity_1.Product],
                 synchronize: true,
             }),
             multer_1.MulterModule.register(multer_config_1.multerOptions),
@@ -59,9 +57,6 @@ AppModule = __decorate([
                         strict: true,
                     },
                 },
-            }),
-            serve_static_1.ServeStaticModule.forRoot({
-                rootPath: (0, path_1.join)(__dirname, '..', 'uploads'),
             }),
         ],
         controllers: [app_controller_1.AppController],

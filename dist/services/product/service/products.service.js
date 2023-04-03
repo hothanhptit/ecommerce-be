@@ -24,7 +24,7 @@ let ProductsService = class ProductsService {
     async getAll() {
         return await this.productRepository.find();
     }
-    async create(product, file, user) {
+    async create(product, user) {
         return await this.productRepository.save(product);
         if (user.role == 'admin') {
             return await this.productRepository.save(product);

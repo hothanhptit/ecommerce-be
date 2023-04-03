@@ -13,13 +13,15 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductsController = void 0;
-const multer_config_1 = require("./../../../config/multer.config");
+const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
-const products_service_1 = require("../service/products.service");
-const product_entity_1 = require("../product.entity");
-const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
-const platform_express_1 = require("@nestjs/platform-express");
 const decorators_1 = require("@nestjs/common/decorators");
+const platform_express_1 = require("@nestjs/platform-express");
+const swagger_1 = require("@nestjs/swagger");
+const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
+const product_dto_1 = require("../dto/product.dto");
+const product_entity_1 = require("../product.entity");
+const products_service_1 = require("../service/products.service");
 let ProductsController = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
@@ -28,10 +30,7 @@ let ProductsController = class ProductsController {
         return await this.productsService.getAll();
     }
     async Create(req, product, file) {
-        console.log('====================================');
-        console.log(file);
-        console.log('====================================');
-        return await this.productsService.create(product, file, req.user);
+        return 'ok';
     }
     async GetOne(id) {
         return await this.productsService.getOne(id);
@@ -45,23 +44,42 @@ let ProductsController = class ProductsController {
 };
 __decorate([
     (0, common_1.Get)(),
+    openapi.ApiResponse({ status: 200, type: [require("../product.entity").ProductEntity] }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "GetAll", null);
 __decorate([
     (0, common_1.Post)(),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', multer_config_1.multerOptions)),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
+        schema: {
+            type: 'object',
+            properties: {
+                file: {
+                    type: 'string',
+                    format: 'binary',
+                },
+                name: {
+                    type: 'string',
+                    format: 'string',
+                },
+            },
+        },
+    }),
+    openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, decorators_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, product_entity_1.ProductEntity, Object]),
+    __metadata("design:paramtypes", [Object, product_dto_1.ProductDTO, Object]),
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "Create", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)(':id'),
+    openapi.ApiResponse({ status: 200, type: require("../product.entity").ProductEntity }),
     __param(0, (0, common_1.Param)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -70,6 +88,7 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Put)(':id'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)()),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Request)()),
@@ -80,6 +99,7 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Delete)(':id'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)()),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -87,6 +107,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "Delete", null);
 ProductsController = __decorate([
+    (0, swagger_1.ApiTags)('api'),
     (0, common_1.Controller)('api/v1/products'),
     __metadata("design:paramtypes", [products_service_1.ProductsService])
 ], ProductsController);

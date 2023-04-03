@@ -1,27 +1,25 @@
-import { multerOptions } from './config/multer.config';
-import { AppService } from './app.services';
-import { AppController } from './app.controller';
-import { Users } from 'src/services/auth/user.entity';
-import { Module } from '@nestjs/common';
-import { AuthModule } from './services/auth/auth.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { OrderModule } from './services/order/order.module';
-import { MulterModule } from '@nestjs/platform-express/multer';
-import { join } from 'path';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { ProductEntity } from './services/product/product.entity';
-import { ProductModule } from './services/product/product.module';
-import { CartModule } from './services/cart/cart.module';
+import { User } from './services/auth/entities/user.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { Module } from '@nestjs/common';
+import { MulterModule } from '@nestjs/platform-express/multer';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
+import { AppService } from './app.services';
+import { multerOptions } from './config/multer.config';
+import { AuthModule } from './services/auth/auth.module';
+import { CartModule } from './services/cart/cart.module';
+import { OrderModule } from './services/order/order.module';
+import { Product } from './services/product/entities/product.entity';
+import { ProductModule } from './services/product/product.module';
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'thanhh8nt@gmail.com',
-    pass: 'evxapcohbecrptzv'
-  }
+    pass: 'evxapcohbecrptzv',
+  },
 });
 @Module({
   imports: [
@@ -38,7 +36,7 @@ const transporter = nodemailer.createTransport({
       // password: '18162000THTT',
       // database: 'ecommerce',
       // entities: [__dirname + '/**/*.entity{.ts}'],
-      entities: [Users, ProductEntity],
+      entities: [User, Product],
       synchronize: true,
     }),
     // MulterModule.registerAsync({

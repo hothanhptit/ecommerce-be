@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CartService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const products_service_1 = require("../../product/service/products.service");
+const products_service_1 = require("../../product/products.service");
 const typeorm_2 = require("typeorm");
 const cart_entity_1 = require("../cart.entity");
 let CartService = class CartService {

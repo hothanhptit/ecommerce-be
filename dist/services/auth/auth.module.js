@@ -9,14 +9,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./service/auth.service");
-const auth_controller_1 = require("./controller/auth.controller");
+const auth_controller_1 = require("./auth.controller");
 const jwt_1 = require("@nestjs/jwt");
 const constants_1 = require("./constants");
 const jwt_strategy_1 = require("./jwt.strategy");
 const passport_1 = require("@nestjs/passport");
 const local_strategy_1 = require("./local.strategy");
 const typeorm_1 = require("@nestjs/typeorm");
-const user_entity_1 = require("./user.entity");
+const user_entity_1 = require("./entities/user.entity");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -25,9 +25,9 @@ AuthModule = __decorate([
             passport_1.PassportModule,
             jwt_1.JwtModule.register({
                 secret: constants_1.jwtConstants.secret,
-                signOptions: { expiresIn: process.env.REFRESH_TOKEN_TIMEOUT },
+                signOptions: { expiresIn: '5h' },
             }),
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.Users]),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
         ],
         providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy],
         controllers: [auth_controller_1.AuthController],
