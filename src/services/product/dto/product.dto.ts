@@ -24,6 +24,7 @@ export class ProductDTO {
   // })
 
   // @ApiProperty({ description: 'name' })
+  @IsString()
   name: string;
 
   // @ApiProperty({
@@ -34,12 +35,15 @@ export class ProductDTO {
   productImages: string;
 
   // @ApiProperty({ description: 'mo ta ngan gon' })
+  @IsString()
   summary: string;
 
   // @ApiProperty({ description: 'gia' })
+  @IsString()
   price: string;
 
   // @ApiProperty({ description: 'mo ta chi tiet' })
+  @IsString()
   description: string;
 
   // @ApiProperty({
@@ -53,6 +57,7 @@ export class ProductDTO {
   catalogue: string;
 
   // @ApiProperty({ description: 'thong so ky thuat' })
+  @IsString()
   specs: string;
 
   // @ApiProperty({
@@ -60,14 +65,18 @@ export class ProductDTO {
   //   type: 'array',
   //   items: { type: 'string', format: 'binary' },
   // })
+  
   specsImages: string;
 
   // @ApiProperty({ description: 'chi tiet mo ta' })
+  @IsString()
   detailsDescription: string;
 
   // @ApiProperty({ description: 'category' })
+  @IsString()
   categoryId: string;
 
   // @ApiProperty({ description: 'type' })
+  @IsString()
   type: string;
 }

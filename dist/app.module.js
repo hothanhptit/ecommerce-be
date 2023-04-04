@@ -7,16 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
-const others_module_1 = require("./services/others/others.module");
-const news_module_1 = require("./services/news/news.module");
-const customers_module_1 = require("./services/customers/customers.module");
-const categories_module_1 = require("./services/categories/categories.module");
-const banner_module_1 = require("./services/banner/banner.module");
-const banner_entity_1 = require("./services/banner/entities/banner.entity");
-const category_entity_1 = require("./services/categories/entities/category.entity");
-const customer_entity_1 = require("./services/customers/entities/customer.entity");
-const news_entity_1 = require("./services/news/entities/news.entity");
-const user_entity_1 = require("./services/auth/entities/user.entity");
 const mailer_1 = require("@nestjs-modules/mailer");
 const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
 const common_1 = require("@nestjs/common");
@@ -26,10 +16,20 @@ const app_controller_1 = require("./app.controller");
 const app_services_1 = require("./app.services");
 const multer_config_1 = require("./config/multer.config");
 const auth_module_1 = require("./services/auth/auth.module");
-const product_entity_1 = require("./services/product/entities/product.entity");
-const product_module_1 = require("./services/product/product.module");
+const user_entity_1 = require("./services/auth/entities/user.entity");
+const banner_module_1 = require("./services/banner/banner.module");
+const banner_entity_1 = require("./services/banner/entities/banner.entity");
+const categories_module_1 = require("./services/categories/categories.module");
+const category_entity_1 = require("./services/categories/entities/category.entity");
+const customers_module_1 = require("./services/customers/customers.module");
+const customer_entity_1 = require("./services/customers/entities/customer.entity");
+const news_entity_1 = require("./services/news/entities/news.entity");
+const news_module_1 = require("./services/news/news.module");
+const others_module_1 = require("./services/others/others.module");
 const serve_static_1 = require("@nestjs/serve-static");
 const path_1 = require("path");
+const product_entity_1 = require("./services/product/entities/product.entity");
+const product_module_1 = require("./services/product/product.module");
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -80,14 +80,6 @@ AppModule = __decorate([
                         {
                             rootPath: (0, path_1.join)(__dirname, '..', '../' + 'uploads'),
                             serveRoot: '/' + 'uploads' + '/',
-                        },
-                        {
-                            rootPath: (0, path_1.join)(__dirname, '..' + 'public'),
-                            serveRoot: '/public/',
-                        },
-                        {
-                            rootPath: (0, path_1.join)(__dirname, '..', '../' + 'public'),
-                            serveRoot: '/public/',
                         },
                     ];
                 },

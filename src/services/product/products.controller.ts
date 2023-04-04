@@ -94,9 +94,9 @@ export class ProductsController {
   })
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: 'productImages', maxCount: 2 },
-      { name: 'descriptionImages', maxCount: 2 },
-      { name: 'specsImages', maxCount: 2 },
+      { name: 'productImages', maxCount: 5 },
+      { name: 'descriptionImages', maxCount: 5 },
+      { name: 'specsImages', maxCount: 5 },
     ]),
   )
   async Create(

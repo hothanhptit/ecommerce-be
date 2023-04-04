@@ -44,10 +44,6 @@ export class ProductsService {
       saveProduct.productImages = JSON.stringify(productImages);
       saveProduct.descriptionImages = JSON.stringify(descriptionImages);
       saveProduct.specsImages = JSON.stringify(specsImages);
-      console.log('====================================');
-      console.log(saveProduct instanceof Product);
-      console.log(saveProduct);
-      console.log('====================================');
 
       return await this.productRepository.save(saveProduct);
     }
