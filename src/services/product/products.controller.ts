@@ -1,15 +1,20 @@
+import { Pagination } from 'nestjs-typeorm-paginate/dist/pagination';
 import { ApiMultiFile } from './../../utils/multiFiles.swagger';
 import { multerOptions } from '../../config/multer.config';
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpStatus,
   Param,
   ParseFilePipeBuilder,
+  ParseIntPipe,
+  Patch,
   Post,
   Put,
+  Query,
   Request,
   UseGuards,
   UseInterceptors,
@@ -33,8 +38,16 @@ export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Get()
-  async GetAll(): Promise<Product[]> {
-    return await this.productsService.getAll();
+  async GetAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<Pagination<Product>> {
+    limit = limit > 100 ? 100 : limit;
+    return await this.productsService.getAll({
+      page,
+      limit,
+      route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
+    });
   }
 
   @UseGuards(JwtAuthGuard)
@@ -110,24 +123,35 @@ export class ProductsController {
       descriptionImages?: Express.Multer.File[];
       specsImages?: Express.Multer.File[];
     },
-  ): Promise<Product> {
-    return await this.productsService.create(product, files, req.user);
+  ) {
+    return await this.productsService.create(
+      product,
+      files,
+      req.body.related,
+      req.user,
+    );
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async GetOne(@Param() id: number): Promise<Product> {
-    return await this.productsService.getOne(id);
+  async GetOne(@Param() id: any) {
+    return await this.productsService.getOne(id.id);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put(':id')
+  @Patch(':id')
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'productImages', maxCount: 5 }]),
+  )
   async Update(
-    @Param() id: number,
-    @Body() product: Product,
+    @Param() id: string,
+    @Body() product: ProductDTO,
+    @UploadedFiles()
+    files: {
+      productImages?: Express.Multer.File[];
+    },
     @Request() req,
-  ): Promise<UpdateResult> {
-    return await this.productsService.update(id, product, req.user);
+  ): Promise<Product> {
+    return await this.productsService.update(id, product, files, req.user);
   }
 
   @UseGuards(JwtAuthGuard)

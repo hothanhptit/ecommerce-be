@@ -1,20 +1,25 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { RelatedProduct } from './relatedProduct.entity';
 import {
-  Entity,
-  ManyToMany,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  Index,
 } from 'typeorm';
 
 @Entity()
+@Index('prod_id', ['id'])
 export class Product {
   @PrimaryGeneratedColumn('uuid')
-  id!: number;
+  id!: string;
 
   @Column()
   name: string;
+
+  @Column('int', { nullable: true, default: 1 })
+  status: number;
 
   @Column()
   productImages: string;
@@ -28,7 +33,7 @@ export class Product {
   @Column()
   description?: string;
 
-  @Column()
+  @Column({ nullable: true })
   descriptionImages?: string;
   // pdf file
   @Column()
@@ -37,7 +42,7 @@ export class Product {
   @Column()
   specs?: string;
 
-  @Column()
+  @Column({ nullable: true })
   specsImages?: string;
 
   @Column()
@@ -48,6 +53,10 @@ export class Product {
 
   @Column()
   type?: string;
+
+  // @Column({ nullable: true })
+  @OneToMany(() => RelatedProduct, (related) => related.product)
+  related: RelatedProduct[];
 
   @CreateDateColumn()
   createdAt: String;

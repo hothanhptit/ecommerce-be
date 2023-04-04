@@ -1,3 +1,4 @@
+import { RelatedProduct } from './entities/relatedProduct.entity';
 import { multerOptions } from './../../config/multer.config';
 import { MulterModule } from '@nestjs/platform-express/multer';
 import { Module } from '@nestjs/common';
@@ -10,7 +11,7 @@ import { ProductsService } from './products.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product]),
+    TypeOrmModule.forFeature([Product, RelatedProduct]),
     MulterModule.register(multerOptions),
   ],
   providers: [ProductsService],

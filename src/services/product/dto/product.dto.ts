@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, IsNumber } from 'class-validator';
 
 export class ProductDTO {
   // @ApiProperty({
@@ -26,6 +26,9 @@ export class ProductDTO {
   // @ApiProperty({ description: 'name' })
   @IsString()
   name: string;
+
+  @IsNumber()
+  status: string;
 
   // @ApiProperty({
   //   description: 'product img',
@@ -65,7 +68,7 @@ export class ProductDTO {
   //   type: 'array',
   //   items: { type: 'string', format: 'binary' },
   // })
-  
+
   specsImages: string;
 
   // @ApiProperty({ description: 'chi tiet mo ta' })

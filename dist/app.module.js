@@ -7,6 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
+const relatedProduct_entity_1 = require("./services/product/entities/relatedProduct.entity");
 const mailer_1 = require("@nestjs-modules/mailer");
 const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
 const common_1 = require("@nestjs/common");
@@ -53,7 +54,7 @@ AppModule = __decorate([
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'sqlite',
                 database: 'ecommerce.sqlite3',
-                entities: [user_entity_1.User, product_entity_1.Product, news_entity_1.News, customer_entity_1.Customer, category_entity_1.Category, banner_entity_1.Banner],
+                entities: [user_entity_1.User, product_entity_1.Product, news_entity_1.News, customer_entity_1.Customer, category_entity_1.Category, banner_entity_1.Banner, relatedProduct_entity_1.RelatedProduct],
                 synchronize: true,
             }),
             multer_1.MulterModule.register(multer_config_1.multerOptions),

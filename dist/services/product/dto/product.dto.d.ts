@@ -1,5 +1,6 @@
 export declare class ProductDTO {
     name: string;
+    status: string;
     productImages: string;
     summary: string;
     price: string;

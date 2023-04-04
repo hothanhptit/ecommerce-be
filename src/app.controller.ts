@@ -1,3 +1,4 @@
+import { Product } from './services/product/entities/product.entity';
 import { UploadedFiles } from '@nestjs/common/decorators';
 import { multerOptions } from './config/multer.config';
 import { AppService } from './app.services';
@@ -42,6 +43,7 @@ export class AppController {
   // sayHello() {
   //   return this.appService.getHello();
   // }
+
 
   @UseInterceptors(FileInterceptor('file', multerOptions))
   @Post('files')

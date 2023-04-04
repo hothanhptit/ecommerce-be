@@ -1,3 +1,4 @@
+import { RelatedProduct } from './services/product/entities/relatedProduct.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { Module } from '@nestjs/common';
@@ -50,7 +51,7 @@ const transporter = nodemailer.createTransport({
       // password: '18162000THTT',
       // database: 'ecommerce',
       // entities: [__dirname + '/**/*.entity{.ts}'],
-      entities: [User, Product, News, Customer, Category, Banner],
+      entities: [User, Product, News, Customer, Category, Banner, RelatedProduct],
       synchronize: true,
     }),
     // MulterModule.registerAsync({
