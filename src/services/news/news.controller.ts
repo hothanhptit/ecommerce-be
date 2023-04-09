@@ -10,6 +10,7 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
@@ -32,6 +33,11 @@ export class NewsController {
   @Get()
   findAll() {
     return this.newsService.findAll();
+  }
+
+  @Get('/recently')
+  findRecent(@Query('take') take: number = 5) {
+    return this.newsService.findRecently(take);
   }
 
   @Get(':id')

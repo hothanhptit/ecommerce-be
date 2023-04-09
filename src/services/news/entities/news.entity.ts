@@ -22,7 +22,7 @@ export class News {
   @Column()
   content: string;
   @CreateDateColumn()
-  created_at: String;
+  created_at: string;
   @UpdateDateColumn()
-  updated_at: String;
+  updated_at: string;
 }

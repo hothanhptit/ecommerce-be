@@ -1,3 +1,4 @@
+import { filter } from 'rxjs';
 import {
   Injectable,
   NotFoundException,
@@ -9,6 +10,7 @@ import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { paginate } from 'nestjs-typeorm-paginate/dist/paginate';
 import { Pagination } from 'nestjs-typeorm-paginate/dist/pagination';
 import { User } from 'src/services/auth/entities/user.entity';
+import { removeVietnameseTones } from 'src/utils/fn';
 import { DeleteResult, Repository } from 'typeorm';
 import { LogServices } from './../log4js/log4js.service';
 import { ProductDTO } from './dto/product.dto';
@@ -32,6 +34,7 @@ export class ProductsService {
     orderBy: string,
     filter: string,
   ): Promise<Pagination<Product>> {
+    if (filter) return this.searchProducts(options, orderBy, filter);
     const orderDirection = orderBy
       ? { updatedAt: 'DESC' }
       : { updatedAt: 'ASC' };
@@ -39,9 +42,9 @@ export class ProductsService {
     // provide builder to paginate
     const queryBuilder = this.productRepository
       .createQueryBuilder('prod')
-      .where('status= :status', { status: 1 })
-      // .andWhere('name= :name', { name: 'abc' })
-      .orderBy('updatedAt', 'DESC');
+      .where('prod.status= :status', { status: 1 })
+      .orderBy('prod.updatedAt', 'DESC')
+      .cache('product', 30 * 1000);
 
     const productsPage = await paginate<Product>(queryBuilder, options);
 
@@ -57,6 +60,31 @@ export class ProductsService {
     //     cache: true,
     //   },
     // );
+    if (productsPage) {
+      productsPage.items.forEach((item) => {
+        item.productImages = JSON.parse(item.productImages);
+      });
+    }
+    return productsPage;
+  }
+
+  async searchProducts(
+    options: IPaginationOptions,
+    orderBy: string,
+    filter: string,
+  ): Promise<Pagination<Product>> {
+    // provide builder to paginate
+    const slug = removeVietnameseTones(filter);
+    const queryBuilder = this.productRepository
+      .createQueryBuilder('prod')
+      .where('prod.status= :status', { status: 1 })
+      .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
+      // .andWhere('MATCH(prod.slug) AGAINST (:slug IN BOOLEAN MODE)', { slug: slug })
+      .orderBy('prod.updatedAt', 'DESC')
+      .cache('product', 30 * 1000);
+    console.log(queryBuilder.getSql());
+    const productsPage = await paginate<Product>(queryBuilder, options);
+
     if (productsPage) {
       productsPage.items.forEach((item) => {
         item.productImages = JSON.parse(item.productImages);
@@ -124,6 +152,7 @@ export class ProductsService {
             }
           }
         }
+        saveProduct.slug = removeVietnameseTones(productDTO.name);
         const res = await this.productRepository.manager.save(saveProduct);
         return res;
       }

@@ -6,6 +6,6 @@ export class CreateNewsDto {
   category: string;
   tags: string;
   content: string;
-  created_at: String;
-  updated_at: String;
+  created_at: string;
+  updated_at: string;
 }

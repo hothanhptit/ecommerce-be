@@ -23,7 +23,7 @@ export class OthersController {
     return this.othersService.create(menuDto);
   }
 
-  @Get('/menu/')
+  @Get('/menu')
   findAll() {
     return this.othersService.findAll();
   }

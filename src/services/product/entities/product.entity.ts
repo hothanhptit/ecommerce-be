@@ -18,6 +18,9 @@ export class Product {
   @Column()
   name: string;
 
+  @Column({ nullable: true })
+  slug: string;
+
   @Column('int', { nullable: true, default: 1 })
   status: number;
 

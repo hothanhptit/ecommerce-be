@@ -21,6 +21,14 @@ export class NewsService {
   findAll() {
     return this.newsRepo.find();
   }
+  findRecently(number: number) {
+    return this.newsRepo.find({
+      take: number,
+      order: {
+        updated_at: 'DESC',
+      },
+    });
+  }
 
   findOne(id: number) {
     return this.newsRepo.findOne({

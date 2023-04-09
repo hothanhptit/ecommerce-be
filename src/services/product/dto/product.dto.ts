@@ -26,7 +26,9 @@ export class ProductDTO {
   // @ApiProperty({ description: 'name' })
   @IsString()
   name: string;
-
+  
+  slug: string;
+  
   @IsNumber()
   status: string;
 
