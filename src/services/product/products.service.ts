@@ -42,13 +42,9 @@ export class ProductsService {
     try {
       if (user.role == 'admin') {
         let saveProduct = Object.assign(new Product(), productDTO);
-        console.log('====================================');
-        console.log(saveProduct);
-        console.log('====================================');
-        const productImages = {};
-        const descriptionImages = {};
-        const specsImages = {};
+
         if (files.productImages) {
+          const productImages = {};
           for (const [index, file] of files.productImages.entries()) {
             productImages[index] =
               process.env.HOST ||
@@ -56,7 +52,9 @@ export class ProductsService {
           }
           saveProduct.productImages = JSON.stringify(productImages);
         }
+
         if (files.descriptionImages) {
+          const descriptionImages = {};
           for (const [index, file] of files.descriptionImages.entries()) {
             descriptionImages[index] =
               process.env.HOST ||
@@ -64,7 +62,9 @@ export class ProductsService {
           }
           saveProduct.descriptionImages = JSON.stringify(descriptionImages);
         }
+
         if (files.specsImages) {
+          const specsImages = {};
           for (const [index, file] of files.specsImages.entries()) {
             specsImages[index] =
               process.env.HOST ||
@@ -72,39 +72,31 @@ export class ProductsService {
           }
           saveProduct.specsImages = JSON.stringify(specsImages);
         }
-        if (relatedProduct) {
-          const relatedPro = JSON.parse(relatedProduct);
 
-          for (const id in relatedPro) {
-            const related = new RelatedProduct();
-            related.productId = relatedPro[id];
-            await this.relatedProducts.save(related);
-            console.log(related);
-            // data.push(related)
-            // saveProduct.related.push(related);
+        if (!!relatedProduct) {
+          saveProduct.related = [];
+          const relatedPro = new Set(JSON.parse(relatedProduct)) as Set<string>;
+          // TODO: switch to select in() and create related after that
+          // console.log(relatedPro);
+          for (const id of relatedPro) {
+            const data = await this.productRepository.findOne({
+              where: { id: id },
+            });
+
+            if (data) {
+              const related = new RelatedProduct();
+              related.productId = id;
+              related.images = data.productImages;
+              related.name = data.name;
+              this.relatedProducts.save(related);
+              saveProduct.related.push(related);
+            }
           }
         }
-        const a = new RelatedProduct();
-        // a.productId = '475dd678-f1a1-4fb8-a697-a63b9a543661';
-        const b = new Product()
-        b.name = "123"
-        b.summary = "123"
-        b.price = "123"
-        b.description = "123"
-        b.specs = "123"
-        b.detailsDescription = "123"
-        b.categoryId = "123"
-        b.type = "123"
-        b.catalogue = "123"
-        b.productImages = "123"
-      
-        const ab = await this.productRepository.manager.save(b);
-        console.log(ab);
-        await this.relatedProducts.manager.save(a);
+        // console.log(saveProduct);
 
-        // console.log(data1);
-
-        // return savedProd;
+        const res = await this.productRepository.manager.save(saveProduct);
+        return res;
       }
       this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
     } catch (error) {
@@ -115,19 +107,12 @@ export class ProductsService {
   }
 
   async getOne(productId: string) {
-    // const data = await this.productRepository
-    //   .createQueryBuilder()
-    //   .innerJoinAndSelect(RelatedProduct, 'related_product', 'product.id = related_product.productId')
-    //   .where('product.id = :id', { id: productId })
-    //   .getRawMany();
     const data = await this.productRepository.findOne({
       where: { id: productId },
       relations: {
         related: true,
       },
     });
-    console.log(data);
-
     if (data) return data;
     throw new NotFoundException();
   }
@@ -135,31 +120,23 @@ export class ProductsService {
   async update(
     id: string,
     productDTO: ProductDTO,
+    relatedProduct: string | null,
     files: any,
     user: User,
   ): Promise<Product> {
     try {
       if (user.role == 'admin') {
         let saveProduct = Object.assign(new Product(), productDTO);
-        // saveProduct.related = [] as RelatedProduct[]
 
-        console.log('====================================');
-        console.log(123);
-        console.log('====================================');
-        // if (productDTO.related) {
-        //   const relatedPro = JSON.parse(productDTO.related);
-        //   for (const prod of relatedPro) {
-        //     const related = new RelatedProduct();
-        //     related.product = prod;
-        //     await this.relatedProducts.save(related);
-        //     saveProduct.related.push(related);
-        //   }
-        // }
         const product = await this.productRepository.findOne({
           where: { id: id },
+          relations: {
+            related: true,
+          },
         });
-        const productImages = {};
+
         if (files.productImages) {
+          const productImages = {};
           for (const [index, file] of files.productImages.entries()) {
             productImages[index] =
               process.env.HOST ||
@@ -168,6 +145,27 @@ export class ProductsService {
 
           saveProduct.productImages = JSON.stringify(productImages);
         }
+        // console.log(product);
+        if (!!relatedProduct) {
+          // saveProduct.related = [...product.related];
+          saveProduct.related = [];
+          const relatedPro = new Set(JSON.parse(relatedProduct)) as Set<string>;
+          // TODO: switch to select in() and create related after that
+          for (const id of relatedPro) {
+            const data = await this.productRepository.findOne({
+              where: { id: id },
+            });
+
+            if (data) {
+              const related = new RelatedProduct();
+              related.productId = id;
+              related.images = data.productImages;
+              related.name = data.name;
+              this.relatedProducts.save(related);
+              saveProduct.related.push(related);
+            }
+          }
+        }
 
         return await this.productRepository.save({
           ...product,
@@ -175,9 +173,10 @@ export class ProductsService {
         });
       }
       this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
-
-      throw new UnauthorizedException();
     } catch (error) {
+      console.log(error);
+      this.logging.getLogger('debug').debug(error);
+      if (error.status === 401) throw new UnauthorizedException();
       throw new ServiceUnavailableException();
     }
   }
@@ -187,8 +186,12 @@ export class ProductsService {
       if (user.role == 'admin') {
         return await this.productRepository.delete(id);
       }
-      throw new UnauthorizedException();
     } catch (error) {
+      this.logging.getLogger('debug').debug(error);
+      if (error.status === 401) {
+        this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
+        throw new UnauthorizedException();
+      }
       throw new ServiceUnavailableException();
     }
   }

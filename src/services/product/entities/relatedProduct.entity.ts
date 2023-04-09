@@ -16,6 +16,12 @@ export class RelatedProduct {
   @Column({nullable: true})
   productId?: string;
 
+  @Column({nullable: true})
+  name?: string;
+  
+  @Column({nullable: true})
+  images?: string;
+
   //   @Column()
   @ManyToOne(() => Product, (product) => product.related, {
     cascade: true,

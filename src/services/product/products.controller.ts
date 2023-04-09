@@ -143,7 +143,7 @@ export class ProductsController {
     FileFieldsInterceptor([{ name: 'productImages', maxCount: 5 }]),
   )
   async Update(
-    @Param() id: string,
+    @Param() id: any,
     @Body() product: ProductDTO,
     @UploadedFiles()
     files: {
@@ -151,9 +151,14 @@ export class ProductsController {
     },
     @Request() req,
   ): Promise<Product> {
-    return await this.productsService.update(id, product, files, req.user);
+    return await this.productsService.update(
+      id.id,
+      product,
+      req.body.related,
+      files,
+      req.user,
+    );
   }
-
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async Delete(@Param() id: number, @Request() req): Promise<DeleteResult> {
