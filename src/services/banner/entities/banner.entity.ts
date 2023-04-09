@@ -1,4 +1,4 @@
-import { Column, PrimaryGeneratedColumn, Entity } from 'typeorm';
+import { Column, PrimaryGeneratedColumn, Entity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Banner {
@@ -18,4 +18,8 @@ export class Banner {
   image: string;
   @Column()
   details: string;
+  @CreateDateColumn()
+  created_at: String;
+  @UpdateDateColumn()
+  updated_at: String;
 }

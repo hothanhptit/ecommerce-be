@@ -32,6 +32,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ProductDTO } from './dto/product.dto';
 import { Product } from './entities/product.entity';
 import { ProductsService } from './products.service';
+import { filter } from 'rxjs';
 @ApiTags('products')
 @Controller('api/v1/products')
 export class ProductsController {
@@ -40,14 +41,20 @@ export class ProductsController {
   @Get()
   async GetAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+    @Query('limit', new DefaultValuePipe(16), ParseIntPipe) limit: number = 16,
+    @Query('orderBy') orderBy: string = 'created_at',
+    @Query('filter') filter: string = 'none',
   ): Promise<Pagination<Product>> {
     limit = limit > 100 ? 100 : limit;
-    return await this.productsService.getAll({
-      page,
-      limit,
-      route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
-    });
+    return await this.productsService.getAll(
+      {
+        page,
+        limit,
+        route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
+      },
+      orderBy,
+      filter,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

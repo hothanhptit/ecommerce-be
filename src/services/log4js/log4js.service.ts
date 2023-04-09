@@ -76,7 +76,6 @@ export class LogServices {
       },
       categories: {
         default: { appenders: ['everything'], level: 'debug' },
-        // default: { appenders: ['everything'], level: 'debug' },
       },
     });
   }

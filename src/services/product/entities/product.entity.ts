@@ -59,8 +59,8 @@ export class Product {
   related: RelatedProduct[];
 
   @CreateDateColumn()
-  createdAt: String;
+  createdAt: string;
 
   @UpdateDateColumn()
-  updtedAt: String;
+  updatedAt: string;
 }
