@@ -1,3 +1,6 @@
+import { Mail } from './services/contact/entities/mail.entity';
+import { ContactModule } from './services/contact/contact.module';
+import { Contact } from './services/contact/entities/contact.entity';
 import { Menu } from './services/others/dto/menu.dto';
 import { RelatedProduct } from './services/product/entities/relatedProduct.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
@@ -43,6 +46,7 @@ const transporter = nodemailer.createTransport({
     NewsModule,
     ProductModule,
     OthersModule,
+    ContactModule,
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'ecommerce.sqlite3',
@@ -61,10 +65,12 @@ const transporter = nodemailer.createTransport({
         Banner,
         RelatedProduct,
         Menu,
+        Contact,
+        Mail,
       ],
       synchronize: true,
       cache: {
-        duration: 1 * 60000, // 30 seconds
+        duration: 30 * 60000, // 30 seconds
       },
     }),
     // MulterModule.registerAsync({

@@ -7,6 +7,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
+const mail_entity_1 = require("./services/contact/entities/mail.entity");
+const contact_module_1 = require("./services/contact/contact.module");
+const contact_entity_1 = require("./services/contact/entities/contact.entity");
 const menu_dto_1 = require("./services/others/dto/menu.dto");
 const relatedProduct_entity_1 = require("./services/product/entities/relatedProduct.entity");
 const mailer_1 = require("@nestjs-modules/mailer");
@@ -52,6 +55,7 @@ AppModule = __decorate([
             news_module_1.NewsModule,
             product_module_1.ProductModule,
             others_module_1.OthersModule,
+            contact_module_1.ContactModule,
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'sqlite',
                 database: 'ecommerce.sqlite3',
@@ -64,10 +68,12 @@ AppModule = __decorate([
                     banner_entity_1.Banner,
                     relatedProduct_entity_1.RelatedProduct,
                     menu_dto_1.Menu,
+                    contact_entity_1.Contact,
+                    mail_entity_1.Mail,
                 ],
                 synchronize: true,
                 cache: {
-                    duration: 1 * 60000,
+                    duration: 30 * 60000,
                 },
             }),
             multer_1.MulterModule.register(multer_config_1.multerOptions),
