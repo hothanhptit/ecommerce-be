@@ -1,35 +1,48 @@
+import { UpdateMenuDto } from './dto/update-menu.dto';
+import { Menu } from './dto/menu.dto';
 import { ApiTags } from '@nestjs/swagger/dist';
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { OthersService } from './others.service';
-import { CreateOtherDto } from './dto/create-other.dto';
-import { UpdateOtherDto } from './dto/update-other.dto';
 
 @Controller('api/v1/others')
 @ApiTags('others')
 export class OthersController {
   constructor(private readonly othersService: OthersService) {}
 
-  @Post()
-  create(@Body() createOtherDto: CreateOtherDto) {
-    return this.othersService.create(createOtherDto);
+  @Post('/menu')
+  create(@Body() menuDto: Menu) {
+    return this.othersService.create(menuDto);
   }
 
-  @Get()
+  @Get('/menu/')
   findAll() {
     return this.othersService.findAll();
   }
 
-  @Get(':id')
+  @Get('/menu/:id')
   findOne(@Param('id') id: string) {
     return this.othersService.findOne(+id);
   }
+  //   @Get(':id')
+  // findOne(@Param('id') id: string): string {
+  //   return `This action returns a #${id} cat`;
+  // }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOtherDto: UpdateOtherDto) {
-    return this.othersService.update(+id, updateOtherDto);
+  @Patch('/menu/:id')
+  update(@Param('id') id: string, @Body() menuDto: UpdateMenuDto) {
+    return this.othersService.update(+id, menuDto);
   }
 
-  @Delete(':id')
+  @Delete('/menu/:id')
   remove(@Param('id') id: string) {
     return this.othersService.remove(+id);
   }

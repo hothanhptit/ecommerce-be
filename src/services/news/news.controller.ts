@@ -1,3 +1,5 @@
+import { UploadedFile } from '@nestjs/common/decorators';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger/dist';
 import {
   Controller,
@@ -7,6 +9,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
@@ -18,8 +21,12 @@ export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
   @Post()
-  create(@Body() createNewsDto: CreateNewsDto) {
-    return this.newsService.create(createNewsDto);
+  @UseInterceptors(FileInterceptor('file'))
+  create(
+    @Body() createNewsDto: CreateNewsDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.newsService.create(createNewsDto, file);
   }
 
   @Get()
@@ -33,8 +40,13 @@ export class NewsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto) {
-    return this.newsService.update(+id, updateNewsDto);
+  @UseInterceptors(FileInterceptor('file'))
+  update(
+    @Param('id') id: string,
+    @Body() updateNewsDto: UpdateNewsDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.newsService.update(+id, updateNewsDto, file);
   }
 
   @Delete(':id')
