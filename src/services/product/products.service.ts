@@ -63,6 +63,7 @@ export class ProductsService {
     if (productsPage) {
       productsPage.items.forEach((item) => {
         item.productImages = JSON.parse(item.productImages);
+        item.catalogue = JSON.parse(item.catalogue);
       });
     }
     return productsPage;
@@ -82,12 +83,13 @@ export class ProductsService {
       // .andWhere('MATCH(prod.slug) AGAINST (:slug IN BOOLEAN MODE)', { slug: slug })
       .orderBy('prod.updatedAt', 'DESC')
       .cache('product', 30 * 1000);
-    console.log(queryBuilder.getSql());
+    // console.log(queryBuilder.getSql());
     const productsPage = await paginate<Product>(queryBuilder, options);
 
     if (productsPage) {
       productsPage.items.forEach((item) => {
         item.productImages = JSON.parse(item.productImages);
+        item.catalogue = JSON.parse(item.catalogue);
       });
     }
     return productsPage;
@@ -179,10 +181,20 @@ export class ProductsService {
       relations: {
         related: true,
       },
-      cache: false
+      cache: false,
     });
+
     if (data) {
       data.productImages = JSON.parse(data.productImages);
+      if (data.related.length) {
+        data.related.forEach((element, idx) => {
+          data.related[idx].images = JSON.parse(element.images);
+        });
+      }
+      if (data.catalogue) {
+        data.catalogue = JSON.parse(data.catalogue);
+      }
+
       return data;
     }
     throw new NotFoundException();

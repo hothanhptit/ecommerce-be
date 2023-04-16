@@ -5,5 +5,5 @@ export declare class User {
     password: string;
     role: string;
     createdAt: String;
-    updtedAt: String;
+    updatedAt: String;
 }

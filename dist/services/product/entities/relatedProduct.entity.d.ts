@@ -6,5 +6,5 @@ export declare class RelatedProduct {
     images?: string;
     product: Product;
     createdAt: String;
-    updtedAt: String;
+    updatedAt: String;
 }

@@ -14,7 +14,7 @@ const openapi = require("@nestjs/swagger");
 const typeorm_1 = require("typeorm");
 let User = class User {
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => Number }, username: { required: true, type: () => String }, name: { required: true, type: () => String }, password: { required: true, type: () => String }, role: { required: true, type: () => String }, createdAt: { required: true, type: () => Object }, updtedAt: { required: true, type: () => Object } };
+        return { id: { required: true, type: () => Number }, username: { required: true, type: () => String }, name: { required: true, type: () => String }, password: { required: true, type: () => String }, role: { required: true, type: () => String }, createdAt: { required: true, type: () => Object }, updatedAt: { required: true, type: () => Object } };
     }
 };
 __decorate([
@@ -44,7 +44,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", String)
-], User.prototype, "updtedAt", void 0);
+], User.prototype, "updatedAt", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

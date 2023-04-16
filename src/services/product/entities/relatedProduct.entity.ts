@@ -32,5 +32,5 @@ export class RelatedProduct {
   createdAt: String;
 
   @UpdateDateColumn()
-  updtedAt: String;
+  updatedAt: String;
 }

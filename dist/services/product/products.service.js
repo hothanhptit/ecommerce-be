@@ -45,6 +45,7 @@ let ProductsService = class ProductsService {
         if (productsPage) {
             productsPage.items.forEach((item) => {
                 item.productImages = JSON.parse(item.productImages);
+                item.catalogue = JSON.parse(item.catalogue);
             });
         }
         return productsPage;
@@ -57,11 +58,11 @@ let ProductsService = class ProductsService {
             .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
             .orderBy('prod.updatedAt', 'DESC')
             .cache('product', 30 * 1000);
-        console.log(queryBuilder.getSql());
         const productsPage = await (0, paginate_1.paginate)(queryBuilder, options);
         if (productsPage) {
             productsPage.items.forEach((item) => {
                 item.productImages = JSON.parse(item.productImages);
+                item.catalogue = JSON.parse(item.catalogue);
             });
         }
         return productsPage;
@@ -142,10 +143,18 @@ let ProductsService = class ProductsService {
             relations: {
                 related: true,
             },
-            cache: false
+            cache: false,
         });
         if (data) {
             data.productImages = JSON.parse(data.productImages);
+            if (data.related.length) {
+                data.related.forEach((element, idx) => {
+                    data.related[idx].images = JSON.parse(element.images);
+                });
+            }
+            if (data.catalogue) {
+                data.catalogue = JSON.parse(data.catalogue);
+            }
             return data;
         }
         throw new common_1.NotFoundException();
