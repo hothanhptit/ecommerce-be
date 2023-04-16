@@ -62,12 +62,32 @@ let NewsService = class NewsService {
             },
         });
     }
-    findOne(id) {
-        return this.newsRepo.findOne({
+    async findCategories(number) {
+        const data = await this.newsRepo
+            .createQueryBuilder('news')
+            .select('news.categoryName')
+            .where('news.categoryName is not null')
+            .distinct(true)
+            .take(number)
+            .execute();
+        if (!data)
+            return [];
+        let res = [];
+        data.forEach((element) => {
+            res.push(element.news_categoryName);
+        });
+        return res;
+    }
+    async findOne(id) {
+        const item = await this.newsRepo.findOne({
             where: {
                 id: id,
             },
         });
+        if (!item)
+            throw new common_1.NotFoundException();
+        item.image_path = JSON.parse(item.image_path);
+        return item;
     }
     async update(id, updateNewsDto, file) {
         if (file) {

@@ -4,6 +4,7 @@ export declare class News {
     image_path: string;
     title: string;
     category: string;
+    categoryName: string;
     created_by: string;
     tags: string;
     content: string;

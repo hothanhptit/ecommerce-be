@@ -15,7 +15,7 @@ const relatedProduct_entity_1 = require("./relatedProduct.entity");
 const typeorm_1 = require("typeorm");
 let Product = class Product {
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => String }, name: { required: true, type: () => String }, slug: { required: true, type: () => String }, status: { required: true, type: () => Number }, productImages: { required: true, type: () => String }, summary: { required: false, type: () => String }, price: { required: false, type: () => String }, description: { required: false, type: () => String }, descriptionImages: { required: false, type: () => String }, catalogue: { required: false, type: () => String }, specs: { required: false, type: () => String }, specsImages: { required: false, type: () => String }, detailsDescription: { required: false, type: () => String }, categoryId: { required: false, type: () => String }, type: { required: false, type: () => String }, related: { required: true, type: () => [require("./relatedProduct.entity").RelatedProduct] }, createdAt: { required: true, type: () => String }, updatedAt: { required: true, type: () => String } };
+        return { id: { required: true, type: () => String }, name: { required: true, type: () => String }, slug: { required: true, type: () => String }, status: { required: true, type: () => Number }, productImages: { required: true, type: () => String }, summary: { required: false, type: () => String }, isFeatured: { required: false, type: () => Number }, price: { required: false, type: () => String }, description: { required: false, type: () => String }, descriptionImages: { required: false, type: () => String }, catalogue: { required: false, type: () => String }, specs: { required: false, type: () => String }, specsImages: { required: false, type: () => String }, detailsDescription: { required: false, type: () => String }, categoryId: { required: false, type: () => String }, type: { required: false, type: () => String }, related: { required: true, type: () => [require("./relatedProduct.entity").RelatedProduct] }, createdAt: { required: true, type: () => String }, updatedAt: { required: true, type: () => String } };
     }
 };
 __decorate([
@@ -42,6 +42,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Product.prototype, "summary", void 0);
+__decorate([
+    (0, typeorm_1.Column)('tinyint', { nullable: true }),
+    __metadata("design:type", Number)
+], Product.prototype, "isFeatured", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)

@@ -3,6 +3,7 @@ export declare class CreateNewsDto {
     image_path: string;
     title: string;
     category: string;
+    categoryName: string;
     tags: string;
     created_by: string;
     content: string;

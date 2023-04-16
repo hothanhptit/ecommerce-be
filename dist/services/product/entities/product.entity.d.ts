@@ -6,6 +6,7 @@ export declare class Product {
     status: number;
     productImages: string;
     summary?: string;
+    isFeatured?: number;
     price?: string;
     description?: string;
     descriptionImages?: string;

@@ -50,7 +50,7 @@ export class NewsService {
       ? { updatedAt: 'DESC' }
       : { updatedAt: 'ASC' };
 
-    const filterCate = filter.split(',')
+    const filterCate = filter.split(',');
     // provide builder to paginate
     const queryBuilder = this.newsRepo
       .createQueryBuilder('news')
@@ -74,13 +74,34 @@ export class NewsService {
       },
     });
   }
+  async findCategories(number: number) {
+    const data = await this.newsRepo
+      .createQueryBuilder('news')
+      .select('news.categoryName')
+      .where('news.categoryName is not null')
+      .distinct(true)
+      .take(number)
+      .execute();
 
-  findOne(id: number) {
-    return this.newsRepo.findOne({
+    if (!data) return [];
+    let res: string[] = [];
+    
+    data.forEach((element) => {
+      res.push(element.news_categoryName);
+    });
+
+    return res;
+  }
+
+  async findOne(id: number) {
+    const item = await this.newsRepo.findOne({
       where: {
         id: id,
       },
     });
+    if (!item) throw new NotFoundException();
+    item.image_path = JSON.parse(item.image_path);
+    return item;
   }
 
   async update(id: number, updateNewsDto: UpdateNewsDto, file: any) {

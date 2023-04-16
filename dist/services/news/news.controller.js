@@ -40,6 +40,9 @@ let NewsController = class NewsController {
     findRecent(take = 5) {
         return this.newsService.findRecently(take);
     }
+    findCategory(take = 5) {
+        return this.newsService.findCategories(take);
+    }
     findOne(id) {
         return this.newsService.findOne(+id);
     }
@@ -81,6 +84,14 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], NewsController.prototype, "findRecent", null);
+__decorate([
+    (0, common_1.Get)('/category'),
+    openapi.ApiResponse({ status: 200, type: [String] }),
+    __param(0, (0, common_1.Query)('take')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], NewsController.prototype, "findCategory", null);
 __decorate([
     (0, common_1.Get)(':id'),
     openapi.ApiResponse({ status: 200, type: require("./entities/news.entity").News }),

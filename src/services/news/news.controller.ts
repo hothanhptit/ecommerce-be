@@ -63,6 +63,10 @@ export class NewsController {
   findRecent(@Query('take') take: number = 5) {
     return this.newsService.findRecently(take);
   }
+  @Get('/category')
+  findCategory(@Query('take') take: number = 5) {
+    return this.newsService.findCategories(take);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

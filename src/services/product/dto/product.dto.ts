@@ -39,6 +39,8 @@ export class ProductDTO {
   // })
   productImages: string;
 
+  isFeatured: number;
+
   // @ApiProperty({ description: 'mo ta ngan gon' })
   @IsString()
   summary: string;

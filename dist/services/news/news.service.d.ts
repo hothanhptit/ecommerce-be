@@ -11,12 +11,14 @@ export declare class NewsService {
     findAll(): Promise<News[]>;
     getAll(options: IPaginationOptions, orderBy: string, filter: string): Promise<Pagination<News>>;
     findRecently(number: number): Promise<News[]>;
+    findCategories(number: number): Promise<string[]>;
     findOne(id: number): Promise<News>;
     update(id: number, updateNewsDto: UpdateNewsDto, file: any): Promise<{
         name: string;
         image_path: string;
         title: string;
         category: string;
+        categoryName: string;
         tags: string;
         created_by: string;
         content: string;

@@ -14,7 +14,7 @@ const openapi = require("@nestjs/swagger");
 const typeorm_1 = require("typeorm");
 let News = class News {
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => Number }, name: { required: true, type: () => String }, image_path: { required: true, type: () => String }, title: { required: true, type: () => String }, category: { required: true, type: () => String }, created_by: { required: true, type: () => String }, tags: { required: true, type: () => String }, content: { required: true, type: () => String }, created_at: { required: true, type: () => String }, updated_at: { required: true, type: () => String } };
+        return { id: { required: true, type: () => Number }, name: { required: true, type: () => String }, image_path: { required: true, type: () => String }, title: { required: true, type: () => String }, category: { required: true, type: () => String }, categoryName: { required: true, type: () => String }, created_by: { required: true, type: () => String }, tags: { required: true, type: () => String }, content: { required: true, type: () => String }, created_at: { required: true, type: () => String }, updated_at: { required: true, type: () => String } };
     }
 };
 __decorate([
@@ -37,6 +37,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], News.prototype, "category", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], News.prototype, "categoryName", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
