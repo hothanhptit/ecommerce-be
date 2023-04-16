@@ -48,7 +48,7 @@ export class ServicesController {
     if (banner) return banner;
     throw new NotFoundException();
   }
-
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
   update(
@@ -58,7 +58,7 @@ export class ServicesController {
   ) {
     return this.sService.update(id, updateBannerDto, file);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.sService.remove(id);

@@ -68,7 +68,7 @@ export class NewsController {
   findOne(@Param('id') id: string) {
     return this.newsService.findOne(+id);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
   update(
@@ -78,7 +78,7 @@ export class NewsController {
   ) {
     return this.newsService.update(+id, updateNewsDto, file);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.newsService.remove(+id);

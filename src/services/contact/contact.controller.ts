@@ -19,10 +19,12 @@ import {
   DefaultValuePipe,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { CreateMailDTO } from './dto/create-mail.dto';
 import { Contact } from './entities/contact.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 const nodemailer = require('nodemailer');
 
 @Controller('/api/v1/contact')
@@ -67,7 +69,7 @@ export class ContactController {
     this.mailRepo.save(mailDTO);
     return `Mail sent to ${mailDTO.to_email}!`;
   }
-
+  @UseGuards(JwtAuthGuard)
   @Get('/inbox')
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -89,7 +91,7 @@ export class ContactController {
       },
     );
   }
-
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createContact(@Body() contactDTO: CreateContactDto) {
     return this.contactService.create(contactDTO);
@@ -99,7 +101,7 @@ export class ContactController {
   async findOne() {
     return await this.contactService.findOne();
   }
-
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -107,7 +109,7 @@ export class ContactController {
   ) {
     return await this.contactService.update(+id, updateContactDto);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.contactService.remove(+id);

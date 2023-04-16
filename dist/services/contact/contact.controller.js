@@ -25,6 +25,7 @@ const common_1 = require("@nestjs/common");
 const contact_service_1 = require("./contact.service");
 const create_mail_dto_1 = require("./dto/create-mail.dto");
 const contact_entity_1 = require("./entities/contact.entity");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const nodemailer = require('nodemailer');
 let ContactController = class ContactController {
     constructor(contactService, contactRepo, mailRepo) {
@@ -95,6 +96,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ContactController.prototype, "create", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('/inbox'),
     openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Query)('page', new common_1.DefaultValuePipe(1), common_1.ParseIntPipe)),
@@ -104,6 +106,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ContactController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, (0, common_1.Body)()),
@@ -119,6 +122,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ContactController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)(':id'),
     openapi.ApiResponse({ status: 200, type: [require("./entities/contact.entity").Contact] }),
     __param(0, (0, common_1.Param)('id')),
@@ -128,6 +132,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ContactController.prototype, "update", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Delete)(':id'),
     openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)('id')),
