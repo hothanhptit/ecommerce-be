@@ -30,6 +30,9 @@ export class Product {
   @Column()
   summary?: string;
 
+  @Column({ nullable: true })
+  manufacturer?: string;
+
   @Column('tinyint', { nullable: true })
   isFeatured?: number;
 

@@ -69,6 +69,7 @@ let BannerService = class BannerService {
     }
     async findOne(id) {
         const banner = await this.bannerRepository.findOne({ where: { id: id } });
+        banner.image = JSON.parse(banner.image);
         return banner;
     }
     async update(id, updateBannerDto, file) {

@@ -1,4 +1,3 @@
-import { filter } from 'rxjs';
 import {
   Injectable,
   NotFoundException,
@@ -33,18 +32,31 @@ export class ProductsService {
     options: IPaginationOptions,
     orderBy: string,
     filter: string,
+    category: string,
   ): Promise<Pagination<Product>> {
-    if (filter) return this.searchProducts(options, orderBy, filter);
+    if (filter) return this.searchProductsBySlug(options, orderBy, filter);
     const orderDirection = orderBy
       ? { updatedAt: 'DESC' }
       : { updatedAt: 'ASC' };
 
     // provide builder to paginate
-    const queryBuilder = this.productRepository
-      .createQueryBuilder('prod')
-      .where('prod.status= :status', { status: 1 })
-      .orderBy('prod.updatedAt', 'DESC')
-      .cache('product', 30 * 1000);
+    let queryBuilder;
+    if (category) {
+      if (filter)
+        return this.searchProductsBySlug(options, orderBy, filter, category);
+      queryBuilder = this.productRepository
+        .createQueryBuilder('prod')
+        .where('prod.status= :status', { status: 1 })
+        .andWhere('prod.category= :cat', { cat: category })
+        .orderBy('prod.updatedAt', 'DESC')
+        .cache('product', 30 * 1000);
+    } else {
+      queryBuilder = this.productRepository
+        .createQueryBuilder('prod')
+        .where('prod.status= :status', { status: 1 })
+        .orderBy('prod.updatedAt', 'DESC')
+        .cache('product', 30 * 1000);
+    }
 
     const productsPage = await paginate<Product>(queryBuilder, options);
 
@@ -94,21 +106,32 @@ export class ProductsService {
     return productsPage;
   }
 
-  async searchProducts(
+  async searchProductsBySlug(
     options: IPaginationOptions,
     orderBy: string,
     filter: string,
+    category?: string,
   ): Promise<Pagination<Product>> {
     // provide builder to paginate
     const slug = removeVietnameseTones(filter);
-    const queryBuilder = this.productRepository
-      .createQueryBuilder('prod')
-      .where('prod.status= :status', { status: 1 })
-      .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
-      // .andWhere('MATCH(prod.slug) AGAINST (:slug IN BOOLEAN MODE)', { slug: slug })
-      .orderBy('prod.updatedAt', 'DESC')
-      .cache('product', 30 * 1000);
-    // console.log(queryBuilder.getSql());
+    let queryBuilder;
+    if (category) {
+      queryBuilder = this.productRepository
+        .createQueryBuilder('prod')
+        .where('prod.status= :status', { status: 1 })
+        .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
+        .andWhere('prod.category= :category', { category: category })
+        .orderBy('prod.updatedAt', 'DESC')
+        .cache('product', 30 * 1000);
+    } else {
+      queryBuilder = this.productRepository
+        .createQueryBuilder('prod')
+        .where('prod.status= :status', { status: 1 })
+        .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
+        // .andWhere('MATCH(prod.slug) AGAINST (:slug IN BOOLEAN MODE)', { slug: slug })
+        .orderBy('prod.updatedAt', 'DESC')
+        .cache('product', 30 * 1000);
+    }
     const productsPage = await paginate<Product>(queryBuilder, options);
 
     if (productsPage) {

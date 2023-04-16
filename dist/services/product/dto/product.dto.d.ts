@@ -4,6 +4,7 @@ export declare class ProductDTO {
     status: string;
     images: string;
     isFeatured: number;
+    manufacturer: number;
     summary: string;
     price: string;
     description: string;

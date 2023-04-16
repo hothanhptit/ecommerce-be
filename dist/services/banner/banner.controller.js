@@ -36,9 +36,6 @@ let BannerController = class BannerController {
         return await this.bannerService.getMainBanner();
     }
     async createMainBanner(req, file) {
-        console.log('====================================');
-        console.log(file);
-        console.log('====================================');
         return await this.bannerService.createMainBanner(file, req.user);
     }
     async findOne(id) {

@@ -1,26 +1,66 @@
-import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Category } from './entities/category.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CategoriesService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(
+    @InjectRepository(Category)
+    private catRepo: Repository<Category>,
+  ) {}
+  create(createCategoryDto: CreateCategoryDto, file, user) {
+    if (user.role == 'admin') {
+      let saveCat = Object.assign(new Category(), createCategoryDto);
+
+      saveCat.image = JSON.stringify(
+        process.env.HOST ||
+          'http://localhost:4000/' + file.path.replace('\\', '/'),
+      );
+
+      return this.catRepo.save(saveCat);
+    }
+    throw new UnauthorizedException();
   }
 
-  findAll() {
-    return `This action returns all categories`;
+  async findAll() {
+    const data = await this.catRepo.find();
+    if (!data) throw new NotFoundException();
+    data.forEach((element, idx) => {
+      data[idx].image = JSON.parse(element.image);
+    });
+    return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: number) {
+    const cat = await this.catRepo.findOne({ where: { id: id } });
+    cat.image = JSON.parse(cat.image);
+    return cat;
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto, file) {
+    const banner = await this.catRepo.findOne({ where: { id: id } });
+    if (banner) {
+      if (file)
+        updateCategoryDto.image = JSON.stringify(
+          process.env.HOST ||
+            'http://localhost:4000/' + file.path.replace('\\', '/'),
+        );
+      return await this.catRepo.save({
+        ...banner,
+        ...updateCategoryDto,
+      });
+    }
+    throw new NotFoundException();
   }
 
   remove(id: number) {
-    return `This action removes a #${id} category`;
+    return this.catRepo.delete(id);
   }
 }

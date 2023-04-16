@@ -26,13 +26,13 @@ let ProductsController = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
     }
-    async GetAll(page = 1, limit = 16, orderBy = 'created_at', filter = '') {
+    async GetAll(page = 1, limit = 16, orderBy = 'created_at', filter = '', cat = '') {
         limit = limit > 100 ? 100 : limit;
         return await this.productsService.getAll({
             page,
             limit,
             route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
-        }, orderBy, filter);
+        }, orderBy, filter, cat);
     }
     async getFeatured(page = 1, limit = 16, orderBy = 'created_at') {
         limit = limit > 100 ? 100 : limit;
@@ -62,8 +62,9 @@ __decorate([
     __param(1, (0, common_1.Query)('limit', new common_1.DefaultValuePipe(16), common_1.ParseIntPipe)),
     __param(2, (0, common_1.Query)('orderBy')),
     __param(3, (0, common_1.Query)('filter')),
+    __param(4, (0, common_1.Query)('categoryId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, String, String]),
+    __metadata("design:paramtypes", [Number, Number, String, String, String]),
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "GetAll", null);
 __decorate([

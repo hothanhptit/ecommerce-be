@@ -30,17 +30,30 @@ let ProductsService = class ProductsService {
         this.relatedProducts = relatedProducts;
         this.logging = new log4js_service_1.LogServices();
     }
-    async getAll(options, orderBy, filter) {
+    async getAll(options, orderBy, filter, category) {
         if (filter)
-            return this.searchProducts(options, orderBy, filter);
+            return this.searchProductsBySlug(options, orderBy, filter);
         const orderDirection = orderBy
             ? { updatedAt: 'DESC' }
             : { updatedAt: 'ASC' };
-        const queryBuilder = this.productRepository
-            .createQueryBuilder('prod')
-            .where('prod.status= :status', { status: 1 })
-            .orderBy('prod.updatedAt', 'DESC')
-            .cache('product', 30 * 1000);
+        let queryBuilder;
+        if (category) {
+            if (filter)
+                return this.searchProductsBySlug(options, orderBy, filter, category);
+            queryBuilder = this.productRepository
+                .createQueryBuilder('prod')
+                .where('prod.status= :status', { status: 1 })
+                .andWhere('prod.category= :cat', { cat: category })
+                .orderBy('prod.updatedAt', 'DESC')
+                .cache('product', 30 * 1000);
+        }
+        else {
+            queryBuilder = this.productRepository
+                .createQueryBuilder('prod')
+                .where('prod.status= :status', { status: 1 })
+                .orderBy('prod.updatedAt', 'DESC')
+                .cache('product', 30 * 1000);
+        }
         const productsPage = await (0, paginate_1.paginate)(queryBuilder, options);
         if (productsPage) {
             productsPage.items.forEach((item) => {
@@ -73,14 +86,26 @@ let ProductsService = class ProductsService {
         }
         return productsPage;
     }
-    async searchProducts(options, orderBy, filter) {
+    async searchProductsBySlug(options, orderBy, filter, category) {
         const slug = (0, fn_1.removeVietnameseTones)(filter);
-        const queryBuilder = this.productRepository
-            .createQueryBuilder('prod')
-            .where('prod.status= :status', { status: 1 })
-            .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
-            .orderBy('prod.updatedAt', 'DESC')
-            .cache('product', 30 * 1000);
+        let queryBuilder;
+        if (category) {
+            queryBuilder = this.productRepository
+                .createQueryBuilder('prod')
+                .where('prod.status= :status', { status: 1 })
+                .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
+                .andWhere('prod.category= :category', { category: category })
+                .orderBy('prod.updatedAt', 'DESC')
+                .cache('product', 30 * 1000);
+        }
+        else {
+            queryBuilder = this.productRepository
+                .createQueryBuilder('prod')
+                .where('prod.status= :status', { status: 1 })
+                .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
+                .orderBy('prod.updatedAt', 'DESC')
+                .cache('product', 30 * 1000);
+        }
         const productsPage = await (0, paginate_1.paginate)(queryBuilder, options);
         if (productsPage) {
             productsPage.items.forEach((item) => {

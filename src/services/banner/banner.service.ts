@@ -81,6 +81,7 @@ export class BannerService {
 
   async findOne(id: string): Promise<Banner | null> {
     const banner = await this.bannerRepository.findOne({ where: { id: id } });
+    banner.image = JSON.parse(banner.image)
     return banner;
   }
 

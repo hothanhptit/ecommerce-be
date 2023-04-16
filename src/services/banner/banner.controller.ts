@@ -53,9 +53,6 @@ export class BannerController {
     @Request() req,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log('====================================');
-    console.log(file);
-    console.log('====================================');
     return await this.bannerService.createMainBanner(file, req.user);
   }
 
