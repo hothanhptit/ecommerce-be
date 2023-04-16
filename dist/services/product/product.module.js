@@ -7,6 +7,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductModule = void 0;
+const relatedProduct_entity_1 = require("./entities/relatedProduct.entity");
+const multer_config_1 = require("./../../config/multer.config");
+const multer_1 = require("@nestjs/platform-express/multer");
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const product_entity_1 = require("./entities/product.entity");
@@ -16,7 +19,10 @@ let ProductModule = class ProductModule {
 };
 ProductModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([product_entity_1.Product])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([product_entity_1.Product, relatedProduct_entity_1.RelatedProduct]),
+            multer_1.MulterModule.register(multer_config_1.multerOptions),
+        ],
         providers: [products_service_1.ProductsService],
         controllers: [products_controller_1.ProductsController],
     })

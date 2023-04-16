@@ -1,26 +1,43 @@
-import { Injectable } from '@nestjs/common';
-import { CreateOtherDto } from './dto/create-other.dto';
-import { UpdateOtherDto } from './dto/update-other.dto';
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { UpdateMenuDto } from './dto/update-menu.dto';
+import { Menu } from './dto/menu.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
 @Injectable()
 export class OthersService {
-  create(createOtherDto: CreateOtherDto) {
-    return 'This action adds a new other';
+  constructor(
+    @InjectRepository(Menu)
+    private menuRepo: Repository<Menu>,
+  ) {}
+  create(menuDto: Menu) {
+    if (menuDto.jsonMenu) menuDto.jsonMenu = JSON.stringify(menuDto.jsonMenu);
+    return this.menuRepo.save(menuDto);
   }
 
-  findAll() {
-    return `This action returns all others`;
+  async findAll() {
+    return await this.menuRepo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} other`;
+  async findOne(id: number) {
+    const menu = await this.menuRepo.findOne({
+      where: { id: id },
+      cache: true,
+      // cache: {
+      //   id: 'menu',
+      //   milliseconds: 10000,
+      // },
+    });
+    if (!menu) throw new NotFoundException();
+    if (!!menu.jsonMenu) menu.jsonMenu = JSON.parse(menu.jsonMenu);
+    return menu;
   }
 
-  update(id: number, updateOtherDto: UpdateOtherDto) {
-    return `This action updates a #${id} other`;
+  async update(id: number, menuDto: UpdateMenuDto) {
+    if (menuDto.jsonMenu) menuDto.jsonMenu = JSON.stringify(menuDto.jsonMenu);
+    const menu = await this.menuRepo.findOne({ where: { id: id } });
+    return this.menuRepo.save({ ...menu, ...menuDto });
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} other`;
+  async remove(id: number) {
+    return (await this.menuRepo.delete(id)).affected > 0;
   }
 }

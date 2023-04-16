@@ -70,13 +70,12 @@ export class LogServices {
         everything: {
           type: 'dateFile',
           filename: 'logs/log.log',
-          pattern: '.yyyy-MM-dd-hh',
-          compress: true,
+          pattern: 'yyyy-MM-dd-hh',
+          compress: false,
         },
       },
       categories: {
         default: { appenders: ['everything'], level: 'debug' },
-        // default: { appenders: ['everything'], level: 'debug' },
       },
     });
   }

@@ -11,29 +11,47 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductDTO = void 0;
 const openapi = require("@nestjs/swagger");
-const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class ProductDTO {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, file: { required: true, type: () => Object } };
+        return { name: { required: true, type: () => String }, slug: { required: true, type: () => String }, status: { required: true, type: () => String }, productImages: { required: true, type: () => String }, summary: { required: true, type: () => String }, price: { required: true, type: () => String }, description: { required: true, type: () => String }, descriptionImages: { required: true, type: () => String }, catalogue: { required: true, type: () => String }, specs: { required: true, type: () => String }, specsImages: { required: true, type: () => String }, detailsDescription: { required: true, type: () => String }, categoryId: { required: true, type: () => String }, type: { required: true, type: () => String } };
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'name', description: 'name' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ProductDTO.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        type: 'file',
-        properties: {
-            file: {
-                type: 'string',
-                format: 'binary',
-            },
-        },
-    }),
-    __metadata("design:type", Object)
-], ProductDTO.prototype, "file", void 0);
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "summary", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "price", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "description", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "specs", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "detailsDescription", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "categoryId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "type", void 0);
 exports.ProductDTO = ProductDTO;
 //# sourceMappingURL=product.dto.js.map
