@@ -34,12 +34,18 @@ let BannerService = class BannerService {
         throw new common_1.UnauthorizedException();
     }
     async findAll() {
-        return await this.bannerRepository.find({
+        const data = await this.bannerRepository.find({
             take: 5,
             order: {
                 order: 'ASC',
             },
         });
+        if (!data)
+            throw new common_1.NotFoundException();
+        data.forEach((element, idx) => {
+            data[idx].image = JSON.parse(element.image);
+        });
+        return data;
     }
     async findOne(id) {
         const banner = await this.bannerRepository.findOne({ where: { id: id } });

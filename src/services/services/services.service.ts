@@ -28,7 +28,7 @@ export class ServicesService {
       if (user.role == 'admin') {
         let saveBanner = Object.assign(new Service(), createBannerDto);
 
-         saveBanner.image = JSON.stringify(
+        saveBanner.image = JSON.stringify(
           process.env.HOST ||
             'http://localhost:4000/' + file.path.replace('\\', '/'),
         );
@@ -44,11 +44,16 @@ export class ServicesService {
   }
 
   async findAll() {
-    return await this.sRepository.find({
+    const data = await this.sRepository.find({
       order: {
         order: 'ASC',
       },
     });
+    if (!data) throw new NotFoundException();
+    data.forEach((element, idx) => {
+      data[idx].image = JSON.parse(element.image);
+    });
+    return data;
   }
 
   async findOne(id: string): Promise<Service | null> {

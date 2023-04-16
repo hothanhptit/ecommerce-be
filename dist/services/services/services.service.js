@@ -39,11 +39,17 @@ let ServicesService = class ServicesService {
         }
     }
     async findAll() {
-        return await this.sRepository.find({
+        const data = await this.sRepository.find({
             order: {
                 order: 'ASC',
             },
         });
+        if (!data)
+            throw new common_1.NotFoundException();
+        data.forEach((element, idx) => {
+            data[idx].image = JSON.parse(element.image);
+        });
+        return data;
     }
     async findOne(id) {
         const banner = await this.sRepository.findOne({ where: { id: id } });

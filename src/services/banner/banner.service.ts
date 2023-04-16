@@ -40,12 +40,17 @@ export class BannerService {
   }
 
   async findAll() {
-    return await this.bannerRepository.find({
+    const data = await this.bannerRepository.find({
       take: 5,
       order: {
         order: 'ASC',
       },
     });
+    if (!data) throw new NotFoundException();
+    data.forEach((element, idx) => {
+      data[idx].image = JSON.parse(element.image);
+    });
+    return data;
   }
 
   async findOne(id: string): Promise<Banner | null> {
