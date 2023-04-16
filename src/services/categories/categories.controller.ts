@@ -18,7 +18,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('api/v1/caterogies')
+@Controller('api/v1/categories')
 @ApiTags('caterogies')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}

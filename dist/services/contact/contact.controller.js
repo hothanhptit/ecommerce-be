@@ -26,6 +26,7 @@ const contact_service_1 = require("./contact.service");
 const create_mail_dto_1 = require("./dto/create-mail.dto");
 const contact_entity_1 = require("./entities/contact.entity");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const swagger_1 = require("@nestjs/swagger");
 const nodemailer = require('nodemailer');
 let ContactController = class ContactController {
     constructor(contactService, contactRepo, mailRepo) {
@@ -142,6 +143,7 @@ __decorate([
 ], ContactController.prototype, "remove", null);
 ContactController = __decorate([
     (0, common_1.Controller)('/api/v1/contact'),
+    (0, swagger_1.ApiTags)('contact'),
     __param(1, (0, typeorm_2.InjectRepository)(contact_entity_1.Contact)),
     __param(2, (0, typeorm_2.InjectRepository)(mail_entity_1.Mail)),
     __metadata("design:paramtypes", [contact_service_1.ContactService,

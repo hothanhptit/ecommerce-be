@@ -25,9 +25,11 @@ import { ContactService } from './contact.service';
 import { CreateMailDTO } from './dto/create-mail.dto';
 import { Contact } from './entities/contact.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 const nodemailer = require('nodemailer');
 
 @Controller('/api/v1/contact')
+@ApiTags('contact')
 export class ContactController {
   constructor(
     private readonly contactService: ContactService,

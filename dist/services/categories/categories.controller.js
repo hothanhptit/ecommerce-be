@@ -90,7 +90,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CategoriesController.prototype, "remove", null);
 CategoriesController = __decorate([
-    (0, common_1.Controller)('api/v1/caterogies'),
+    (0, common_1.Controller)('api/v1/categories'),
     (0, dist_1.ApiTags)('caterogies'),
     __metadata("design:paramtypes", [categories_service_1.CategoriesService])
 ], CategoriesController);
