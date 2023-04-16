@@ -1,7 +1,7 @@
 export declare class News {
     id: number;
     name: string;
-    image_path: string;
+    image: string;
     title: string;
     category: string;
     categoryName: string;

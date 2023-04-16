@@ -25,7 +25,7 @@ export class NewsService {
   create(createNewsDto: CreateNewsDto, file: any, user: User) {
     if (user.role == 'admin') {
       if (file) {
-        createNewsDto.image_path = JSON.stringify(
+        createNewsDto.image = JSON.stringify(
           process.env.HOST ||
             'http://localhost:4000/' + file.path.replace('\\', '/'),
         );
@@ -61,7 +61,7 @@ export class NewsService {
     const newsPage = await paginate<News>(queryBuilder, options);
     if (newsPage) {
       newsPage.items.forEach((item) => {
-        item.image_path = JSON.parse(item.image_path);
+        item.image = JSON.parse(item.image);
       });
     }
     return newsPage;
@@ -100,13 +100,13 @@ export class NewsService {
       },
     });
     if (!item) throw new NotFoundException();
-    item.image_path = JSON.parse(item.image_path);
+    item.image = JSON.parse(item.image);
     return item;
   }
 
   async update(id: number, updateNewsDto: UpdateNewsDto, file: any) {
     if (file) {
-      updateNewsDto.image_path = file.path;
+      updateNewsDto.image = file.path;
     }
     const oldData = await this.newsRepo.findOne({
       where: {

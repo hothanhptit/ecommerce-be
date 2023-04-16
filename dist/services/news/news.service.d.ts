@@ -15,7 +15,7 @@ export declare class NewsService {
     findOne(id: number): Promise<News>;
     update(id: number, updateNewsDto: UpdateNewsDto, file: any): Promise<{
         name: string;
-        image_path: string;
+        image: string;
         title: string;
         category: string;
         categoryName: string;

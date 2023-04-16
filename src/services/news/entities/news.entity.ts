@@ -12,7 +12,7 @@ export class News {
   @Column()
   name: string;
   @Column()
-  image_path: string;
+  image: string;
   @Column()
   title: string;
   @Column()

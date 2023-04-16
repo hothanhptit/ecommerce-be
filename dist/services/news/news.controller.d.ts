@@ -14,7 +14,7 @@ export declare class NewsController {
     findOne(id: string): Promise<News>;
     update(id: string, updateNewsDto: UpdateNewsDto, file: Express.Multer.File): Promise<{
         name: string;
-        image_path: string;
+        image: string;
         title: string;
         category: string;
         categoryName: string;

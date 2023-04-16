@@ -25,7 +25,7 @@ let NewsService = class NewsService {
     create(createNewsDto, file, user) {
         if (user.role == 'admin') {
             if (file) {
-                createNewsDto.image_path = JSON.stringify(process.env.HOST ||
+                createNewsDto.image = JSON.stringify(process.env.HOST ||
                     'http://localhost:4000/' + file.path.replace('\\', '/'));
             }
             console.log(user);
@@ -49,7 +49,7 @@ let NewsService = class NewsService {
         const newsPage = await (0, nestjs_typeorm_paginate_1.paginate)(queryBuilder, options);
         if (newsPage) {
             newsPage.items.forEach((item) => {
-                item.image_path = JSON.parse(item.image_path);
+                item.image = JSON.parse(item.image);
             });
         }
         return newsPage;
@@ -86,12 +86,12 @@ let NewsService = class NewsService {
         });
         if (!item)
             throw new common_1.NotFoundException();
-        item.image_path = JSON.parse(item.image_path);
+        item.image = JSON.parse(item.image);
         return item;
     }
     async update(id, updateNewsDto, file) {
         if (file) {
-            updateNewsDto.image_path = file.path;
+            updateNewsDto.image = file.path;
         }
         const oldData = await this.newsRepo.findOne({
             where: {
