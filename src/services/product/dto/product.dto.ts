@@ -16,10 +16,22 @@ export class ProductDTO {
   isFeatured: number;
 
   @IsString()
-  manufacturer: number;
+  manufacturer: string;
+
+  @IsString()
+  model: string;
+
+  @IsString()
+  origin: string;
+
+  @IsString()
+  warranty: string;
 
   @IsString()
   summary: string;
+
+  @IsString()
+  code: string;
 
   @IsString()
   price: string;
@@ -41,7 +53,10 @@ export class ProductDTO {
 
   @IsString()
   categoryId: string;
-  
+
   @IsString()
   type: string;
+
+  @IsString()
+  rating?: string;
 }

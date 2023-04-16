@@ -4,8 +4,12 @@ export declare class ProductDTO {
     status: string;
     images: string;
     isFeatured: number;
-    manufacturer: number;
+    manufacturer: string;
+    model: string;
+    origin: string;
+    warranty: string;
     summary: string;
+    code: string;
     price: string;
     description: string;
     descriptionImages: string;
@@ -15,4 +19,5 @@ export declare class ProductDTO {
     detailsDescription: string;
     categoryId: string;
     type: string;
+    rating?: string;
 }

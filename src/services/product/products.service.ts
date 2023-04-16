@@ -15,6 +15,8 @@ import { LogServices } from './../log4js/log4js.service';
 import { ProductDTO } from './dto/product.dto';
 import { Product } from './entities/product.entity';
 import { RelatedProduct } from './entities/relatedProduct.entity';
+import { ProductInfoDTO } from './dto/product-info.dto';
+import { ProductInfo } from './entities/product-info.entity';
 
 export enum Order {}
 @Injectable()
@@ -24,6 +26,8 @@ export class ProductsService {
     private productRepository: Repository<Product>,
     @InjectRepository(RelatedProduct)
     private relatedProducts: Repository<RelatedProduct>,
+    @InjectRepository(ProductInfo)
+    private productInfoRepo: Repository<ProductInfo>,
   ) {}
 
   private logging = new LogServices();
@@ -34,7 +38,6 @@ export class ProductsService {
     filter: string,
     category: string,
   ): Promise<Pagination<Product>> {
-    if (filter) return this.searchProductsBySlug(options, orderBy, filter);
     const orderDirection = orderBy
       ? { updatedAt: 'DESC' }
       : { updatedAt: 'ASC' };
@@ -58,8 +61,6 @@ export class ProductsService {
         .cache('product', 30 * 1000);
     }
 
-    const productsPage = await paginate<Product>(queryBuilder, options);
-
     // or get all through where options
     // const productsPage = await paginate<Product>(
     //   this.productRepository,
@@ -72,10 +73,12 @@ export class ProductsService {
     //     cache: true,
     //   },
     // );
+    if (filter) return this.searchProductsBySlug(options, orderBy, filter);
+    const productsPage = await paginate<Product>(queryBuilder, options);
     if (productsPage) {
       productsPage.items.forEach((item) => {
         if (item.images) item.images = JSON.parse(item.images);
-        if (item.catalogue) item.catalogue = JSON.parse(item.catalogue);
+        // if (item.info) item.info.catalogue = JSON.parse(item.info.catalogue);
       });
     }
     return productsPage;
@@ -100,7 +103,7 @@ export class ProductsService {
     if (productsPage) {
       productsPage.items.forEach((item) => {
         if (item.images) item.images = JSON.parse(item.images);
-        if (item.catalogue) item.catalogue = JSON.parse(item.catalogue);
+        // if (item.info) item.info.catalogue = JSON.parse(item.info.catalogue);
       });
     }
     return productsPage;
@@ -137,7 +140,7 @@ export class ProductsService {
     if (productsPage) {
       productsPage.items.forEach((item) => {
         if (item.images) item.images = JSON.parse(item.images);
-        if (item.catalogue) item.catalogue = JSON.parse(item.catalogue);
+        // if (item.info) item.info.catalogue = JSON.parse(item.info.catalogue);
       });
     }
     return productsPage;
@@ -152,9 +155,27 @@ export class ProductsService {
     try {
       if (user.role == 'admin') {
         let saveProduct = Object.assign(new Product(), productDTO);
+        let saveProductInfo = new ProductInfo();
+        if (files.catalogue) {
+          const catalogue = [];
+          for (const [index, file] of files.catalogue.entries()) {
+            catalogue[index] =
+              process.env.HOST ||
+              'http://localhost:4000/' + file.path.replace('\\', '/');
+          }
+          saveProductInfo.catalogue = JSON.stringify(catalogue);
+        }
+
+        // saveProductInfo.catalogue = productDTO.catalogue || null;
+        saveProductInfo.code = productDTO.code || null;
+        saveProductInfo.manufacturer = productDTO.manufacturer || null;
+        saveProductInfo.model = productDTO.model || null;
+        saveProductInfo.origin = productDTO.origin || null;
+        saveProductInfo.warranty = productDTO.warranty || null;
+        saveProductInfo.rating = productDTO.rating || null;
 
         if (files.images) {
-          const images = {};
+          const images = [];
           for (const [index, file] of files.images.entries()) {
             images[index] =
               process.env.HOST ||
@@ -164,7 +185,7 @@ export class ProductsService {
         }
 
         if (files.descriptionImages) {
-          const descriptionImages = {};
+          const descriptionImages = [];
           for (const [index, file] of files.descriptionImages.entries()) {
             descriptionImages[index] =
               process.env.HOST ||
@@ -174,22 +195,13 @@ export class ProductsService {
         }
 
         if (files.specsImages) {
-          const specsImages = {};
+          const specsImages = [];
           for (const [index, file] of files.specsImages.entries()) {
             specsImages[index] =
               process.env.HOST ||
               'http://localhost:4000/' + file.path.replace('\\', '/');
           }
           saveProduct.specsImages = JSON.stringify(specsImages);
-        }
-        if (files.catalogue) {
-          const catalogue = {};
-          for (const [index, file] of files.catalogue.entries()) {
-            catalogue[index] =
-              process.env.HOST ||
-              'http://localhost:4000/' + file.path.replace('\\', '/');
-          }
-          saveProduct.catalogue = JSON.stringify(catalogue);
         }
 
         if (!!relatedProduct) {
@@ -212,6 +224,10 @@ export class ProductsService {
           }
         }
         saveProduct.slug = removeVietnameseTones(productDTO.name);
+        const prodInfo = await this.productInfoRepo.manager.save(
+          saveProductInfo,
+        );
+        saveProduct.info = prodInfo;
         const res = await this.productRepository.manager.save(saveProduct);
         return res;
       }
@@ -228,20 +244,24 @@ export class ProductsService {
       where: { id: productId },
       relations: {
         related: true,
+        info: true,
       },
       cache: false,
     });
 
     if (data) {
       data.images = JSON.parse(data.images);
-      if (data.related.length) {
+      if (data?.related?.length) {
         data.related.forEach((element, idx) => {
           data.related[idx].images = JSON.parse(element.images);
         });
       }
-      if (data.catalogue) {
-        data.catalogue = JSON.parse(data.catalogue);
+      if (data?.info?.catalogue?.length) {
+        data.info.catalogue = JSON.parse(data.info.catalogue);
       }
+      // if (data.catalogue) {
+      //   data.catalogue = JSON.parse(data.catalogue);
+      // }
 
       return data;
     }
@@ -252,30 +272,49 @@ export class ProductsService {
     id: string,
     productDTO: ProductDTO,
     relatedProduct: string | null,
-    files: any,
+    images: any,
+    catalogue: any,
     user: User,
   ): Promise<Product> {
     try {
       if (user.role == 'admin') {
         let saveProduct = Object.assign(new Product(), productDTO);
 
+        let saveProductInfo = new ProductInfo();
+
+        if (catalogue) {
+          for (const [index, file] of catalogue.entries()) {
+            catalogue[index] =
+              process.env.HOST ||
+              'http://localhost:4000/' + file.path.replace('\\', '/');
+          }
+          saveProductInfo.catalogue = JSON.stringify(catalogue);
+        }
+        // saveProductInfo.catalogue = productDTO.catalogue || null;
+        saveProductInfo.code = productDTO.code || null;
+        saveProductInfo.manufacturer = productDTO.manufacturer || null;
+        saveProductInfo.model = productDTO.model || null;
+        saveProductInfo.origin = productDTO.origin || null;
+        saveProductInfo.warranty = productDTO.warranty || null;
+        saveProductInfo.rating = productDTO.rating || null;
+
         const product = await this.productRepository.findOne({
           where: { id: id },
           relations: {
             related: true,
+            info: true
           },
         });
 
-        if (files.images) {
-          const images = {};
-          for (const [index, file] of files.images.entries()) {
+        if (images) {
+          for (const [index, file] of images.entries()) {
             images[index] =
               process.env.HOST ||
               'http://localhost:4000/' + file.path.replace('\\', '/');
           }
-
           saveProduct.images = JSON.stringify(images);
         }
+
         if (!!relatedProduct) {
           // saveProduct.related = [...product.related];
           saveProduct.related = [];
@@ -296,6 +335,11 @@ export class ProductsService {
             }
           }
         }
+
+        const prodInfo = await this.productInfoRepo.manager.save(
+          saveProductInfo,
+        );
+        saveProduct.info = prodInfo;
 
         return await this.productRepository.save({
           ...product,

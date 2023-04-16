@@ -8,10 +8,11 @@ import { LoggingModule } from './../log4js/logging.module';
 import { Product } from './entities/product.entity';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
+import { ProductInfo } from './entities/product-info.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, RelatedProduct]),
+    TypeOrmModule.forFeature([Product, RelatedProduct, ProductInfo]),
     MulterModule.register(multerOptions),
   ],
   providers: [ProductsService],

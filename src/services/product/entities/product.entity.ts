@@ -1,3 +1,4 @@
+import { ProductInfo } from './product-info.entity';
 import { RelatedProduct } from './relatedProduct.entity';
 import {
   Column,
@@ -7,6 +8,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   Index,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -30,9 +33,6 @@ export class Product {
   @Column()
   summary?: string;
 
-  @Column({ nullable: true })
-  manufacturer?: string;
-
   @Column('tinyint', { nullable: true })
   isFeatured?: number;
 
@@ -45,8 +45,6 @@ export class Product {
   @Column({ nullable: true })
   descriptionImages?: string;
   // pdf file
-  @Column()
-  catalogue?: string;
 
   @Column()
   specs?: string;
@@ -66,6 +64,10 @@ export class Product {
   // @Column({ nullable: true })
   @OneToMany(() => RelatedProduct, (related) => related.product)
   related: RelatedProduct[];
+
+  @OneToOne(() => ProductInfo)
+  @JoinColumn()
+  info: ProductInfo;
 
   @CreateDateColumn()
   createdAt: string;

@@ -32,6 +32,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ProductDTO } from './dto/product.dto';
 import { Product } from './entities/product.entity';
 import { ProductsService } from './products.service';
+import { ProductInfoDTO } from './dto/product-info.dto';
 @ApiTags('products')
 @Controller('api/v1/products')
 export class ProductsController {
@@ -54,7 +55,7 @@ export class ProductsController {
       },
       orderBy,
       filter,
-      cat
+      cat,
     );
   }
   @Get('/featured')
@@ -68,7 +69,9 @@ export class ProductsController {
       {
         page,
         limit,
-        route: process.env.host || 'http://localhost:4000' + '/api/v1/products/featured',
+        route:
+          process.env.host ||
+          'http://localhost:4000' + '/api/v1/products/featured',
       },
       orderBy,
     );
@@ -166,7 +169,10 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(
-    FileFieldsInterceptor([{ name: 'images', maxCount: 5 }]),
+    FileFieldsInterceptor([
+      { name: 'images', maxCount: 5 },
+      { name: 'catalogue', maxCount: 5 },
+    ]),
   )
   async Update(
     @Param() id: any,
@@ -174,6 +180,7 @@ export class ProductsController {
     @UploadedFiles()
     files: {
       images?: Express.Multer.File[];
+      catalogue?: Express.Multer.File[];
     },
     @Request() req,
   ): Promise<Product> {
@@ -181,10 +188,12 @@ export class ProductsController {
       id.id,
       product,
       req.body.related,
-      files,
+      files.images,
+      files.catalogue,
       req.user,
     );
   }
+
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async Delete(@Param() id: number, @Request() req): Promise<DeleteResult> {

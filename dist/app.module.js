@@ -36,6 +36,7 @@ const product_module_1 = require("./services/product/product.module");
 const services_module_1 = require("./services/services/services.module");
 const services_entity_1 = require("./services/services/entities/services.entity");
 const main_banner_entiy_1 = require("./services/banner/entities/main-banner.entiy");
+const product_info_entity_1 = require("./services/product/entities/product-info.entity");
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -74,7 +75,8 @@ AppModule = __decorate([
                     contact_entity_1.Contact,
                     mail_entity_1.Mail,
                     services_entity_1.Service,
-                    main_banner_entiy_1.MainBanner
+                    main_banner_entiy_1.MainBanner,
+                    product_info_entity_1.ProductInfo
                 ],
                 synchronize: true,
                 cache: {

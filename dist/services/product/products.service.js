@@ -21,18 +21,18 @@ const typeorm_2 = require("typeorm");
 const log4js_service_1 = require("./../log4js/log4js.service");
 const product_entity_1 = require("./entities/product.entity");
 const relatedProduct_entity_1 = require("./entities/relatedProduct.entity");
+const product_info_entity_1 = require("./entities/product-info.entity");
 var Order;
 (function (Order) {
 })(Order = exports.Order || (exports.Order = {}));
 let ProductsService = class ProductsService {
-    constructor(productRepository, relatedProducts) {
+    constructor(productRepository, relatedProducts, productInfoRepo) {
         this.productRepository = productRepository;
         this.relatedProducts = relatedProducts;
+        this.productInfoRepo = productInfoRepo;
         this.logging = new log4js_service_1.LogServices();
     }
     async getAll(options, orderBy, filter, category) {
-        if (filter)
-            return this.searchProductsBySlug(options, orderBy, filter);
         const orderDirection = orderBy
             ? { updatedAt: 'DESC' }
             : { updatedAt: 'ASC' };
@@ -54,13 +54,13 @@ let ProductsService = class ProductsService {
                 .orderBy('prod.updatedAt', 'DESC')
                 .cache('product', 30 * 1000);
         }
+        if (filter)
+            return this.searchProductsBySlug(options, orderBy, filter);
         const productsPage = await (0, paginate_1.paginate)(queryBuilder, options);
         if (productsPage) {
             productsPage.items.forEach((item) => {
                 if (item.images)
                     item.images = JSON.parse(item.images);
-                if (item.catalogue)
-                    item.catalogue = JSON.parse(item.catalogue);
             });
         }
         return productsPage;
@@ -80,8 +80,6 @@ let ProductsService = class ProductsService {
             productsPage.items.forEach((item) => {
                 if (item.images)
                     item.images = JSON.parse(item.images);
-                if (item.catalogue)
-                    item.catalogue = JSON.parse(item.catalogue);
             });
         }
         return productsPage;
@@ -111,8 +109,6 @@ let ProductsService = class ProductsService {
             productsPage.items.forEach((item) => {
                 if (item.images)
                     item.images = JSON.parse(item.images);
-                if (item.catalogue)
-                    item.catalogue = JSON.parse(item.catalogue);
             });
         }
         return productsPage;
@@ -121,8 +117,24 @@ let ProductsService = class ProductsService {
         try {
             if (user.role == 'admin') {
                 let saveProduct = Object.assign(new product_entity_1.Product(), productDTO);
+                let saveProductInfo = new product_info_entity_1.ProductInfo();
+                if (files.catalogue) {
+                    const catalogue = [];
+                    for (const [index, file] of files.catalogue.entries()) {
+                        catalogue[index] =
+                            process.env.HOST ||
+                                'http://localhost:4000/' + file.path.replace('\\', '/');
+                    }
+                    saveProductInfo.catalogue = JSON.stringify(catalogue);
+                }
+                saveProductInfo.code = productDTO.code || null;
+                saveProductInfo.manufacturer = productDTO.manufacturer || null;
+                saveProductInfo.model = productDTO.model || null;
+                saveProductInfo.origin = productDTO.origin || null;
+                saveProductInfo.warranty = productDTO.warranty || null;
+                saveProductInfo.rating = productDTO.rating || null;
                 if (files.images) {
-                    const images = {};
+                    const images = [];
                     for (const [index, file] of files.images.entries()) {
                         images[index] =
                             process.env.HOST ||
@@ -131,7 +143,7 @@ let ProductsService = class ProductsService {
                     saveProduct.images = JSON.stringify(images);
                 }
                 if (files.descriptionImages) {
-                    const descriptionImages = {};
+                    const descriptionImages = [];
                     for (const [index, file] of files.descriptionImages.entries()) {
                         descriptionImages[index] =
                             process.env.HOST ||
@@ -140,22 +152,13 @@ let ProductsService = class ProductsService {
                     saveProduct.descriptionImages = JSON.stringify(descriptionImages);
                 }
                 if (files.specsImages) {
-                    const specsImages = {};
+                    const specsImages = [];
                     for (const [index, file] of files.specsImages.entries()) {
                         specsImages[index] =
                             process.env.HOST ||
                                 'http://localhost:4000/' + file.path.replace('\\', '/');
                     }
                     saveProduct.specsImages = JSON.stringify(specsImages);
-                }
-                if (files.catalogue) {
-                    const catalogue = {};
-                    for (const [index, file] of files.catalogue.entries()) {
-                        catalogue[index] =
-                            process.env.HOST ||
-                                'http://localhost:4000/' + file.path.replace('\\', '/');
-                    }
-                    saveProduct.catalogue = JSON.stringify(catalogue);
                 }
                 if (!!relatedProduct) {
                     saveProduct.related = [];
@@ -175,6 +178,8 @@ let ProductsService = class ProductsService {
                     }
                 }
                 saveProduct.slug = (0, fn_1.removeVietnameseTones)(productDTO.name);
+                const prodInfo = await this.productInfoRepo.manager.save(saveProductInfo);
+                saveProduct.info = prodInfo;
                 const res = await this.productRepository.manager.save(saveProduct);
                 return res;
             }
@@ -188,40 +193,57 @@ let ProductsService = class ProductsService {
         }
     }
     async getOne(productId) {
+        var _a, _b, _c;
         const data = await this.productRepository.findOne({
             where: { id: productId },
             relations: {
                 related: true,
+                info: true,
             },
             cache: false,
         });
         if (data) {
             data.images = JSON.parse(data.images);
-            if (data.related.length) {
+            if ((_a = data === null || data === void 0 ? void 0 : data.related) === null || _a === void 0 ? void 0 : _a.length) {
                 data.related.forEach((element, idx) => {
                     data.related[idx].images = JSON.parse(element.images);
                 });
             }
-            if (data.catalogue) {
-                data.catalogue = JSON.parse(data.catalogue);
+            if ((_c = (_b = data === null || data === void 0 ? void 0 : data.info) === null || _b === void 0 ? void 0 : _b.catalogue) === null || _c === void 0 ? void 0 : _c.length) {
+                data.info.catalogue = JSON.parse(data.info.catalogue);
             }
             return data;
         }
         throw new common_1.NotFoundException();
     }
-    async update(id, productDTO, relatedProduct, files, user) {
+    async update(id, productDTO, relatedProduct, images, catalogue, user) {
         try {
             if (user.role == 'admin') {
                 let saveProduct = Object.assign(new product_entity_1.Product(), productDTO);
+                let saveProductInfo = new product_info_entity_1.ProductInfo();
+                if (catalogue) {
+                    for (const [index, file] of catalogue.entries()) {
+                        catalogue[index] =
+                            process.env.HOST ||
+                                'http://localhost:4000/' + file.path.replace('\\', '/');
+                    }
+                    saveProductInfo.catalogue = JSON.stringify(catalogue);
+                }
+                saveProductInfo.code = productDTO.code || null;
+                saveProductInfo.manufacturer = productDTO.manufacturer || null;
+                saveProductInfo.model = productDTO.model || null;
+                saveProductInfo.origin = productDTO.origin || null;
+                saveProductInfo.warranty = productDTO.warranty || null;
+                saveProductInfo.rating = productDTO.rating || null;
                 const product = await this.productRepository.findOne({
                     where: { id: id },
                     relations: {
                         related: true,
+                        info: true
                     },
                 });
-                if (files.images) {
-                    const images = {};
-                    for (const [index, file] of files.images.entries()) {
+                if (images) {
+                    for (const [index, file] of images.entries()) {
                         images[index] =
                             process.env.HOST ||
                                 'http://localhost:4000/' + file.path.replace('\\', '/');
@@ -245,6 +267,8 @@ let ProductsService = class ProductsService {
                         }
                     }
                 }
+                const prodInfo = await this.productInfoRepo.manager.save(saveProductInfo);
+                saveProduct.info = prodInfo;
                 return await this.productRepository.save(Object.assign(Object.assign({}, product), saveProduct));
             }
             this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
@@ -277,7 +301,9 @@ ProductsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(product_entity_1.Product)),
     __param(1, (0, typeorm_1.InjectRepository)(relatedProduct_entity_1.RelatedProduct)),
+    __param(2, (0, typeorm_1.InjectRepository)(product_info_entity_1.ProductInfo)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository])
 ], ProductsService);
 exports.ProductsService = ProductsService;

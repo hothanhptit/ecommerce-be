@@ -18,6 +18,7 @@ export declare class ProductsController {
     GetOne(id: any): Promise<Product>;
     Update(id: any, product: ProductDTO, files: {
         images?: Express.Multer.File[];
+        catalogue?: Express.Multer.File[];
     }, req: any): Promise<Product>;
     Delete(id: number, req: any): Promise<DeleteResult>;
 }

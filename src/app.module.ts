@@ -29,6 +29,7 @@ import { ProductModule } from './services/product/product.module';
 import { ServicesModule } from './services/services/services.module';
 import { Service } from './services/services/entities/services.entity';
 import { MainBanner } from './services/banner/entities/main-banner.entiy';
+import { ProductInfo } from './services/product/entities/product-info.entity';
 const nodemailer = require('nodemailer');
 // import { CartModule } from './services/cart/cart.module';
 // import { OrderModule } from './services/order/order.module';
@@ -73,7 +74,8 @@ const transporter = nodemailer.createTransport({
         Contact,
         Mail,
         Service,
-        MainBanner
+        MainBanner,
+        ProductInfo
       ],
       synchronize: true,
       cache: {

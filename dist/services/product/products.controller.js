@@ -39,7 +39,8 @@ let ProductsController = class ProductsController {
         return await this.productsService.getFeatured({
             page,
             limit,
-            route: process.env.host || 'http://localhost:4000' + '/api/v1/products/featured',
+            route: process.env.host ||
+                'http://localhost:4000' + '/api/v1/products/featured',
         }, orderBy);
     }
     async Create(req, product, files) {
@@ -49,7 +50,7 @@ let ProductsController = class ProductsController {
         return await this.productsService.getOne(id.id);
     }
     async Update(id, product, files, req) {
-        return await this.productsService.update(id.id, product, req.body.related, files, req.user);
+        return await this.productsService.update(id.id, product, req.body.related, files.images, files.catalogue, req.user);
     }
     async Delete(id, req) {
         return await this.productsService.delete(id, req.user);
@@ -158,7 +159,10 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)(':id'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([{ name: 'images', maxCount: 5 }])),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([
+        { name: 'images', maxCount: 5 },
+        { name: 'catalogue', maxCount: 5 },
+    ])),
     openapi.ApiResponse({ status: 200, type: require("./entities/product.entity").Product }),
     __param(0, (0, common_1.Param)()),
     __param(1, (0, common_1.Body)()),
