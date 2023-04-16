@@ -125,7 +125,7 @@ const transporter = nodemailer.createTransport({
       },
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

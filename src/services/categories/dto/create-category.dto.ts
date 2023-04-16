@@ -7,6 +7,8 @@ export class CreateCategoryDto {
 
   @IsNumber()
   status: number;
+
+  children: string;
 //   @IsString()
 //   manufacturer: string;
   @IsString()

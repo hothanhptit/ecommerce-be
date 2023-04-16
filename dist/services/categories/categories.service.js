@@ -26,6 +26,7 @@ let CategoriesService = class CategoriesService {
             let saveCat = Object.assign(new category_entity_1.Category(), createCategoryDto);
             saveCat.image = JSON.stringify(process.env.HOST ||
                 'http://localhost:4000/' + file.path.replace('\\', '/'));
+            saveCat.children = JSON.stringify(saveCat.children);
             return this.catRepo.save(saveCat);
         }
         throw new common_1.UnauthorizedException();
@@ -36,12 +37,14 @@ let CategoriesService = class CategoriesService {
             throw new common_1.NotFoundException();
         data.forEach((element, idx) => {
             data[idx].image = JSON.parse(element.image);
+            data[idx].children = JSON.parse(element.children);
         });
         return data;
     }
     async findOne(id) {
         const cat = await this.catRepo.findOne({ where: { id: id } });
         cat.image = JSON.parse(cat.image);
+        cat.children = JSON.parse(cat.children);
         return cat;
     }
     async update(id, updateCategoryDto, file) {

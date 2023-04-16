@@ -43,7 +43,7 @@ let ProductsService = class ProductsService {
             queryBuilder = this.productRepository
                 .createQueryBuilder('prod')
                 .where('prod.status= :status', { status: 1 })
-                .andWhere('prod.category= :cat', { cat: category })
+                .andWhere('prod.categoryId= :cat', { cat: category })
                 .orderBy('prod.updatedAt', 'DESC')
                 .cache('product', 30 * 1000);
         }
@@ -94,7 +94,7 @@ let ProductsService = class ProductsService {
                 .createQueryBuilder('prod')
                 .where('prod.status= :status', { status: 1 })
                 .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
-                .andWhere('prod.category= :category', { category: category })
+                .andWhere('prod.categoryId= :category', { category: category })
                 .orderBy('prod.updatedAt', 'DESC')
                 .cache('product', 30 * 1000);
         }

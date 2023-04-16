@@ -24,6 +24,8 @@ export class CategoriesService {
           'http://localhost:4000/' + file.path.replace('\\', '/'),
       );
 
+      saveCat.children = JSON.stringify(saveCat.children);
+
       return this.catRepo.save(saveCat);
     }
     throw new UnauthorizedException();
@@ -34,6 +36,8 @@ export class CategoriesService {
     if (!data) throw new NotFoundException();
     data.forEach((element, idx) => {
       data[idx].image = JSON.parse(element.image);
+      data[idx].children = JSON.parse(element.children);
+
     });
     return data;
   }
@@ -41,6 +45,7 @@ export class CategoriesService {
   async findOne(id: number) {
     const cat = await this.catRepo.findOne({ where: { id: id } });
     cat.image = JSON.parse(cat.image);
+    cat.children = JSON.parse(cat.children)
     return cat;
   }
 

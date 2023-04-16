@@ -17,8 +17,6 @@ const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handl
 const common_1 = require("@nestjs/common");
 const multer_1 = require("@nestjs/platform-express/multer");
 const typeorm_1 = require("@nestjs/typeorm");
-const app_controller_1 = require("./app.controller");
-const app_services_1 = require("./app.services");
 const multer_config_1 = require("./config/multer.config");
 const auth_module_1 = require("./services/auth/auth.module");
 const user_entity_1 = require("./services/auth/entities/user.entity");
@@ -112,8 +110,8 @@ AppModule = __decorate([
                 },
             }),
         ],
-        controllers: [app_controller_1.AppController],
-        providers: [app_services_1.AppService],
+        controllers: [],
+        providers: [],
     })
 ], AppModule);
 exports.AppModule = AppModule;

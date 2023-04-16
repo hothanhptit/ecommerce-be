@@ -14,6 +14,8 @@ export class Category {
   name: string;
   @Column()
   image: string;
+  @Column({ nullable: true })
+  children: string;
   @Column()
   status: number;
   @Column()

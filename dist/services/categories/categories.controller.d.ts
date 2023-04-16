@@ -12,6 +12,7 @@ export declare class CategoriesController {
         name: string;
         image: string;
         status: number;
+        children: string;
         description: string;
         id: number;
         created_at: String;

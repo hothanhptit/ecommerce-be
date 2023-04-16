@@ -14,7 +14,7 @@ const openapi = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateCategoryDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, image: { required: true, type: () => String }, status: { required: true, type: () => Number }, description: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, image: { required: true, type: () => String }, status: { required: true, type: () => Number }, children: { required: true, type: () => String }, description: { required: true, type: () => String } };
     }
 }
 __decorate([
