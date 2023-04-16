@@ -14,12 +14,13 @@ const multer_1 = require("@nestjs/platform-express/multer");
 const common_1 = require("@nestjs/common");
 const banner_service_1 = require("./banner.service");
 const banner_controller_1 = require("./banner.controller");
+const main_banner_entiy_1 = require("./entities/main-banner.entiy");
 let BannerModule = class BannerModule {
 };
 BannerModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([banner_entity_1.Banner]),
+            typeorm_1.TypeOrmModule.forFeature([banner_entity_1.Banner, main_banner_entiy_1.MainBanner]),
             multer_1.MulterModule.register(multer_config_1.multerOptions),
         ],
         controllers: [banner_controller_1.BannerController],

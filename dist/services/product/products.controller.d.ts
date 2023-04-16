@@ -8,6 +8,7 @@ export declare class ProductsController {
     private productsService;
     constructor(productsService: ProductsService);
     GetAll(page?: number, limit?: number, orderBy?: string, filter?: string): Promise<Pagination<Product>>;
+    getFeatured(page?: number, limit?: number, orderBy?: string): Promise<Pagination<Product>>;
     Create(req: any, product: ProductDTO, files: {
         images?: Express.Multer.File[];
         descriptionImages?: Express.Multer.File[];

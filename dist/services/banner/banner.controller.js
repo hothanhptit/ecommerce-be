@@ -32,6 +32,15 @@ let BannerController = class BannerController {
     async findAll() {
         return await this.bannerService.findAll();
     }
+    async getMainbanner() {
+        return await this.bannerService.getMainBanner();
+    }
+    async createMainBanner(req, file) {
+        console.log('====================================');
+        console.log(file);
+        console.log('====================================');
+        return await this.bannerService.createMainBanner(file, req.user);
+    }
     async findOne(id) {
         const banner = await this.bannerService.findOne(id);
         if (banner)
@@ -64,6 +73,24 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], BannerController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('/main'),
+    openapi.ApiResponse({ status: 200, type: [require("./entities/main-banner.entiy").MainBanner] }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], BannerController.prototype, "getMainbanner", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('/main'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    openapi.ApiResponse({ status: 201, type: require("./entities/main-banner.entiy").MainBanner }),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, decorators_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], BannerController.prototype, "createMainBanner", null);
 __decorate([
     (0, common_1.Get)(':id'),
     openapi.ApiResponse({ status: 200, type: require("./entities/banner.entity").Banner }),

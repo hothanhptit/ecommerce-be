@@ -41,6 +41,23 @@ export class BannerController {
   async findAll(): Promise<Banner[]> {
     return await this.bannerService.findAll();
   }
+  @Get('/main')
+  async getMainbanner(){
+    return await this.bannerService.getMainBanner();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/main')
+  @UseInterceptors(FileInterceptor('file'))
+  async createMainBanner(
+    @Request() req,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    console.log('====================================');
+    console.log(file);
+    console.log('====================================');
+    return await this.bannerService.createMainBanner(file, req.user);
+  }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Banner> {

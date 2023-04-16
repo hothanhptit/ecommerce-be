@@ -34,6 +34,14 @@ let ProductsController = class ProductsController {
             route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
         }, orderBy, filter);
     }
+    async getFeatured(page = 1, limit = 16, orderBy = 'created_at') {
+        limit = limit > 100 ? 100 : limit;
+        return await this.productsService.getFeatured({
+            page,
+            limit,
+            route: process.env.host || 'http://localhost:4000' + '/api/v1/products/featured',
+        }, orderBy);
+    }
     async Create(req, product, files) {
         return await this.productsService.create(product, files, req.body.related, req.user);
     }
@@ -58,6 +66,16 @@ __decorate([
     __metadata("design:paramtypes", [Number, Number, String, String]),
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "GetAll", null);
+__decorate([
+    (0, common_1.Get)('/featured'),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Query)('page', new common_1.DefaultValuePipe(1), common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Query)('limit', new common_1.DefaultValuePipe(16), common_1.ParseIntPipe)),
+    __param(2, (0, common_1.Query)('orderBy')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number, String]),
+    __metadata("design:returntype", Promise)
+], ProductsController.prototype, "getFeatured", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),

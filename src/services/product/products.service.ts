@@ -62,8 +62,33 @@ export class ProductsService {
     // );
     if (productsPage) {
       productsPage.items.forEach((item) => {
-        item.images = JSON.parse(item.images);
-        item.catalogue = JSON.parse(item.catalogue);
+        if (item.images) item.images = JSON.parse(item.images);
+        if (item.catalogue) item.catalogue = JSON.parse(item.catalogue);
+      });
+    }
+    return productsPage;
+  }
+  async getFeatured(
+    options: IPaginationOptions,
+    orderBy: string,
+  ): Promise<Pagination<Product>> {
+    const orderDirection = orderBy
+      ? { updatedAt: 'DESC' }
+      : { updatedAt: 'ASC' };
+
+    const queryBuilder = this.productRepository
+      .createQueryBuilder('prod')
+      .where('prod.status= :status', { status: 1 })
+      .andWhere('prod.isFeatured= :isFeatured', { isFeatured: 1 })
+      .orderBy('prod.updatedAt', 'DESC')
+      .cache('product', 30 * 1000);
+
+    const productsPage = await paginate<Product>(queryBuilder, options);
+
+    if (productsPage) {
+      productsPage.items.forEach((item) => {
+        if (item.images) item.images = JSON.parse(item.images);
+        if (item.catalogue) item.catalogue = JSON.parse(item.catalogue);
       });
     }
     return productsPage;
@@ -88,8 +113,8 @@ export class ProductsService {
 
     if (productsPage) {
       productsPage.items.forEach((item) => {
-        item.images = JSON.parse(item.images);
-        item.catalogue = JSON.parse(item.catalogue);
+        if (item.images) item.images = JSON.parse(item.images);
+        if (item.catalogue) item.catalogue = JSON.parse(item.catalogue);
       });
     }
     return productsPage;

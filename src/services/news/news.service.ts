@@ -44,17 +44,18 @@ export class NewsService {
     options: IPaginationOptions,
     orderBy: string,
     filter: string,
+    category: string,
   ): Promise<Pagination<News>> {
     // if (filter) return this.searchProducts(options, orderBy, filter);
     const orderDirection = orderBy
       ? { updatedAt: 'DESC' }
       : { updatedAt: 'ASC' };
 
-    const filterCate = filter.split(',');
-    // provide builder to paginate
+    const filterCategory = filter.split(',');
     const queryBuilder = this.newsRepo
       .createQueryBuilder('news')
-      .where('news.category IN (:...category)', { category: filterCate })
+      .where('news.category IN (:...category)', { category: filterCategory })
+      .andWhere('news.categoryName like :categoryName', { categoryName: `%${category}%` })
       .orderBy('news.updated_at', 'DESC');
     // .cache('product', 30 * 1000);
 

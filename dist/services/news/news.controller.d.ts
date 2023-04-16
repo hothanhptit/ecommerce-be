@@ -8,7 +8,7 @@ export declare class NewsController {
     private readonly newsService;
     constructor(newsService: NewsService);
     create(createNewsDto: CreateNewsDto, file: Express.Multer.File, req: any): Promise<CreateNewsDto & News>;
-    findAll(page?: number, limit?: number, orderBy?: string, filter?: string): Promise<Pagination<News>>;
+    findAll(page?: number, limit?: number, orderBy?: string, filter?: string, category?: string): Promise<Pagination<News>>;
     findRecent(take?: number): Promise<News[]>;
     findCategory(take?: number): Promise<any[]>;
     findOne(id: string): Promise<News>;

@@ -29,13 +29,13 @@ let NewsController = class NewsController {
     create(createNewsDto, file, req) {
         return this.newsService.create(createNewsDto, file, req.user);
     }
-    async findAll(page = 1, limit = 16, orderBy = 'created_at', filter = '1,2') {
+    async findAll(page = 1, limit = 16, orderBy = 'created_at', filter = '1,2', category = '') {
         limit = limit > 100 ? 100 : limit;
         return await this.newsService.getAll({
             page,
             limit,
             route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
-        }, orderBy, filter);
+        }, orderBy, filter, category);
     }
     findRecent(take = 5) {
         return this.newsService.findRecently(take);
@@ -72,8 +72,9 @@ __decorate([
     __param(1, (0, common_1.Query)('limit', new common_1.DefaultValuePipe(16), common_1.ParseIntPipe)),
     __param(2, (0, common_1.Query)('orderBy')),
     __param(3, (0, common_1.Query)('filter')),
+    __param(4, (0, common_1.Query)('category')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, String, String]),
+    __metadata("design:paramtypes", [Number, Number, String, String, String]),
     __metadata("design:returntype", Promise)
 ], NewsController.prototype, "findAll", null);
 __decorate([

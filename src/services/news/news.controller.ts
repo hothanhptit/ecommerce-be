@@ -45,6 +45,7 @@ export class NewsController {
     @Query('limit', new DefaultValuePipe(16), ParseIntPipe) limit: number = 16,
     @Query('orderBy') orderBy: string = 'created_at',
     @Query('filter') filter: string = '1,2',
+    @Query('category') category: string = '',
   ): Promise<Pagination<News>> {
     limit = limit > 100 ? 100 : limit;
     return await this.newsService.getAll(
@@ -55,6 +56,7 @@ export class NewsController {
       },
       orderBy,
       filter,
+      category
     );
     // return this.newsService.findAll();
   }

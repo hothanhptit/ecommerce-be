@@ -8,6 +8,8 @@ export declare class BannerController {
     constructor(bannerService: BannerService);
     create(createBannerDto: CreateBannerDto, req: any, file: Express.Multer.File): Promise<Banner & CreateBannerDto>;
     findAll(): Promise<Banner[]>;
+    getMainbanner(): Promise<import("./entities/main-banner.entiy").MainBanner[]>;
+    createMainBanner(req: any, file: Express.Multer.File): Promise<import("./entities/main-banner.entiy").MainBanner>;
     findOne(id: string): Promise<Banner>;
     update(id: string, updateBannerDto: UpdateBannerDto, file: Express.Multer.File): Promise<{
         name: string;

@@ -56,6 +56,22 @@ export class ProductsController {
       filter
     );
   }
+  @Get('/featured')
+  async getFeatured(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(16), ParseIntPipe) limit: number = 16,
+    @Query('orderBy') orderBy: string = 'created_at',
+  ): Promise<Pagination<Product>> {
+    limit = limit > 100 ? 100 : limit;
+    return await this.productsService.getFeatured(
+      {
+        page,
+        limit,
+        route: process.env.host || 'http://localhost:4000' + '/api/v1/products/featured',
+      },
+      orderBy,
+    );
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post()

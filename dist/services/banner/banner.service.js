@@ -18,9 +18,11 @@ const typeorm_1 = require("@nestjs/typeorm");
 const banner_entity_1 = require("./entities/banner.entity");
 const common_1 = require("@nestjs/common");
 const typeorm_2 = require("typeorm");
+const main_banner_entiy_1 = require("./entities/main-banner.entiy");
 let BannerService = class BannerService {
-    constructor(bannerRepository) {
+    constructor(bannerRepository, mainBannerRepository) {
         this.bannerRepository = bannerRepository;
+        this.mainBannerRepository = mainBannerRepository;
         this.logging = new log4js_service_1.LogServices();
     }
     async create(createBannerDto, file, user) {
@@ -32,6 +34,24 @@ let BannerService = class BannerService {
         }
         this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
         throw new common_1.UnauthorizedException();
+    }
+    async createMainBanner(file, user) {
+        const mainBanner = new main_banner_entiy_1.MainBanner();
+        if (user.role == 'admin') {
+            mainBanner.image = JSON.stringify(process.env.HOST ||
+                'http://localhost:4000/' + file.path.replace('\\', '/'));
+            return this.mainBannerRepository.save(mainBanner);
+        }
+        this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
+        throw new common_1.UnauthorizedException();
+    }
+    async getMainBanner() {
+        const data = await this.mainBannerRepository.find({
+            take: 1,
+            order: { id: 'DESC' },
+        });
+        data[0].image = JSON.parse(data[0].image);
+        return data;
     }
     async findAll() {
         const data = await this.bannerRepository.find({
@@ -70,7 +90,9 @@ let BannerService = class BannerService {
 BannerService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(banner_entity_1.Banner)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(main_banner_entiy_1.MainBanner)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], BannerService);
 exports.BannerService = BannerService;
 //# sourceMappingURL=banner.service.js.map

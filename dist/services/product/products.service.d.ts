@@ -13,6 +13,7 @@ export declare class ProductsService {
     constructor(productRepository: Repository<Product>, relatedProducts: Repository<RelatedProduct>);
     private logging;
     getAll(options: IPaginationOptions, orderBy: string, filter: string): Promise<Pagination<Product>>;
+    getFeatured(options: IPaginationOptions, orderBy: string): Promise<Pagination<Product>>;
     searchProducts(options: IPaginationOptions, orderBy: string, filter: string): Promise<Pagination<Product>>;
     create(productDTO: ProductDTO, files: any, relatedProduct: string, user: User): Promise<Product & ProductDTO>;
     getOne(productId: string): Promise<Product>;

@@ -37,14 +37,15 @@ let NewsService = class NewsService {
     findAll() {
         return this.newsRepo.find();
     }
-    async getAll(options, orderBy, filter) {
+    async getAll(options, orderBy, filter, category) {
         const orderDirection = orderBy
             ? { updatedAt: 'DESC' }
             : { updatedAt: 'ASC' };
-        const filterCate = filter.split(',');
+        const filterCategory = filter.split(',');
         const queryBuilder = this.newsRepo
             .createQueryBuilder('news')
-            .where('news.category IN (:...category)', { category: filterCate })
+            .where('news.category IN (:...category)', { category: filterCategory })
+            .andWhere('news.categoryName like :categoryName', { categoryName: `%${category}%` })
             .orderBy('news.updated_at', 'DESC');
         const newsPage = await (0, nestjs_typeorm_paginate_1.paginate)(queryBuilder, options);
         if (newsPage) {

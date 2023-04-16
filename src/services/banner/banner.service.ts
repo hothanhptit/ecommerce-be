@@ -10,12 +10,15 @@ import {
 import { CreateBannerDto } from './dto/create-banner.dto';
 import { UpdateBannerDto } from './dto/update-banner.dto';
 import { Repository } from 'typeorm';
+import { MainBanner } from './entities/main-banner.entiy';
 
 @Injectable()
 export class BannerService {
   constructor(
     @InjectRepository(Banner)
     private bannerRepository: Repository<Banner>,
+    @InjectRepository(MainBanner)
+    private mainBannerRepository: Repository<MainBanner>,
   ) {}
   private logging = new LogServices();
 
@@ -37,6 +40,29 @@ export class BannerService {
     this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
 
     throw new UnauthorizedException();
+  }
+
+  async createMainBanner(file: Express.Multer.File, user: User) {
+    const mainBanner = new MainBanner();
+    if (user.role == 'admin') {
+      mainBanner.image = JSON.stringify(
+        process.env.HOST ||
+          'http://localhost:4000/' + file.path.replace('\\', '/'),
+      );
+
+      return this.mainBannerRepository.save(mainBanner);
+    }
+    this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
+
+    throw new UnauthorizedException();
+  }
+  async getMainBanner() {
+    const data = await this.mainBannerRepository.find({
+      take: 1,
+      order: { id: 'DESC' },
+    });
+    data[0].image = JSON.parse(data[0].image);
+    return data;
   }
 
   async findAll() {
