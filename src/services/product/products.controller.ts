@@ -60,7 +60,7 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiConsumes('multipart/form-data')
-  @ApiMultiFile('productImages')
+  @ApiMultiFile('images')
   @ApiBody({
     schema: {
       type: 'object',
@@ -69,7 +69,7 @@ export class ProductsController {
           type: 'string',
           format: 'string',
         },
-        productImages: {
+        images: {
           type: 'string',
           format: 'binary',
         },
@@ -114,7 +114,7 @@ export class ProductsController {
   })
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: 'productImages', maxCount: 15 },
+      { name: 'images', maxCount: 15 },
       { name: 'descriptionImages', maxCount: 15 },
       { name: 'specsImages', maxCount: 15 },
       { name: 'catalogue', maxCount: 5 },
@@ -127,7 +127,7 @@ export class ProductsController {
     // @UploadedFiles() descriptionImages: Array<Express.Multer.File>,
     @UploadedFiles()
     files: {
-      productImages?: Express.Multer.File[];
+      images?: Express.Multer.File[];
       descriptionImages?: Express.Multer.File[];
       specsImages?: Express.Multer.File[];
       catalogue?: Express.Multer.File[];
@@ -149,14 +149,14 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(
-    FileFieldsInterceptor([{ name: 'productImages', maxCount: 5 }]),
+    FileFieldsInterceptor([{ name: 'images', maxCount: 5 }]),
   )
   async Update(
     @Param() id: any,
     @Body() product: ProductDTO,
     @UploadedFiles()
     files: {
-      productImages?: Express.Multer.File[];
+      images?: Express.Multer.File[];
     },
     @Request() req,
   ): Promise<Product> {

@@ -62,7 +62,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
     (0, swagger_1.ApiConsumes)('multipart/form-data'),
-    (0, multiFiles_swagger_1.ApiMultiFile)('productImages'),
+    (0, multiFiles_swagger_1.ApiMultiFile)('images'),
     (0, swagger_1.ApiBody)({
         schema: {
             type: 'object',
@@ -71,7 +71,7 @@ __decorate([
                     type: 'string',
                     format: 'string',
                 },
-                productImages: {
+                images: {
                     type: 'string',
                     format: 'binary',
                 },
@@ -115,7 +115,7 @@ __decorate([
         },
     }),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([
-        { name: 'productImages', maxCount: 15 },
+        { name: 'images', maxCount: 15 },
         { name: 'descriptionImages', maxCount: 15 },
         { name: 'specsImages', maxCount: 15 },
         { name: 'catalogue', maxCount: 5 },
@@ -139,7 +139,7 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)(':id'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([{ name: 'productImages', maxCount: 5 }])),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([{ name: 'images', maxCount: 5 }])),
     openapi.ApiResponse({ status: 200, type: require("./entities/product.entity").Product }),
     __param(0, (0, common_1.Param)()),
     __param(1, (0, common_1.Body)()),

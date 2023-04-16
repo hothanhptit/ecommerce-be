@@ -66,15 +66,17 @@ let NewsService = class NewsService {
         const data = await this.newsRepo
             .createQueryBuilder('news')
             .select('news.categoryName')
+            .addSelect('COUNT(news.categoryName)', 'count')
             .where('news.categoryName is not null')
             .distinct(true)
+            .groupBy('news.categoryName')
             .take(number)
             .execute();
         if (!data)
             return [];
         let res = [];
         data.forEach((element) => {
-            res.push(element.news_categoryName);
+            res.push({ name: element.news_categoryName, count: element.count });
         });
         return res;
     }

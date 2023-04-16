@@ -2,7 +2,7 @@ export declare class ProductDTO {
     name: string;
     slug: string;
     status: string;
-    productImages: string;
+    images: string;
     isFeatured: number;
     summary: string;
     price: string;

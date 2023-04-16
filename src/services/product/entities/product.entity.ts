@@ -25,7 +25,7 @@ export class Product {
   status: number;
 
   @Column()
-  productImages: string;
+  images: string;
 
   @Column()
   summary?: string;

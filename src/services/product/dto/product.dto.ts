@@ -37,7 +37,7 @@ export class ProductDTO {
   //   type: 'array',
   //   items: { type: 'string', format: 'binary' },
   // })
-  productImages: string;
+  images: string;
 
   isFeatured: number;
 

@@ -4,7 +4,7 @@ export declare class Product {
     name: string;
     slug: string;
     status: number;
-    productImages: string;
+    images: string;
     summary?: string;
     isFeatured?: number;
     price?: string;

@@ -44,7 +44,7 @@ let ProductsService = class ProductsService {
         const productsPage = await (0, paginate_1.paginate)(queryBuilder, options);
         if (productsPage) {
             productsPage.items.forEach((item) => {
-                item.productImages = JSON.parse(item.productImages);
+                item.images = JSON.parse(item.images);
                 item.catalogue = JSON.parse(item.catalogue);
             });
         }
@@ -61,7 +61,7 @@ let ProductsService = class ProductsService {
         const productsPage = await (0, paginate_1.paginate)(queryBuilder, options);
         if (productsPage) {
             productsPage.items.forEach((item) => {
-                item.productImages = JSON.parse(item.productImages);
+                item.images = JSON.parse(item.images);
                 item.catalogue = JSON.parse(item.catalogue);
             });
         }
@@ -71,14 +71,14 @@ let ProductsService = class ProductsService {
         try {
             if (user.role == 'admin') {
                 let saveProduct = Object.assign(new product_entity_1.Product(), productDTO);
-                if (files.productImages) {
-                    const productImages = {};
-                    for (const [index, file] of files.productImages.entries()) {
-                        productImages[index] =
+                if (files.images) {
+                    const images = {};
+                    for (const [index, file] of files.images.entries()) {
+                        images[index] =
                             process.env.HOST ||
                                 'http://localhost:4000/' + file.path.replace('\\', '/');
                     }
-                    saveProduct.productImages = JSON.stringify(productImages);
+                    saveProduct.images = JSON.stringify(images);
                 }
                 if (files.descriptionImages) {
                     const descriptionImages = {};
@@ -117,7 +117,7 @@ let ProductsService = class ProductsService {
                         if (data) {
                             const related = new relatedProduct_entity_1.RelatedProduct();
                             related.productId = id;
-                            related.images = data.productImages;
+                            related.images = data.images;
                             related.name = data.name;
                             this.relatedProducts.save(related);
                             saveProduct.related.push(related);
@@ -146,7 +146,7 @@ let ProductsService = class ProductsService {
             cache: false,
         });
         if (data) {
-            data.productImages = JSON.parse(data.productImages);
+            data.images = JSON.parse(data.images);
             if (data.related.length) {
                 data.related.forEach((element, idx) => {
                     data.related[idx].images = JSON.parse(element.images);
@@ -169,14 +169,14 @@ let ProductsService = class ProductsService {
                         related: true,
                     },
                 });
-                if (files.productImages) {
-                    const productImages = {};
-                    for (const [index, file] of files.productImages.entries()) {
-                        productImages[index] =
+                if (files.images) {
+                    const images = {};
+                    for (const [index, file] of files.images.entries()) {
+                        images[index] =
                             process.env.HOST ||
                                 'http://localhost:4000/' + file.path.replace('\\', '/');
                     }
-                    saveProduct.productImages = JSON.stringify(productImages);
+                    saveProduct.images = JSON.stringify(images);
                 }
                 if (!!relatedProduct) {
                     saveProduct.related = [];
@@ -188,7 +188,7 @@ let ProductsService = class ProductsService {
                         if (data) {
                             const related = new relatedProduct_entity_1.RelatedProduct();
                             related.productId = id;
-                            related.images = data.productImages;
+                            related.images = data.images;
                             related.name = data.name;
                             this.relatedProducts.save(related);
                             saveProduct.related.push(related);

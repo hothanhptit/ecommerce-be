@@ -86,7 +86,7 @@ __decorate([
 ], NewsController.prototype, "findRecent", null);
 __decorate([
     (0, common_1.Get)('/category'),
-    openapi.ApiResponse({ status: 200, type: [String] }),
+    openapi.ApiResponse({ status: 200, type: [Object] }),
     __param(0, (0, common_1.Query)('take')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
