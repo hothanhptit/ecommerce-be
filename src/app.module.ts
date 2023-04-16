@@ -26,6 +26,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { Product } from './services/product/entities/product.entity';
 import { ProductModule } from './services/product/product.module';
+import { ServicesModule } from './services/services/services.module';
+import { Service } from './services/services/entities/services.entity';
 const nodemailer = require('nodemailer');
 // import { CartModule } from './services/cart/cart.module';
 // import { OrderModule } from './services/order/order.module';
@@ -47,6 +49,8 @@ const transporter = nodemailer.createTransport({
     ProductModule,
     OthersModule,
     ContactModule,
+    ContactModule,
+    ServicesModule,
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'ecommerce.sqlite3',
@@ -67,6 +71,7 @@ const transporter = nodemailer.createTransport({
         Menu,
         Contact,
         Mail,
+        Service
       ],
       synchronize: true,
       cache: {

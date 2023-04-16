@@ -11,28 +11,52 @@ import {
   Delete,
   UseInterceptors,
   Query,
+  UseGuards,
+  Request,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { News } from './entities/news.entity';
 
 @ApiTags('news')
 @Controller('api/v1/news')
 export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   create(
     @Body() createNewsDto: CreateNewsDto,
     @UploadedFile() file: Express.Multer.File,
+    @Request() req,
   ) {
-    return this.newsService.create(createNewsDto, file);
+    return this.newsService.create(createNewsDto, file, req.user);
   }
 
   @Get()
-  findAll() {
-    return this.newsService.findAll();
+  async findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(16), ParseIntPipe) limit: number = 16,
+    @Query('orderBy') orderBy: string = 'created_at',
+    @Query('filter') filter: string = '1,2',
+  ): Promise<Pagination<News>> {
+    limit = limit > 100 ? 100 : limit;
+    return await this.newsService.getAll(
+      {
+        page,
+        limit,
+        route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
+      },
+      orderBy,
+      filter,
+    );
+    // return this.newsService.findAll();
   }
 
   @Get('/recently')

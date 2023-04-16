@@ -71,7 +71,7 @@ export class LogServices {
           type: 'dateFile',
           filename: 'logs/log.log',
           pattern: 'yyyy-MM-dd-hh',
-          compress: true,
+          compress: false,
         },
       },
       categories: {

@@ -35,6 +35,8 @@ const serve_static_1 = require("@nestjs/serve-static");
 const path_1 = require("path");
 const product_entity_1 = require("./services/product/entities/product.entity");
 const product_module_1 = require("./services/product/product.module");
+const services_module_1 = require("./services/services/services.module");
+const services_entity_1 = require("./services/services/entities/services.entity");
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -56,6 +58,8 @@ AppModule = __decorate([
             product_module_1.ProductModule,
             others_module_1.OthersModule,
             contact_module_1.ContactModule,
+            contact_module_1.ContactModule,
+            services_module_1.ServicesModule,
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'sqlite',
                 database: 'ecommerce.sqlite3',
@@ -70,6 +74,7 @@ AppModule = __decorate([
                     menu_dto_1.Menu,
                     contact_entity_1.Contact,
                     mail_entity_1.Mail,
+                    services_entity_1.Service
                 ],
                 synchronize: true,
                 cache: {

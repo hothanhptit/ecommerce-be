@@ -114,9 +114,10 @@ export class ProductsController {
   })
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: 'productImages', maxCount: 5 },
-      { name: 'descriptionImages', maxCount: 5 },
-      { name: 'specsImages', maxCount: 5 },
+      { name: 'productImages', maxCount: 15 },
+      { name: 'descriptionImages', maxCount: 15 },
+      { name: 'specsImages', maxCount: 15 },
+      { name: 'catalogue', maxCount: 5 },
     ]),
   )
   async Create(
@@ -129,6 +130,7 @@ export class ProductsController {
       productImages?: Express.Multer.File[];
       descriptionImages?: Express.Multer.File[];
       specsImages?: Express.Multer.File[];
+      catalogue?: Express.Multer.File[];
     },
   ) {
     return await this.productsService.create(

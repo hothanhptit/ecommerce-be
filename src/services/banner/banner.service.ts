@@ -32,7 +32,7 @@ export class BannerService {
           'http://localhost:4000/' + file.path.replace('\\', '/'),
       );
 
-      return await this.bannerRepository.save(saveBanner);
+      return this.bannerRepository.save(saveBanner);
     }
     this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
 
@@ -40,7 +40,12 @@ export class BannerService {
   }
 
   async findAll() {
-    return await this.bannerRepository.find();
+    return await this.bannerRepository.find({
+      take: 5,
+      order: {
+        order: 'ASC',
+      },
+    });
   }
 
   async findOne(id: string): Promise<Banner | null> {
@@ -70,6 +75,6 @@ export class BannerService {
 
   async remove(id: string) {
     const res = await this.bannerRepository.delete(id);
-    if (res.affected) return;
+    if (res.affected) return 'ok';
   }
 }

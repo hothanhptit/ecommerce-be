@@ -101,12 +101,15 @@ export class ContactController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
-    return this.contactService.update(+id, updateContactDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateContactDto: UpdateContactDto,
+  ) {
+    return await this.contactService.update(+id, updateContactDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.contactService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.contactService.remove(+id);
   }
 }

@@ -17,6 +17,8 @@ export class News {
   title: string;
   @Column()
   category: string;
+  @Column({ nullable: true })
+  created_by: string;
   @Column()
   tags: string;
   @Column()

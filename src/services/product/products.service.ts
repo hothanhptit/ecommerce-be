@@ -132,6 +132,15 @@ export class ProductsService {
           }
           saveProduct.specsImages = JSON.stringify(specsImages);
         }
+        if (files.catalogue) {
+          const catalogue = {};
+          for (const [index, file] of files.catalogue.entries()) {
+            catalogue[index] =
+              process.env.HOST ||
+              'http://localhost:4000/' + file.path.replace('\\', '/');
+          }
+          saveProduct.catalogue = JSON.stringify(catalogue);
+        }
 
         if (!!relatedProduct) {
           saveProduct.related = [];
@@ -170,8 +179,12 @@ export class ProductsService {
       relations: {
         related: true,
       },
+      cache: false
     });
-    if (data) return data;
+    if (data) {
+      data.productImages = JSON.parse(data.productImages);
+      return data;
+    }
     throw new NotFoundException();
   }
 
