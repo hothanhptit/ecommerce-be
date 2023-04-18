@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NewsService = void 0;
+const fn_1 = require("../../utils/fn");
 const typeorm_1 = require("@nestjs/typeorm");
 const news_entity_1 = require("./entities/news.entity");
 const common_1 = require("@nestjs/common");
@@ -25,11 +26,10 @@ let NewsService = class NewsService {
     create(createNewsDto, file, user) {
         if (user.role == 'admin') {
             if (file) {
-                createNewsDto.image = JSON.stringify(process.env.HOST ||
-                    'http://localhost:4000/' + file.path.replace('\\', '/'));
+                createNewsDto.image = JSON.stringify(file.path.replace('\\', '/'));
             }
-            console.log(user);
             createNewsDto.created_by = user.name;
+            createNewsDto.slug = (0, fn_1.removeVietnameseTones)(createNewsDto.name);
             return this.newsRepo.save(createNewsDto);
         }
         throw new common_1.UnauthorizedException();
@@ -37,20 +37,25 @@ let NewsService = class NewsService {
     findAll() {
         return this.newsRepo.find();
     }
-    async getAll(options, orderBy, filter, category) {
+    async getAll(options, orderBy, category, filter) {
         const orderDirection = orderBy
             ? { updatedAt: 'DESC' }
             : { updatedAt: 'ASC' };
-        const filterCategory = filter.split(',');
+        const filterCategory = category.split(',');
         const queryBuilder = this.newsRepo
             .createQueryBuilder('news')
             .where('news.category IN (:...category)', { category: filterCategory })
-            .andWhere('news.categoryName like :categoryName', { categoryName: `%${category}%` })
+            .andWhere('news.categoryName like :categoryName', {
+            categoryName: `%${filter}%`,
+        })
+            .orWhere('news.slug like :slug', { slug: `%${filter}%` })
             .orderBy('news.updated_at', 'DESC');
         const newsPage = await (0, nestjs_typeorm_paginate_1.paginate)(queryBuilder, options);
         if (newsPage) {
             newsPage.items.forEach((item) => {
-                item.image = JSON.parse(item.image);
+                item.image =
+                    (process.env.HOST || 'http://localhost:4000') +
+                        JSON.parse(item.image);
             });
         }
         return newsPage;
@@ -72,6 +77,7 @@ let NewsService = class NewsService {
             .distinct(true)
             .groupBy('news.categoryName')
             .take(number)
+            .cache(false)
             .execute();
         if (!data)
             return [];
@@ -89,7 +95,8 @@ let NewsService = class NewsService {
         });
         if (!item)
             throw new common_1.NotFoundException();
-        item.image = JSON.parse(item.image);
+        item.image =
+            (process.env.HOST || 'http://localhost:4000') + JSON.parse(item.image);
         return item;
     }
     async update(id, updateNewsDto, file) {
@@ -104,6 +111,7 @@ let NewsService = class NewsService {
         });
         if (!oldData)
             throw new common_1.NotFoundException();
+        updateNewsDto.slug = (0, fn_1.removeVietnameseTones)(updateNewsDto.name);
         return this.newsRepo.save(Object.assign(Object.assign({}, oldData), updateNewsDto));
     }
     remove(id) {

@@ -67,7 +67,7 @@ let ContactController = class ContactController {
         return (0, paginate_1.paginate)(this.mailRepo, {
             page,
             limit,
-            route: process.env.host || 'http://localhost:4000' + '/api/v1/contact/mail',
+            route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/contact/mail',
         }, {
             order: {
                 createdAt: 'DESC',

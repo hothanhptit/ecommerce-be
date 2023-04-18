@@ -28,10 +28,7 @@ export class ServicesService {
       if (user.role == 'admin') {
         let saveBanner = Object.assign(new Service(), createBannerDto);
 
-        saveBanner.image = JSON.stringify(
-          process.env.HOST ||
-            'http://localhost:4000/' + file.path.replace('\\', '/'),
-        );
+        saveBanner.image = JSON.stringify(file.path.replace('\\', '/'));
 
         return this.sRepository.save(saveBanner);
       }
@@ -51,7 +48,8 @@ export class ServicesService {
     });
     if (!data) throw new NotFoundException();
     data.forEach((element, idx) => {
-      data[idx].image = JSON.parse(element.image);
+      data[idx].image =
+        (process.env.HOST || 'http://localhost:4000') + JSON.parse(element.image);
     });
     return data;
   }
@@ -70,10 +68,7 @@ export class ServicesService {
     const banner = await this.sRepository.findOne({ where: { id: id } });
     if (banner) {
       if (file)
-        updateBannerDto.image = JSON.stringify(
-          process.env.HOST ||
-            'http://localhost:4000/' + file.path.replace('\\', '/'),
-        );
+        updateBannerDto.image = JSON.stringify(file.path.replace('\\', '/'));
       return await this.sRepository.save({
         ...banner,
         ...updateBannerDto,

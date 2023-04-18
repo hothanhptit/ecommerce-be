@@ -42,7 +42,7 @@ export class ProductsController {
   async GetAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(16), ParseIntPipe) limit: number = 16,
-    @Query('orderBy') orderBy: string = 'created_at',
+    @Query('orderBy') orderBy: string = 'DESC',
     @Query('filter') filter: string = '',
     @Query('categoryId') cat: string = '',
   ): Promise<Pagination<Product>> {
@@ -51,7 +51,7 @@ export class ProductsController {
       {
         page,
         limit,
-        route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
+        route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/products',
       },
       orderBy,
       filter,
@@ -70,7 +70,7 @@ export class ProductsController {
         page,
         limit,
         route:
-          process.env.host ||
+          process.env.HOST ||
           'http://localhost:4000' + '/api/v1/products/featured',
       },
       orderBy,

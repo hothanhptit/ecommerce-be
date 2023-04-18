@@ -1,3 +1,4 @@
+import { removeVietnameseTones } from 'src/utils/fn';
 import { filter } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { News } from './entities/news.entity';
@@ -25,13 +26,11 @@ export class NewsService {
   create(createNewsDto: CreateNewsDto, file: any, user: User) {
     if (user.role == 'admin') {
       if (file) {
-        createNewsDto.image = JSON.stringify(
-          process.env.HOST ||
-            'http://localhost:4000/' + file.path.replace('\\', '/'),
-        );
+        createNewsDto.image = JSON.stringify(file.path.replace('\\', '/'));
       }
-      console.log(user);
       createNewsDto.created_by = user.name;
+      createNewsDto.slug = removeVietnameseTones(createNewsDto.name);
+      
       return this.newsRepo.save(createNewsDto);
     }
     throw new UnauthorizedException();
@@ -43,26 +42,31 @@ export class NewsService {
   async getAll(
     options: IPaginationOptions,
     orderBy: string,
-    filter: string,
     category: string,
+    filter: string,
   ): Promise<Pagination<News>> {
     // if (filter) return this.searchProducts(options, orderBy, filter);
     const orderDirection = orderBy
       ? { updatedAt: 'DESC' }
       : { updatedAt: 'ASC' };
 
-    const filterCategory = filter.split(',');
+    const filterCategory = category.split(',');
     const queryBuilder = this.newsRepo
       .createQueryBuilder('news')
       .where('news.category IN (:...category)', { category: filterCategory })
-      .andWhere('news.categoryName like :categoryName', { categoryName: `%${category}%` })
+      .andWhere('news.categoryName like :categoryName', {
+        categoryName: `%${filter}%`,
+      })
+      .orWhere('news.slug like :slug', { slug: `%${filter}%` })
       .orderBy('news.updated_at', 'DESC');
     // .cache('product', 30 * 1000);
 
     const newsPage = await paginate<News>(queryBuilder, options);
     if (newsPage) {
       newsPage.items.forEach((item) => {
-        item.image = JSON.parse(item.image);
+        item.image =
+          (process.env.HOST || 'http://localhost:4000') +
+          JSON.parse(item.image);
       });
     }
     return newsPage;
@@ -84,6 +88,7 @@ export class NewsService {
       .distinct(true)
       .groupBy('news.categoryName')
       .take(number)
+      .cache(false)
       .execute();
 
     if (!data) return [];
@@ -103,7 +108,8 @@ export class NewsService {
       },
     });
     if (!item) throw new NotFoundException();
-    item.image = JSON.parse(item.image);
+    item.image =
+      (process.env.HOST || 'http://localhost:4000') + JSON.parse(item.image);
     return item;
   }
 
@@ -118,6 +124,8 @@ export class NewsService {
       cache: false,
     });
     if (!oldData) throw new NotFoundException();
+
+    updateNewsDto.slug = removeVietnameseTones(updateNewsDto.name);
 
     return this.newsRepo.save({ ...oldData, ...updateNewsDto });
   }

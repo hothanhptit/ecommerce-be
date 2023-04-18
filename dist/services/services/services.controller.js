@@ -26,8 +26,8 @@ let ServicesController = class ServicesController {
     constructor(sService) {
         this.sService = sService;
     }
-    create(createBannerDto, req, file) {
-        return this.sService.create(createBannerDto, file, req.user);
+    create(createServiceDto, req, file) {
+        return this.sService.create(createServiceDto, file, req.user);
     }
     async findAll() {
         return await this.sService.findAll();

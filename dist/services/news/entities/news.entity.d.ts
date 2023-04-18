@@ -1,6 +1,7 @@
 export declare class News {
     id: number;
     name: string;
+    slug: string;
     image: string;
     title: string;
     category: string;

@@ -19,10 +19,7 @@ export class CategoriesService {
     if (user.role == 'admin') {
       let saveCat = Object.assign(new Category(), createCategoryDto);
 
-      saveCat.image = JSON.stringify(
-        process.env.HOST ||
-          'http://localhost:4000/' + file.path.replace('\\', '/'),
-      );
+      saveCat.image = JSON.stringify(file.path.replace('\\', '/'));
 
       saveCat.children = JSON.stringify(saveCat.children);
 
@@ -35,17 +32,18 @@ export class CategoriesService {
     const data = await this.catRepo.find();
     if (!data) throw new NotFoundException();
     data.forEach((element, idx) => {
-      data[idx].image = JSON.parse(element.image);
+      data[idx].image =
+        (process.env.HOST || 'http://localhost:4000') + JSON.parse(element.image);
       data[idx].children = JSON.parse(element.children);
-
     });
     return data;
   }
 
   async findOne(id: number) {
     const cat = await this.catRepo.findOne({ where: { id: id } });
-    cat.image = JSON.parse(cat.image);
-    cat.children = JSON.parse(cat.children)
+    cat.image =
+      (process.env.HOST || 'http://localhost:4000') + JSON.parse(cat.image);
+    cat.children = JSON.parse(cat.children);
     return cat;
   }
 
@@ -53,10 +51,7 @@ export class CategoriesService {
     const banner = await this.catRepo.findOne({ where: { id: id } });
     if (banner) {
       if (file)
-        updateCategoryDto.image = JSON.stringify(
-          process.env.HOST ||
-            'http://localhost:4000/' + file.path.replace('\\', '/'),
-        );
+        updateCategoryDto.image = JSON.stringify(file.path.replace('\\', '/'));
       return await this.catRepo.save({
         ...banner,
         ...updateCategoryDto,

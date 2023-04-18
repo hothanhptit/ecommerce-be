@@ -22,9 +22,8 @@ const log4js_service_1 = require("./../log4js/log4js.service");
 const product_entity_1 = require("./entities/product.entity");
 const relatedProduct_entity_1 = require("./entities/relatedProduct.entity");
 const product_info_entity_1 = require("./entities/product-info.entity");
-var Order;
-(function (Order) {
-})(Order = exports.Order || (exports.Order = {}));
+const convertFile_ultis_1 = require("../../utils/convertFile.ultis");
+exports.Order = 'ASC' || 'DESC';
 let ProductsService = class ProductsService {
     constructor(productRepository, relatedProducts, productInfoRepo) {
         this.productRepository = productRepository;
@@ -44,7 +43,7 @@ let ProductsService = class ProductsService {
                 .createQueryBuilder('prod')
                 .where('prod.status= :status', { status: 1 })
                 .andWhere('prod.categoryId= :cat', { cat: category })
-                .orderBy('prod.updatedAt', 'DESC')
+                .orderBy('prod.updatedAt', orderBy)
                 .cache('product', 30 * 1000);
         }
         else {
@@ -61,6 +60,20 @@ let ProductsService = class ProductsService {
             productsPage.items.forEach((item) => {
                 if (item.images)
                     item.images = JSON.parse(item.images);
+                if (item.imagesCompress)
+                    item.imagesCompress = JSON.parse(item.imagesCompress);
+                const images = [];
+                const imagesCompress = [];
+                for (let image of item.images) {
+                    const domain_image = (process.env.HOST || 'http://localhost:4000') + image;
+                    images.push(domain_image);
+                }
+                for (let image of item === null || item === void 0 ? void 0 : item.imagesCompress) {
+                    const compress = (process.env.HOST || 'http://localhost:4000') + image;
+                    imagesCompress.push(compress);
+                }
+                data.imagesCompress = imagesCompress;
+                item.images = images;
             });
         }
         return productsPage;
@@ -80,6 +93,20 @@ let ProductsService = class ProductsService {
             productsPage.items.forEach((item) => {
                 if (item.images)
                     item.images = JSON.parse(item.images);
+                if (item.imagesCompress)
+                    item.images = JSON.parse(item.imagesCompress);
+                const images = [];
+                const imagesCompress = [];
+                for (let image of item.images) {
+                    const domain_image = (process.env.HOST || 'http://localhost:4000') + image;
+                    images.push(domain_image);
+                }
+                for (let image of item === null || item === void 0 ? void 0 : item.imagesCompress) {
+                    const compress = (process.env.HOST || 'http://localhost:4000') + image;
+                    imagesCompress.push(compress);
+                }
+                data.imagesCompress = imagesCompress;
+                item.images = images;
             });
         }
         return productsPage;
@@ -93,7 +120,7 @@ let ProductsService = class ProductsService {
                 .where('prod.status= :status', { status: 1 })
                 .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
                 .andWhere('prod.categoryId= :category', { category: category })
-                .orderBy('prod.updatedAt', 'DESC')
+                .orderBy('prod.updatedAt', orderBy)
                 .cache('product', 30 * 1000);
         }
         else {
@@ -101,7 +128,7 @@ let ProductsService = class ProductsService {
                 .createQueryBuilder('prod')
                 .where('prod.status= :status', { status: 1 })
                 .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
-                .orderBy('prod.updatedAt', 'DESC')
+                .orderBy('prod.updatedAt', orderBy)
                 .cache('product', 30 * 1000);
         }
         const productsPage = await (0, paginate_1.paginate)(queryBuilder, options);
@@ -109,6 +136,20 @@ let ProductsService = class ProductsService {
             productsPage.items.forEach((item) => {
                 if (item.images)
                     item.images = JSON.parse(item.images);
+                if (item.imagesCompress)
+                    item.imagesCompress = JSON.parse(item.imagesCompress);
+                const images = [];
+                const imagesCompress = [];
+                for (let image of item.images) {
+                    const domain_image = (process.env.HOST || 'http://localhost:4000') + image;
+                    images.push(domain_image);
+                }
+                for (let image of item === null || item === void 0 ? void 0 : item.imagesCompress) {
+                    const compress = (process.env.HOST || 'http://localhost:4000') + image;
+                    imagesCompress.push(compress);
+                }
+                data.imagesCompress = imagesCompress;
+                item.images = images;
             });
         }
         return productsPage;
@@ -121,9 +162,7 @@ let ProductsService = class ProductsService {
                 if (files.catalogue) {
                     const catalogue = [];
                     for (const [index, file] of files.catalogue.entries()) {
-                        catalogue[index] =
-                            process.env.HOST ||
-                                'http://localhost:4000/' + file.path.replace('\\', '/');
+                        catalogue[index] = file.path.replace('\\', '/');
                     }
                     saveProductInfo.catalogue = JSON.stringify(catalogue);
                 }
@@ -135,28 +174,26 @@ let ProductsService = class ProductsService {
                 saveProductInfo.rating = productDTO.rating || null;
                 if (files.images) {
                     const images = [];
+                    const imagesCompress = [];
                     for (const [index, file] of files.images.entries()) {
-                        images[index] =
-                            process.env.HOST ||
-                                'http://localhost:4000/' + file.path.replace('\\', '/');
+                        images[index] = file.path.replace('\\', '/');
+                        const cpImg = await (0, convertFile_ultis_1.compessImg)(file.path, 400, undefined, file === null || file === void 0 ? void 0 : file.mimetype.split('/')[1]);
+                        imagesCompress.push(cpImg.replace('\\', '/'));
                     }
+                    saveProduct.imagesCompress = JSON.stringify(imagesCompress);
                     saveProduct.images = JSON.stringify(images);
                 }
                 if (files.descriptionImages) {
                     const descriptionImages = [];
                     for (const [index, file] of files.descriptionImages.entries()) {
-                        descriptionImages[index] =
-                            process.env.HOST ||
-                                'http://localhost:4000/' + file.path.replace('\\', '/');
+                        descriptionImages[index] = file.path.replace('\\', '/');
                     }
                     saveProduct.descriptionImages = JSON.stringify(descriptionImages);
                 }
                 if (files.specsImages) {
                     const specsImages = [];
                     for (const [index, file] of files.specsImages.entries()) {
-                        specsImages[index] =
-                            process.env.HOST ||
-                                'http://localhost:4000/' + file.path.replace('\\', '/');
+                        specsImages[index] = file.path.replace('\\', '/');
                     }
                     saveProduct.specsImages = JSON.stringify(specsImages);
                 }
@@ -204,13 +241,45 @@ let ProductsService = class ProductsService {
         });
         if (data) {
             data.images = JSON.parse(data.images);
+            data.imagesCompress = JSON.parse(data.imagesCompress);
+            const images = [];
+            const imagesCompress = [];
+            for (let image of data.images) {
+                const domain_image = (process.env.HOST || 'http://localhost:4000') + image;
+                images.push(domain_image);
+            }
+            for (let image of data === null || data === void 0 ? void 0 : data.imagesCompress) {
+                const compress = (process.env.HOST || 'http://localhost:4000') + image;
+                imagesCompress.push(compress);
+            }
+            data.images = images;
+            data.imagesCompress = imagesCompress;
             if ((_a = data === null || data === void 0 ? void 0 : data.related) === null || _a === void 0 ? void 0 : _a.length) {
                 data.related.forEach((element, idx) => {
                     data.related[idx].images = JSON.parse(element.images);
+                    data.related[idx].imagesCompress = JSON.parse(element.imagesCompress);
+                    const related_images = [];
+                    const imagesCompressRelated = [];
+                    for (let image of data.related[idx].images) {
+                        const domain_image = (process.env.HOST || 'http://localhost:4000') + image;
+                        related_images.push(domain_image);
+                    }
+                    for (let image of data === null || data === void 0 ? void 0 : data.imagesCompress) {
+                        const compress = (process.env.HOST || 'http://localhost:4000') + image;
+                        imagesCompressRelated.push(compress);
+                    }
+                    data.related[idx].imagesCompress = imagesCompressRelated;
+                    data.related[idx].images = related_images;
                 });
             }
             if ((_c = (_b = data === null || data === void 0 ? void 0 : data.info) === null || _b === void 0 ? void 0 : _b.catalogue) === null || _c === void 0 ? void 0 : _c.length) {
                 data.info.catalogue = JSON.parse(data.info.catalogue);
+                const catalogues = [];
+                for (let cat of data.info.catalogue) {
+                    const cats = (process.env.HOST || 'http://localhost:4000') + cat;
+                    catalogues.push(cats);
+                }
+                data.info.catalogue = catalogues;
             }
             return data;
         }
@@ -223,9 +292,7 @@ let ProductsService = class ProductsService {
                 let saveProductInfo = new product_info_entity_1.ProductInfo();
                 if (catalogue) {
                     for (const [index, file] of catalogue.entries()) {
-                        catalogue[index] =
-                            process.env.HOST ||
-                                'http://localhost:4000/' + file.path.replace('\\', '/');
+                        catalogue[index] = file.path.replace('\\', '/');
                     }
                     saveProductInfo.catalogue = JSON.stringify(catalogue);
                 }
@@ -239,15 +306,17 @@ let ProductsService = class ProductsService {
                     where: { id: id },
                     relations: {
                         related: true,
-                        info: true
+                        info: true,
                     },
                 });
                 if (images) {
+                    const imagesCompress = [];
                     for (const [index, file] of images.entries()) {
-                        images[index] =
-                            process.env.HOST ||
-                                'http://localhost:4000/' + file.path.replace('\\', '/');
+                        images[index] = file.path.replace('\\', '/');
+                        const cpImg = await (0, convertFile_ultis_1.compessImg)(file.path, 400, undefined, file === null || file === void 0 ? void 0 : file.mimetype.split('/')[1]);
+                        imagesCompress.push(cpImg.replace('\\', '/'));
                     }
+                    saveProduct.imagesCompress = JSON.stringify(imagesCompress);
                     saveProduct.images = JSON.stringify(images);
                 }
                 if (!!relatedProduct) {

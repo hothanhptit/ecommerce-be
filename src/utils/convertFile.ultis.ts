@@ -2,17 +2,27 @@ const sharp = require('sharp');
 
 export async function compessImg(
   inputPath: string,
-  outputPath: string,
+  width: number = 300,
   quality?: number,
+  type?: string,
 ) {
-  await sharp(inputPath)
-    .resize(200)
-    .png({ compressionLevel: 9 })
-    .toFile(outputPath.split('.')[0] + '-cp.png');
-    // keep the width or height to maintain the ratio
-    // .resize({
-    //     fit: sharp.fit.contain,
-    //     width: 800
-    // })
-    // .jpeg({ quality: 80 })
+  if (type == 'png') {
+    await sharp(inputPath)
+      .resize({
+        fit: sharp.fit.contain,
+        width: width,
+      })
+      .png({ compressionLevel: 9 })
+      .toFile(inputPath.split('.')[0] + '-cp.png');
+    return inputPath.split('.')[0] + '-cp.png';
+  } else {
+    await sharp(inputPath)
+      .resize({
+        fit: sharp.fit.contain,
+        width: width,
+      })
+      .jpeg()
+      .toFile(inputPath.split('.')[0] + '-cp.jpg');
+    return inputPath.split('.')[0] + '-cp.jpg';
+  }
 }

@@ -30,6 +30,9 @@ export class Product {
   @Column()
   images: string;
 
+  @Column({ nullable: true })
+  imagesCompress: string;
+
   @Column()
   summary?: string;
 

@@ -44,15 +44,15 @@ export class NewsController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(16), ParseIntPipe) limit: number = 16,
     @Query('orderBy') orderBy: string = 'created_at',
-    @Query('filter') filter: string = '1,2',
-    @Query('category') category: string = '',
+    @Query('category') filter: string = '1,2',
+    @Query('filter') category: string = '',
   ): Promise<Pagination<News>> {
     limit = limit > 100 ? 100 : limit;
     return await this.newsService.getAll(
       {
         page,
         limit,
-        route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
+        route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/products',
       },
       orderBy,
       filter,

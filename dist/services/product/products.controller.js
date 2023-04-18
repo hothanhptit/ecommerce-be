@@ -26,12 +26,12 @@ let ProductsController = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
     }
-    async GetAll(page = 1, limit = 16, orderBy = 'created_at', filter = '', cat = '') {
+    async GetAll(page = 1, limit = 16, orderBy = 'DESC', filter = '', cat = '') {
         limit = limit > 100 ? 100 : limit;
         return await this.productsService.getAll({
             page,
             limit,
-            route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
+            route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/products',
         }, orderBy, filter, cat);
     }
     async getFeatured(page = 1, limit = 16, orderBy = 'created_at') {
@@ -39,7 +39,7 @@ let ProductsController = class ProductsController {
         return await this.productsService.getFeatured({
             page,
             limit,
-            route: process.env.host ||
+            route: process.env.HOST ||
                 'http://localhost:4000' + '/api/v1/products/featured',
         }, orderBy);
     }

@@ -34,7 +34,7 @@ let NewsController = class NewsController {
         return await this.newsService.getAll({
             page,
             limit,
-            route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
+            route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/products',
         }, orderBy, filter, category);
     }
     findRecent(take = 5) {
@@ -71,8 +71,8 @@ __decorate([
     __param(0, (0, common_1.Query)('page', new common_1.DefaultValuePipe(1), common_1.ParseIntPipe)),
     __param(1, (0, common_1.Query)('limit', new common_1.DefaultValuePipe(16), common_1.ParseIntPipe)),
     __param(2, (0, common_1.Query)('orderBy')),
-    __param(3, (0, common_1.Query)('filter')),
-    __param(4, (0, common_1.Query)('category')),
+    __param(3, (0, common_1.Query)('category')),
+    __param(4, (0, common_1.Query)('filter')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number, String, String, String]),
     __metadata("design:returntype", Promise)

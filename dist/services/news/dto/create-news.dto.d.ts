@@ -1,5 +1,6 @@
 export declare class CreateNewsDto {
     name: string;
+    slug: string;
     image: string;
     title: string;
     category: string;

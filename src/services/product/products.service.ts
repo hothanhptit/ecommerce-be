@@ -17,8 +17,10 @@ import { Product } from './entities/product.entity';
 import { RelatedProduct } from './entities/relatedProduct.entity';
 import { ProductInfoDTO } from './dto/product-info.dto';
 import { ProductInfo } from './entities/product-info.entity';
+import { compessImg } from 'src/utils/convertFile.ultis';
 
-export enum Order {}
+export const Order = 'ASC' || 'DESC';
+
 @Injectable()
 export class ProductsService {
   constructor(
@@ -34,7 +36,7 @@ export class ProductsService {
 
   async getAll(
     options: IPaginationOptions,
-    orderBy: string,
+    orderBy: any,
     filter: string,
     category: string,
   ): Promise<Pagination<Product>> {
@@ -51,7 +53,7 @@ export class ProductsService {
         .createQueryBuilder('prod')
         .where('prod.status= :status', { status: 1 })
         .andWhere('prod.categoryId= :cat', { cat: category })
-        .orderBy('prod.updatedAt', 'DESC')
+        .orderBy('prod.updatedAt', orderBy)
         .cache('product', 30 * 1000);
     } else {
       queryBuilder = this.productRepository
@@ -78,6 +80,24 @@ export class ProductsService {
     if (productsPage) {
       productsPage.items.forEach((item) => {
         if (item.images) item.images = JSON.parse(item.images);
+        if (item.imagesCompress)
+          item.imagesCompress = JSON.parse(item.imagesCompress);
+        const images = [];
+        const imagesCompress = [];
+        for (let image of item.images) {
+          const domain_image =
+            (process.env.HOST || 'http://localhost:4000') + image;
+          images.push(domain_image);
+        }
+        for (let image of item?.imagesCompress) {
+          const compress =
+            (process.env.HOST || 'http://localhost:4000') + image;
+          imagesCompress.push(compress);
+        }
+        // @ts-ignore
+        data.imagesCompress = imagesCompress;
+        // @ts-ignore
+        item.images = images;
         // if (item.info) item.info.catalogue = JSON.parse(item.info.catalogue);
       });
     }
@@ -103,6 +123,23 @@ export class ProductsService {
     if (productsPage) {
       productsPage.items.forEach((item) => {
         if (item.images) item.images = JSON.parse(item.images);
+        if (item.imagesCompress) item.images = JSON.parse(item.imagesCompress);
+        const images = [];
+        const imagesCompress = [];
+        for (let image of item.images) {
+          const domain_image =
+            (process.env.HOST || 'http://localhost:4000') + image;
+          images.push(domain_image);
+        }
+        for (let image of item?.imagesCompress) {
+          const compress =
+            (process.env.HOST || 'http://localhost:4000') + image;
+          imagesCompress.push(compress);
+        }
+        // @ts-ignore
+        data.imagesCompress = imagesCompress;
+        // @ts-ignore
+        item.images = images;
         // if (item.info) item.info.catalogue = JSON.parse(item.info.catalogue);
       });
     }
@@ -111,7 +148,7 @@ export class ProductsService {
 
   async searchProductsBySlug(
     options: IPaginationOptions,
-    orderBy: string,
+    orderBy: any,
     filter: string,
     category?: string,
   ): Promise<Pagination<Product>> {
@@ -124,7 +161,7 @@ export class ProductsService {
         .where('prod.status= :status', { status: 1 })
         .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
         .andWhere('prod.categoryId= :category', { category: category })
-        .orderBy('prod.updatedAt', 'DESC')
+        .orderBy('prod.updatedAt', orderBy)
         .cache('product', 30 * 1000);
     } else {
       queryBuilder = this.productRepository
@@ -132,7 +169,7 @@ export class ProductsService {
         .where('prod.status= :status', { status: 1 })
         .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
         // .andWhere('MATCH(prod.slug) AGAINST (:slug IN BOOLEAN MODE)', { slug: slug })
-        .orderBy('prod.updatedAt', 'DESC')
+        .orderBy('prod.updatedAt', orderBy)
         .cache('product', 30 * 1000);
     }
     const productsPage = await paginate<Product>(queryBuilder, options);
@@ -140,6 +177,24 @@ export class ProductsService {
     if (productsPage) {
       productsPage.items.forEach((item) => {
         if (item.images) item.images = JSON.parse(item.images);
+        if (item.imagesCompress)
+          item.imagesCompress = JSON.parse(item.imagesCompress);
+        const images = [];
+        const imagesCompress = [];
+        for (let image of item.images) {
+          const domain_image =
+            (process.env.HOST || 'http://localhost:4000') + image;
+          images.push(domain_image);
+        }
+        for (let image of item?.imagesCompress) {
+          const compress =
+            (process.env.HOST || 'http://localhost:4000') + image;
+          imagesCompress.push(compress);
+        }
+        // @ts-ignore
+        data.imagesCompress = imagesCompress;
+        // @ts-ignore
+        item.images = images;
         // if (item.info) item.info.catalogue = JSON.parse(item.info.catalogue);
       });
     }
@@ -159,9 +214,7 @@ export class ProductsService {
         if (files.catalogue) {
           const catalogue = [];
           for (const [index, file] of files.catalogue.entries()) {
-            catalogue[index] =
-              process.env.HOST ||
-              'http://localhost:4000/' + file.path.replace('\\', '/');
+            catalogue[index] = file.path.replace('\\', '/');
           }
           saveProductInfo.catalogue = JSON.stringify(catalogue);
         }
@@ -176,20 +229,25 @@ export class ProductsService {
 
         if (files.images) {
           const images = [];
+          const imagesCompress = [];
           for (const [index, file] of files.images.entries()) {
-            images[index] =
-              process.env.HOST ||
-              'http://localhost:4000/' + file.path.replace('\\', '/');
+            images[index] = file.path.replace('\\', '/');
+            const cpImg = await compessImg(
+              file.path,
+              400,
+              undefined,
+              file?.mimetype.split('/')[1],
+            );
+            imagesCompress.push(cpImg.replace('\\', '/'));
           }
+          saveProduct.imagesCompress = JSON.stringify(imagesCompress);
           saveProduct.images = JSON.stringify(images);
         }
 
         if (files.descriptionImages) {
           const descriptionImages = [];
           for (const [index, file] of files.descriptionImages.entries()) {
-            descriptionImages[index] =
-              process.env.HOST ||
-              'http://localhost:4000/' + file.path.replace('\\', '/');
+            descriptionImages[index] = file.path.replace('\\', '/');
           }
           saveProduct.descriptionImages = JSON.stringify(descriptionImages);
         }
@@ -197,9 +255,7 @@ export class ProductsService {
         if (files.specsImages) {
           const specsImages = [];
           for (const [index, file] of files.specsImages.entries()) {
-            specsImages[index] =
-              process.env.HOST ||
-              'http://localhost:4000/' + file.path.replace('\\', '/');
+            specsImages[index] = file.path.replace('\\', '/');
           }
           saveProduct.specsImages = JSON.stringify(specsImages);
         }
@@ -251,13 +307,54 @@ export class ProductsService {
 
     if (data) {
       data.images = JSON.parse(data.images);
+      data.imagesCompress = JSON.parse(data.imagesCompress);
+      const images = [];
+      const imagesCompress = [];
+      for (let image of data.images) {
+        const domain_image =
+          (process.env.HOST || 'http://localhost:4000') + image;
+        images.push(domain_image);
+      }
+      for (let image of data?.imagesCompress) {
+        const compress = (process.env.HOST || 'http://localhost:4000') + image;
+        imagesCompress.push(compress);
+      }
+      // @ts-ignore
+      data.images = images;
+      // @ts-ignore
+      data.imagesCompress = imagesCompress;
+
       if (data?.related?.length) {
         data.related.forEach((element, idx) => {
           data.related[idx].images = JSON.parse(element.images);
+          data.related[idx].imagesCompress = JSON.parse(element.imagesCompress);
+          const related_images = [];
+          const imagesCompressRelated = [];
+          for (let image of data.related[idx].images) {
+            const domain_image =
+              (process.env.HOST || 'http://localhost:4000') + image;
+            related_images.push(domain_image);
+          }
+          for (let image of data?.imagesCompress) {
+            const compress =
+              (process.env.HOST || 'http://localhost:4000') + image;
+            imagesCompressRelated.push(compress);
+          }
+          // @ts-ignore
+          data.related[idx].imagesCompress = imagesCompressRelated;
+          // @ts-ignore
+          data.related[idx].images = related_images;
         });
       }
       if (data?.info?.catalogue?.length) {
         data.info.catalogue = JSON.parse(data.info.catalogue);
+        const catalogues = [];
+        for (let cat of data.info.catalogue) {
+          const cats = (process.env.HOST || 'http://localhost:4000') + cat;
+          catalogues.push(cats);
+        }
+        // @ts-ignore
+        data.info.catalogue = catalogues;
       }
       // if (data.catalogue) {
       //   data.catalogue = JSON.parse(data.catalogue);
@@ -284,9 +381,7 @@ export class ProductsService {
 
         if (catalogue) {
           for (const [index, file] of catalogue.entries()) {
-            catalogue[index] =
-              process.env.HOST ||
-              'http://localhost:4000/' + file.path.replace('\\', '/');
+            catalogue[index] = file.path.replace('\\', '/');
           }
           saveProductInfo.catalogue = JSON.stringify(catalogue);
         }
@@ -302,16 +397,23 @@ export class ProductsService {
           where: { id: id },
           relations: {
             related: true,
-            info: true
+            info: true,
           },
         });
 
         if (images) {
+          const imagesCompress = [];
           for (const [index, file] of images.entries()) {
-            images[index] =
-              process.env.HOST ||
-              'http://localhost:4000/' + file.path.replace('\\', '/');
+            images[index] = file.path.replace('\\', '/');
+            const cpImg = await compessImg(
+              file.path,
+              400,
+              undefined,
+              file?.mimetype.split('/')[1],
+            );
+            imagesCompress.push(cpImg.replace('\\', '/'));
           }
+          saveProduct.imagesCompress = JSON.stringify(imagesCompress);
           saveProduct.images = JSON.stringify(images);
         }
 

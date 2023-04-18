@@ -6,7 +6,7 @@ export declare class OthersService {
     private menuRepo;
     constructor(menuRepo: Repository<Menu>);
     create(menuDto: Menu): Promise<Menu>;
-    findAll(): Promise<Menu[] | NotFoundException>;
+    findAll(): Promise<NotFoundException | Menu[]>;
     findOne(id: number): Promise<Menu>;
     update(id: number, menuDto: UpdateMenuDto): Promise<{
         id: number;

@@ -37,6 +37,7 @@ const services_module_1 = require("./services/services/services.module");
 const services_entity_1 = require("./services/services/entities/services.entity");
 const main_banner_entiy_1 = require("./services/banner/entities/main-banner.entiy");
 const product_info_entity_1 = require("./services/product/entities/product-info.entity");
+const config_1 = require("@nestjs/config");
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -76,7 +77,7 @@ AppModule = __decorate([
                     mail_entity_1.Mail,
                     services_entity_1.Service,
                     main_banner_entiy_1.MainBanner,
-                    product_info_entity_1.ProductInfo
+                    product_info_entity_1.ProductInfo,
                 ],
                 synchronize: true,
                 cache: {
@@ -111,6 +112,7 @@ AppModule = __decorate([
                     ];
                 },
             }),
+            config_1.ConfigModule.forRoot(),
         ],
         controllers: [],
         providers: [],

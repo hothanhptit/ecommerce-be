@@ -11,6 +11,8 @@ export class News {
   id: number;
   @Column()
   name: string;
+  @Column({ nullable: true })
+  slug: string;
   @Column()
   image: string;
   @Column()

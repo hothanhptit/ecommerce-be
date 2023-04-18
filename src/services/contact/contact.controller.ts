@@ -83,7 +83,7 @@ export class ContactController {
         page,
         limit,
         route:
-          process.env.host || 'http://localhost:4000' + '/api/v1/contact/mail',
+          (process.env.HOST || 'http://localhost:4000') + '/api/v1/contact/mail',
       },
       {
         order: {

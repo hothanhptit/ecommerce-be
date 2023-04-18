@@ -30,11 +30,11 @@ export class ServicesController {
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   create(
-    @Body() createBannerDto: CreateServiceDTO,
+    @Body() createServiceDto: CreateServiceDTO,
     @Request() req,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.sService.create(createBannerDto, file, req.user);
+    return this.sService.create(createServiceDto, file, req.user);
   }
 
   @Get()
