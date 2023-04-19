@@ -89,13 +89,14 @@ export class ProductsService {
             (process.env.HOST || 'http://localhost:4000') + image;
           images.push(domain_image);
         }
-        for (let image of item?.imagesCompress) {
-          const compress =
-            (process.env.HOST || 'http://localhost:4000') + image;
-          imagesCompress.push(compress);
-        }
+        if (item?.imagesCompress)
+          for (let image of item?.imagesCompress) {
+            const compress =
+              (process.env.HOST || 'http://localhost:4000') + image;
+            imagesCompress.push(compress);
+          }
         // @ts-ignore
-        data.imagesCompress = imagesCompress;
+        item.imagesCompress = imagesCompress;
         // @ts-ignore
         item.images = images;
         // if (item.info) item.info.catalogue = JSON.parse(item.info.catalogue);
@@ -131,13 +132,14 @@ export class ProductsService {
             (process.env.HOST || 'http://localhost:4000') + image;
           images.push(domain_image);
         }
-        for (let image of item?.imagesCompress) {
-          const compress =
-            (process.env.HOST || 'http://localhost:4000') + image;
-          imagesCompress.push(compress);
-        }
+        if (item?.imagesCompress)
+          for (let image of item?.imagesCompress) {
+            const compress =
+              (process.env.HOST || 'http://localhost:4000') + image;
+            imagesCompress.push(compress);
+          }
         // @ts-ignore
-        data.imagesCompress = imagesCompress;
+        item.imagesCompress = imagesCompress;
         // @ts-ignore
         item.images = images;
         // if (item.info) item.info.catalogue = JSON.parse(item.info.catalogue);
@@ -186,13 +188,14 @@ export class ProductsService {
             (process.env.HOST || 'http://localhost:4000') + image;
           images.push(domain_image);
         }
-        for (let image of item?.imagesCompress) {
-          const compress =
-            (process.env.HOST || 'http://localhost:4000') + image;
-          imagesCompress.push(compress);
-        }
+        if (item?.imagesCompress)
+          for (let image of item?.imagesCompress) {
+            const compress =
+              (process.env.HOST || 'http://localhost:4000') + image;
+            imagesCompress.push(compress);
+          }
         // @ts-ignore
-        data.imagesCompress = imagesCompress;
+        item.imagesCompress = imagesCompress;
         // @ts-ignore
         item.images = images;
         // if (item.info) item.info.catalogue = JSON.parse(item.info.catalogue);
@@ -315,10 +318,12 @@ export class ProductsService {
           (process.env.HOST || 'http://localhost:4000') + image;
         images.push(domain_image);
       }
-      for (let image of data?.imagesCompress) {
-        const compress = (process.env.HOST || 'http://localhost:4000') + image;
-        imagesCompress.push(compress);
-      }
+      if (data?.imagesCompress)
+        for (let image of data?.imagesCompress) {
+          const compress =
+            (process.env.HOST || 'http://localhost:4000') + image;
+          imagesCompress.push(compress);
+        }
       // @ts-ignore
       data.images = images;
       // @ts-ignore
@@ -335,11 +340,13 @@ export class ProductsService {
               (process.env.HOST || 'http://localhost:4000') + image;
             related_images.push(domain_image);
           }
-          for (let image of data?.imagesCompress) {
-            const compress =
-              (process.env.HOST || 'http://localhost:4000') + image;
-            imagesCompressRelated.push(compress);
-          }
+          if (data?.imagesCompress)
+            if (data?.related[idx].imagesCompress)
+              for (let image of data.related[idx].imagesCompress) {
+                const compress =
+                  (process.env.HOST || 'http://localhost:4000') + image;
+                imagesCompressRelated.push(compress);
+              }
           // @ts-ignore
           data.related[idx].imagesCompress = imagesCompressRelated;
           // @ts-ignore

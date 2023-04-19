@@ -4,8 +4,9 @@ const core_1 = require("@nestjs/core");
 const swagger_1 = require("@nestjs/swagger");
 const dist_1 = require("@nestjs/swagger/dist");
 const app_module_1 = require("./app.module");
+const fs = require('fs');
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, {});
     app.enableCors({
         origin: ['http://localhost:3000'],
         credentials: true,

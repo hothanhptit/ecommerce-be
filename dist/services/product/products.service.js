@@ -68,11 +68,12 @@ let ProductsService = class ProductsService {
                     const domain_image = (process.env.HOST || 'http://localhost:4000') + image;
                     images.push(domain_image);
                 }
-                for (let image of item === null || item === void 0 ? void 0 : item.imagesCompress) {
-                    const compress = (process.env.HOST || 'http://localhost:4000') + image;
-                    imagesCompress.push(compress);
-                }
-                data.imagesCompress = imagesCompress;
+                if (item === null || item === void 0 ? void 0 : item.imagesCompress)
+                    for (let image of item === null || item === void 0 ? void 0 : item.imagesCompress) {
+                        const compress = (process.env.HOST || 'http://localhost:4000') + image;
+                        imagesCompress.push(compress);
+                    }
+                item.imagesCompress = imagesCompress;
                 item.images = images;
             });
         }
@@ -101,11 +102,12 @@ let ProductsService = class ProductsService {
                     const domain_image = (process.env.HOST || 'http://localhost:4000') + image;
                     images.push(domain_image);
                 }
-                for (let image of item === null || item === void 0 ? void 0 : item.imagesCompress) {
-                    const compress = (process.env.HOST || 'http://localhost:4000') + image;
-                    imagesCompress.push(compress);
-                }
-                data.imagesCompress = imagesCompress;
+                if (item === null || item === void 0 ? void 0 : item.imagesCompress)
+                    for (let image of item === null || item === void 0 ? void 0 : item.imagesCompress) {
+                        const compress = (process.env.HOST || 'http://localhost:4000') + image;
+                        imagesCompress.push(compress);
+                    }
+                item.imagesCompress = imagesCompress;
                 item.images = images;
             });
         }
@@ -144,11 +146,12 @@ let ProductsService = class ProductsService {
                     const domain_image = (process.env.HOST || 'http://localhost:4000') + image;
                     images.push(domain_image);
                 }
-                for (let image of item === null || item === void 0 ? void 0 : item.imagesCompress) {
-                    const compress = (process.env.HOST || 'http://localhost:4000') + image;
-                    imagesCompress.push(compress);
-                }
-                data.imagesCompress = imagesCompress;
+                if (item === null || item === void 0 ? void 0 : item.imagesCompress)
+                    for (let image of item === null || item === void 0 ? void 0 : item.imagesCompress) {
+                        const compress = (process.env.HOST || 'http://localhost:4000') + image;
+                        imagesCompress.push(compress);
+                    }
+                item.imagesCompress = imagesCompress;
                 item.images = images;
             });
         }
@@ -248,10 +251,11 @@ let ProductsService = class ProductsService {
                 const domain_image = (process.env.HOST || 'http://localhost:4000') + image;
                 images.push(domain_image);
             }
-            for (let image of data === null || data === void 0 ? void 0 : data.imagesCompress) {
-                const compress = (process.env.HOST || 'http://localhost:4000') + image;
-                imagesCompress.push(compress);
-            }
+            if (data === null || data === void 0 ? void 0 : data.imagesCompress)
+                for (let image of data === null || data === void 0 ? void 0 : data.imagesCompress) {
+                    const compress = (process.env.HOST || 'http://localhost:4000') + image;
+                    imagesCompress.push(compress);
+                }
             data.images = images;
             data.imagesCompress = imagesCompress;
             if ((_a = data === null || data === void 0 ? void 0 : data.related) === null || _a === void 0 ? void 0 : _a.length) {
@@ -264,10 +268,12 @@ let ProductsService = class ProductsService {
                         const domain_image = (process.env.HOST || 'http://localhost:4000') + image;
                         related_images.push(domain_image);
                     }
-                    for (let image of data === null || data === void 0 ? void 0 : data.imagesCompress) {
-                        const compress = (process.env.HOST || 'http://localhost:4000') + image;
-                        imagesCompressRelated.push(compress);
-                    }
+                    if (data === null || data === void 0 ? void 0 : data.imagesCompress)
+                        if (data === null || data === void 0 ? void 0 : data.related[idx].imagesCompress)
+                            for (let image of data.related[idx].imagesCompress) {
+                                const compress = (process.env.HOST || 'http://localhost:4000') + image;
+                                imagesCompressRelated.push(compress);
+                            }
                     data.related[idx].imagesCompress = imagesCompressRelated;
                     data.related[idx].images = related_images;
                 });
