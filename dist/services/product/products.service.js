@@ -95,7 +95,7 @@ let ProductsService = class ProductsService {
                 if (item.images)
                     item.images = JSON.parse(item.images);
                 if (item.imagesCompress)
-                    item.images = JSON.parse(item.imagesCompress);
+                    item.imagesCompress = JSON.parse(item.imagesCompress);
                 const images = [];
                 const imagesCompress = [];
                 for (let image of item.images) {
