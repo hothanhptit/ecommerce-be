@@ -1,3 +1,5 @@
+import { CategoriesService } from './../categories/categories.service';
+import { Category } from './../categories/entities/category.entity';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { Pagination } from 'nestjs-typeorm-paginate/dist/pagination';
 import { User } from 'src/services/auth/entities/user.entity';
@@ -5,17 +7,21 @@ import { DeleteResult, Repository } from 'typeorm';
 import { ProductDTO } from './dto/product.dto';
 import { Product } from './entities/product.entity';
 import { RelatedProduct } from './entities/relatedProduct.entity';
-export declare enum Order {
-}
+import { ProductInfo } from './entities/product-info.entity';
+export declare const Order: string;
 export declare class ProductsService {
     private productRepository;
     private relatedProducts;
-    constructor(productRepository: Repository<Product>, relatedProducts: Repository<RelatedProduct>);
+    private productInfoRepo;
+    private catRepo;
+    private catServices;
+    constructor(productRepository: Repository<Product>, relatedProducts: Repository<RelatedProduct>, productInfoRepo: Repository<ProductInfo>, catRepo: Repository<Category>, catServices: CategoriesService);
     private logging;
-    getAll(options: IPaginationOptions, orderBy: string, filter: string): Promise<Pagination<Product>>;
-    searchProducts(options: IPaginationOptions, orderBy: string, filter: string): Promise<Pagination<Product>>;
+    getAll(options: IPaginationOptions, orderBy: any, filter: string, category: string): Promise<Pagination<Product>>;
+    getFeatured(options: IPaginationOptions, orderBy: string): Promise<Pagination<Product>>;
+    searchProductsBySlug(options: IPaginationOptions, orderBy: any, filter: string, category?: string): Promise<Pagination<Product>>;
     create(productDTO: ProductDTO, files: any, relatedProduct: string, user: User): Promise<Product & ProductDTO>;
     getOne(productId: string): Promise<Product>;
-    update(id: string, productDTO: ProductDTO, relatedProduct: string | null, files: any, user: User): Promise<Product>;
+    update(id: string, productDTO: ProductDTO, relatedProduct: string | null, images: any, catalogue: any, user: User): Promise<Product>;
     delete(id: number, user: User): Promise<DeleteResult>;
 }

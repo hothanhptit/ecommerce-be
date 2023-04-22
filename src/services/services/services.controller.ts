@@ -30,11 +30,11 @@ export class ServicesController {
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   create(
-    @Body() createBannerDto: CreateServiceDTO,
+    @Body() createServiceDto: CreateServiceDTO,
     @Request() req,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.sService.create(createBannerDto, file, req.user);
+    return this.sService.create(createServiceDto, file, req.user);
   }
 
   @Get()
@@ -48,7 +48,7 @@ export class ServicesController {
     if (banner) return banner;
     throw new NotFoundException();
   }
-
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
   update(
@@ -58,7 +58,7 @@ export class ServicesController {
   ) {
     return this.sService.update(id, updateBannerDto, file);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.sService.remove(id);

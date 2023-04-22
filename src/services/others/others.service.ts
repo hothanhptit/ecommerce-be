@@ -15,7 +15,12 @@ export class OthersService {
   }
 
   async findAll() {
-    return await this.menuRepo.find();
+    const menu =  await this.menuRepo.find();
+    if(!menu) return new NotFoundException()
+    menu.forEach((element, idx) => {
+        menu[idx].jsonMenu = JSON.parse(element.jsonMenu)
+    });
+    return menu
   }
 
   async findOne(id: number) {

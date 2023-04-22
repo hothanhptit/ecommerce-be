@@ -19,6 +19,7 @@ const menu_dto_1 = require("./dto/menu.dto");
 const dist_1 = require("@nestjs/swagger/dist");
 const common_1 = require("@nestjs/common");
 const others_service_1 = require("./others.service");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let OthersController = class OthersController {
     constructor(othersService) {
         this.othersService = othersService;
@@ -40,6 +41,7 @@ let OthersController = class OthersController {
     }
 };
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('/menu'),
     openapi.ApiResponse({ status: 201, type: require("./dto/menu.dto").Menu }),
     __param(0, (0, common_1.Body)()),
@@ -49,7 +51,7 @@ __decorate([
 ], OthersController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('/menu'),
-    openapi.ApiResponse({ status: 200, type: [require("./dto/menu.dto").Menu] }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
@@ -63,6 +65,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], OthersController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)('/menu/:id'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, (0, common_1.Param)('id')),
@@ -72,6 +75,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], OthersController.prototype, "update", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Delete)('/menu/:id'),
     openapi.ApiResponse({ status: 200, type: Boolean }),
     __param(0, (0, common_1.Param)('id')),

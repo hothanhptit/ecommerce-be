@@ -44,17 +44,19 @@ export class NewsController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(16), ParseIntPipe) limit: number = 16,
     @Query('orderBy') orderBy: string = 'created_at',
-    @Query('filter') filter: string = '1,2',
+    @Query('category') filter: string = '1,2',
+    @Query('filter') category: string = '',
   ): Promise<Pagination<News>> {
     limit = limit > 100 ? 100 : limit;
     return await this.newsService.getAll(
       {
         page,
         limit,
-        route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
+        route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/news',
       },
       orderBy,
       filter,
+      category
     );
     // return this.newsService.findAll();
   }
@@ -63,12 +65,16 @@ export class NewsController {
   findRecent(@Query('take') take: number = 5) {
     return this.newsService.findRecently(take);
   }
+  @Get('/category')
+  findCategory(@Query('take') take: number = 5) {
+    return this.newsService.findCategories(take);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.newsService.findOne(+id);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
   update(
@@ -78,7 +84,7 @@ export class NewsController {
   ) {
     return this.newsService.update(+id, updateNewsDto, file);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.newsService.remove(+id);

@@ -6,7 +6,7 @@ import { UpdateServiceDTO } from './dto/update-sercices.dto';
 export declare class ServicesController {
     private readonly sService;
     constructor(sService: ServicesService);
-    create(createBannerDto: CreateServiceDTO, req: any, file: Express.Multer.File): Promise<Service & CreateServiceDTO>;
+    create(createServiceDto: CreateServiceDTO, req: any, file: Express.Multer.File): Promise<Service & CreateServiceDTO>;
     findAll(): Promise<Service[]>;
     findOne(id: string): Promise<Service>;
     update(id: string, updateBannerDto: UpdateServiceDTO, file: Express.Multer.File): Promise<{

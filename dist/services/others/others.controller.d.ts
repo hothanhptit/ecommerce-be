@@ -5,7 +5,7 @@ export declare class OthersController {
     private readonly othersService;
     constructor(othersService: OthersService);
     create(menuDto: Menu): Promise<Menu>;
-    findAll(): Promise<Menu[]>;
+    findAll(): Promise<import("@nestjs/common").NotFoundException | Menu[]>;
     findOne(id: string): Promise<Menu>;
     update(id: string, menuDto: UpdateMenuDto): Promise<{
         id: number;

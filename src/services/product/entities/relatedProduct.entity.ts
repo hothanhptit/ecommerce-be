@@ -21,6 +21,8 @@ export class RelatedProduct {
   
   @Column({nullable: true})
   images?: string;
+  @Column({nullable: true})
+  imagesCompress?: string;
 
   //   @Column()
   @ManyToOne(() => Product, (product) => product.related, {

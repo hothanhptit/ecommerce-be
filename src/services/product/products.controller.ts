@@ -32,7 +32,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ProductDTO } from './dto/product.dto';
 import { Product } from './entities/product.entity';
 import { ProductsService } from './products.service';
-import { filter } from 'rxjs';
+import { ProductInfoDTO } from './dto/product-info.dto';
 @ApiTags('products')
 @Controller('api/v1/products')
 export class ProductsController {
@@ -42,25 +42,45 @@ export class ProductsController {
   async GetAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(16), ParseIntPipe) limit: number = 16,
-    @Query('orderBy') orderBy: string = 'created_at',
+    @Query('orderBy') orderBy: string = 'DESC',
     @Query('filter') filter: string = '',
+    @Query('categoryId') cat: string = '',
   ): Promise<Pagination<Product>> {
     limit = limit > 100 ? 100 : limit;
     return await this.productsService.getAll(
       {
         page,
         limit,
-        route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
+        route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/products',
       },
       orderBy,
-      filter
+      filter,
+      cat,
+    );
+  }
+  @Get('/featured')
+  async getFeatured(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(16), ParseIntPipe) limit: number = 16,
+    @Query('orderBy') orderBy: string = 'created_at',
+  ): Promise<Pagination<Product>> {
+    limit = limit > 100 ? 100 : limit;
+    return await this.productsService.getFeatured(
+      {
+        page,
+        limit,
+        route:
+          process.env.HOST ||
+          'http://localhost:4000' + '/api/v1/products/featured',
+      },
+      orderBy,
     );
   }
 
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiConsumes('multipart/form-data')
-  @ApiMultiFile('productImages')
+  @ApiMultiFile('images')
   @ApiBody({
     schema: {
       type: 'object',
@@ -69,7 +89,7 @@ export class ProductsController {
           type: 'string',
           format: 'string',
         },
-        productImages: {
+        images: {
           type: 'string',
           format: 'binary',
         },
@@ -114,7 +134,7 @@ export class ProductsController {
   })
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: 'productImages', maxCount: 15 },
+      { name: 'images', maxCount: 15 },
       { name: 'descriptionImages', maxCount: 15 },
       { name: 'specsImages', maxCount: 15 },
       { name: 'catalogue', maxCount: 5 },
@@ -127,7 +147,7 @@ export class ProductsController {
     // @UploadedFiles() descriptionImages: Array<Express.Multer.File>,
     @UploadedFiles()
     files: {
-      productImages?: Express.Multer.File[];
+      images?: Express.Multer.File[];
       descriptionImages?: Express.Multer.File[];
       specsImages?: Express.Multer.File[];
       catalogue?: Express.Multer.File[];
@@ -149,14 +169,18 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(
-    FileFieldsInterceptor([{ name: 'productImages', maxCount: 5 }]),
+    FileFieldsInterceptor([
+      { name: 'images', maxCount: 5 },
+      { name: 'catalogue', maxCount: 5 },
+    ]),
   )
   async Update(
     @Param() id: any,
     @Body() product: ProductDTO,
     @UploadedFiles()
     files: {
-      productImages?: Express.Multer.File[];
+      images?: Express.Multer.File[];
+      catalogue?: Express.Multer.File[];
     },
     @Request() req,
   ): Promise<Product> {
@@ -164,10 +188,12 @@ export class ProductsController {
       id.id,
       product,
       req.body.related,
-      files,
+      files.images,
+      files.catalogue,
       req.user,
     );
   }
+
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async Delete(@Param() id: number, @Request() req): Promise<DeleteResult> {

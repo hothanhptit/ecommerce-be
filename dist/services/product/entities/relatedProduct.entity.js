@@ -15,7 +15,7 @@ const product_entity_1 = require("./product.entity");
 const typeorm_1 = require("typeorm");
 let RelatedProduct = class RelatedProduct {
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => String }, productId: { required: false, type: () => String }, name: { required: false, type: () => String }, images: { required: false, type: () => String }, product: { required: true, type: () => require("./product.entity").Product }, createdAt: { required: true, type: () => Object }, updatedAt: { required: true, type: () => Object } };
+        return { id: { required: true, type: () => String }, productId: { required: false, type: () => String }, name: { required: false, type: () => String }, images: { required: false, type: () => String }, imagesCompress: { required: false, type: () => String }, product: { required: true, type: () => require("./product.entity").Product }, createdAt: { required: true, type: () => Object }, updatedAt: { required: true, type: () => Object } };
     }
 };
 __decorate([
@@ -34,6 +34,10 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], RelatedProduct.prototype, "images", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], RelatedProduct.prototype, "imagesCompress", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => product_entity_1.Product, (product) => product.related, {
         cascade: true,

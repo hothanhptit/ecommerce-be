@@ -7,6 +7,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductModule = void 0;
+const categories_service_1 = require("./../categories/categories.service");
+const category_entity_1 = require("./../categories/entities/category.entity");
 const relatedProduct_entity_1 = require("./entities/relatedProduct.entity");
 const multer_config_1 = require("./../../config/multer.config");
 const multer_1 = require("@nestjs/platform-express/multer");
@@ -15,15 +17,16 @@ const typeorm_1 = require("@nestjs/typeorm");
 const product_entity_1 = require("./entities/product.entity");
 const products_controller_1 = require("./products.controller");
 const products_service_1 = require("./products.service");
+const product_info_entity_1 = require("./entities/product-info.entity");
 let ProductModule = class ProductModule {
 };
 ProductModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([product_entity_1.Product, relatedProduct_entity_1.RelatedProduct]),
+            typeorm_1.TypeOrmModule.forFeature([product_entity_1.Product, relatedProduct_entity_1.RelatedProduct, product_info_entity_1.ProductInfo, category_entity_1.Category]),
             multer_1.MulterModule.register(multer_config_1.multerOptions),
         ],
-        providers: [products_service_1.ProductsService],
+        providers: [products_service_1.ProductsService, categories_service_1.CategoriesService],
         controllers: [products_controller_1.ProductsController],
     })
 ], ProductModule);

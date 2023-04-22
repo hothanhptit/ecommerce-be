@@ -1,1 +1,1 @@
-export declare function compessImg(inputPath: string, outputPath: string, quality?: number): Promise<void>;
+export declare function compessImg(inputPath: string, width?: number, quality?: number, type?: string): Promise<string>;

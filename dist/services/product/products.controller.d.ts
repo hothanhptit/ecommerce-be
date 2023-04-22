@@ -7,16 +7,18 @@ import { ProductsService } from './products.service';
 export declare class ProductsController {
     private productsService;
     constructor(productsService: ProductsService);
-    GetAll(page?: number, limit?: number, orderBy?: string, filter?: string): Promise<Pagination<Product>>;
+    GetAll(page?: number, limit?: number, orderBy?: string, filter?: string, cat?: string): Promise<Pagination<Product>>;
+    getFeatured(page?: number, limit?: number, orderBy?: string): Promise<Pagination<Product>>;
     Create(req: any, product: ProductDTO, files: {
-        productImages?: Express.Multer.File[];
+        images?: Express.Multer.File[];
         descriptionImages?: Express.Multer.File[];
         specsImages?: Express.Multer.File[];
         catalogue?: Express.Multer.File[];
     }): Promise<Product & ProductDTO>;
     GetOne(id: any): Promise<Product>;
     Update(id: any, product: ProductDTO, files: {
-        productImages?: Express.Multer.File[];
+        images?: Express.Multer.File[];
+        catalogue?: Express.Multer.File[];
     }, req: any): Promise<Product>;
     Delete(id: number, req: any): Promise<DeleteResult>;
 }

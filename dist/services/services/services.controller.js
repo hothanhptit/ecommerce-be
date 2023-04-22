@@ -26,8 +26,8 @@ let ServicesController = class ServicesController {
     constructor(sService) {
         this.sService = sService;
     }
-    create(createBannerDto, req, file) {
-        return this.sService.create(createBannerDto, file, req.user);
+    create(createServiceDto, req, file) {
+        return this.sService.create(createServiceDto, file, req.user);
     }
     async findAll() {
         return await this.sService.findAll();
@@ -73,6 +73,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ServicesController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)(':id'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
     openapi.ApiResponse({ status: 200, type: Object }),
@@ -84,6 +85,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ServicesController.prototype, "update", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Delete)(':id'),
     openapi.ApiResponse({ status: 200, type: String }),
     __param(0, (0, common_1.Param)('id')),

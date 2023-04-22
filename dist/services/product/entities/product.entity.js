@@ -11,11 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Product = void 0;
 const openapi = require("@nestjs/swagger");
+const product_info_entity_1 = require("./product-info.entity");
 const relatedProduct_entity_1 = require("./relatedProduct.entity");
 const typeorm_1 = require("typeorm");
 let Product = class Product {
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => String }, name: { required: true, type: () => String }, slug: { required: true, type: () => String }, status: { required: true, type: () => Number }, productImages: { required: true, type: () => String }, summary: { required: false, type: () => String }, price: { required: false, type: () => String }, description: { required: false, type: () => String }, descriptionImages: { required: false, type: () => String }, catalogue: { required: false, type: () => String }, specs: { required: false, type: () => String }, specsImages: { required: false, type: () => String }, detailsDescription: { required: false, type: () => String }, categoryId: { required: false, type: () => String }, type: { required: false, type: () => String }, related: { required: true, type: () => [require("./relatedProduct.entity").RelatedProduct] }, createdAt: { required: true, type: () => String }, updatedAt: { required: true, type: () => String } };
+        return { id: { required: true, type: () => String }, name: { required: true, type: () => String }, slug: { required: true, type: () => String }, status: { required: true, type: () => Number }, images: { required: true, type: () => String }, imagesCompress: { required: true, type: () => String }, summary: { required: false, type: () => String }, isFeatured: { required: false, type: () => Number }, price: { required: false, type: () => String }, description: { required: false, type: () => String }, descriptionImages: { required: false, type: () => String }, specs: { required: false, type: () => String }, specsImages: { required: false, type: () => String }, detailsDescription: { required: false, type: () => String }, categoryId: { required: false, type: () => String }, type: { required: false, type: () => String }, related: { required: true, type: () => [require("./relatedProduct.entity").RelatedProduct] }, info: { required: true, type: () => require("./product-info.entity").ProductInfo }, createdAt: { required: true, type: () => String }, updatedAt: { required: true, type: () => String } };
     }
 };
 __decorate([
@@ -37,11 +38,19 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Product.prototype, "productImages", void 0);
+], Product.prototype, "images", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Product.prototype, "imagesCompress", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Product.prototype, "summary", void 0);
+__decorate([
+    (0, typeorm_1.Column)('tinyint', { nullable: true }),
+    __metadata("design:type", Number)
+], Product.prototype, "isFeatured", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
@@ -54,10 +63,6 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Product.prototype, "descriptionImages", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Product.prototype, "catalogue", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
@@ -82,6 +87,11 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => relatedProduct_entity_1.RelatedProduct, (related) => related.product),
     __metadata("design:type", Array)
 ], Product.prototype, "related", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => product_info_entity_1.ProductInfo),
+    (0, typeorm_1.JoinColumn)(),
+    __metadata("design:type", product_info_entity_1.ProductInfo)
+], Product.prototype, "info", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", String)

@@ -17,8 +17,6 @@ const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handl
 const common_1 = require("@nestjs/common");
 const multer_1 = require("@nestjs/platform-express/multer");
 const typeorm_1 = require("@nestjs/typeorm");
-const app_controller_1 = require("./app.controller");
-const app_services_1 = require("./app.services");
 const multer_config_1 = require("./config/multer.config");
 const auth_module_1 = require("./services/auth/auth.module");
 const user_entity_1 = require("./services/auth/entities/user.entity");
@@ -37,6 +35,9 @@ const product_entity_1 = require("./services/product/entities/product.entity");
 const product_module_1 = require("./services/product/product.module");
 const services_module_1 = require("./services/services/services.module");
 const services_entity_1 = require("./services/services/entities/services.entity");
+const main_banner_entiy_1 = require("./services/banner/entities/main-banner.entiy");
+const product_info_entity_1 = require("./services/product/entities/product-info.entity");
+const config_1 = require("@nestjs/config");
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -74,7 +75,9 @@ AppModule = __decorate([
                     menu_dto_1.Menu,
                     contact_entity_1.Contact,
                     mail_entity_1.Mail,
-                    services_entity_1.Service
+                    services_entity_1.Service,
+                    main_banner_entiy_1.MainBanner,
+                    product_info_entity_1.ProductInfo,
                 ],
                 synchronize: true,
                 cache: {
@@ -109,9 +112,10 @@ AppModule = __decorate([
                     ];
                 },
             }),
+            config_1.ConfigModule.forRoot(),
         ],
-        controllers: [app_controller_1.AppController],
-        providers: [app_services_1.AppService],
+        controllers: [],
+        providers: [],
     })
 ], AppModule);
 exports.AppModule = AppModule;

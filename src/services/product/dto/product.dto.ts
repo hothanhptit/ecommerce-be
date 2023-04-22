@@ -2,86 +2,61 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber } from 'class-validator';
 
 export class ProductDTO {
-  // @ApiProperty({
-  //   type: 'file',
-  //   properties: {
-  //     file: {
-  //       type: 'string',
-  //       format: 'binary',
-  //     },
-  //   },
-  // })
-  // file: any;
-
-  // @ApiProperty({
-  //   type: 'file',
-  //   properties: {
-  //     file: {
-  //       type: 'string',
-  //       format: 'binary',
-  //     },
-  //   },
-  // })
-
-  // @ApiProperty({ description: 'name' })
   @IsString()
   name: string;
-  
+
   slug: string;
-  
+
   @IsNumber()
   status: string;
 
-  // @ApiProperty({
-  //   description: 'product img',
-  //   type: 'array',
-  //   items: { type: 'string', format: 'binary' },
-  // })
-  productImages: string;
+  images: string;
 
-  // @ApiProperty({ description: 'mo ta ngan gon' })
+  @IsNumber()
+  isFeatured: number;
+
+  @IsString()
+  manufacturer: string;
+
+  @IsString()
+  model: string;
+
+  @IsString()
+  origin: string;
+
+  @IsString()
+  warranty: string;
+
   @IsString()
   summary: string;
 
-  // @ApiProperty({ description: 'gia' })
+  @IsString()
+  code: string;
+
   @IsString()
   price: string;
 
-  // @ApiProperty({ description: 'mo ta chi tiet' })
   @IsString()
   description: string;
 
-  // @ApiProperty({
-  //   description: 'anh trong mo ta',
-  //   type: 'array',
-  //   items: { type: 'string', format: 'binary' },
-  // })
   descriptionImages: string;
-  // pdf file
-  // @ApiProperty({ description: 'file mo ta(pdf)' })
+
   catalogue: string;
 
-  // @ApiProperty({ description: 'thong so ky thuat' })
   @IsString()
   specs: string;
 
-  // @ApiProperty({
-  //   description: 'anh trong thong so ky thuat',
-  //   type: 'array',
-  //   items: { type: 'string', format: 'binary' },
-  // })
-
   specsImages: string;
 
-  // @ApiProperty({ description: 'chi tiet mo ta' })
   @IsString()
   detailsDescription: string;
 
-  // @ApiProperty({ description: 'category' })
   @IsString()
   categoryId: string;
 
-  // @ApiProperty({ description: 'type' })
   @IsString()
   type: string;
+
+  @IsString()
+  rating?: string;
 }

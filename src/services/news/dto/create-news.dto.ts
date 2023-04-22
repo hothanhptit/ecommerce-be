@@ -1,9 +1,10 @@
-
 export class CreateNewsDto {
   name: string;
-  image_path: string;
+  slug: string;
+  image: string;
   title: string;
   category: string;
+  categoryName: string;
   tags: string;
   created_by: string;
   content: string;

@@ -41,6 +41,20 @@ export class BannerController {
   async findAll(): Promise<Banner[]> {
     return await this.bannerService.findAll();
   }
+  @Get('/main')
+  async getMainbanner(){
+    return await this.bannerService.getMainBanner();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/main')
+  @UseInterceptors(FileInterceptor('file'))
+  async createMainBanner(
+    @Request() req,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return await this.bannerService.createMainBanner(file, req.user);
+  }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Banner> {
@@ -49,6 +63,7 @@ export class BannerController {
     throw new NotFoundException();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
   update(
@@ -58,7 +73,7 @@ export class BannerController {
   ) {
     return this.bannerService.update(id, updateBannerDto, file);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.bannerService.remove(id);

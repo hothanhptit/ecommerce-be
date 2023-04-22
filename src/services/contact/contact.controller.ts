@@ -19,13 +19,17 @@ import {
   DefaultValuePipe,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { CreateMailDTO } from './dto/create-mail.dto';
 import { Contact } from './entities/contact.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 const nodemailer = require('nodemailer');
 
 @Controller('/api/v1/contact')
+@ApiTags('contact')
 export class ContactController {
   constructor(
     private readonly contactService: ContactService,
@@ -41,33 +45,52 @@ export class ContactController {
   async create(@Body() mailDTO: CreateMailDTO) {
     if (!mailDTO.to_email && !mailDTO.to_phonenumber)
       throw new BadRequestException();
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'thanhh8nt@gmail.com',
-        pass: 'pjjuhkhzgghjybba',
-      },
-    });
+    // const transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   auth: {
+    //     user: 'thanhh8nt@gmail.com',
+    //     pass: 'pjjuhkhzgghjybba',
+    //   },
+    // });
 
     const mailOptions = {
-      from: 'thanhh8nt@gmail.com',
+      from: 'dinh@thietbihoboi.store',
       to: mailDTO.to_email,
       subject: mailDTO.title,
       text: mailDTO.content,
     };
 
+    const transporter = nodemailer.createTransport({    
+      host: "smtpout.secureserver.net",  
+      secure: true,
+      secureConnection: false, // TLS requires secureConnection to be false
+      tls: {
+          ciphers:'SSLv3'
+      },
+      requireTLS:true,
+      port: 465,
+      debug: true,
+      auth: {
+          user: "dinh@thietbihoboi.store",
+          pass: "APeE!V2LP#" 
+      }
+  });
+
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
+        console.log(error);
         this.logger.getLogger('debug').debug(error);
         throw new ServiceUnavailableException();
       } else {
         this.logger.getLogger('debug').debug(info);
+        console.log(info);
+        
       }
     });
     this.mailRepo.save(mailDTO);
     return `Mail sent to ${mailDTO.to_email}!`;
   }
-
+  @UseGuards(JwtAuthGuard)
   @Get('/inbox')
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -79,7 +102,7 @@ export class ContactController {
         page,
         limit,
         route:
-          process.env.host || 'http://localhost:4000' + '/api/v1/contact/mail',
+          (process.env.HOST || 'http://localhost:4000') + '/api/v1/contact/mail',
       },
       {
         order: {
@@ -89,7 +112,7 @@ export class ContactController {
       },
     );
   }
-
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createContact(@Body() contactDTO: CreateContactDto) {
     return this.contactService.create(contactDTO);
@@ -99,7 +122,7 @@ export class ContactController {
   async findOne() {
     return await this.contactService.findOne();
   }
-
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -107,7 +130,7 @@ export class ContactController {
   ) {
     return await this.contactService.update(+id, updateContactDto);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.contactService.remove(+id);

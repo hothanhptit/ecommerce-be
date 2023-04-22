@@ -28,6 +28,9 @@ import { Product } from './services/product/entities/product.entity';
 import { ProductModule } from './services/product/product.module';
 import { ServicesModule } from './services/services/services.module';
 import { Service } from './services/services/entities/services.entity';
+import { MainBanner } from './services/banner/entities/main-banner.entiy';
+import { ProductInfo } from './services/product/entities/product-info.entity';
+import { ConfigModule } from '@nestjs/config';
 const nodemailer = require('nodemailer');
 // import { CartModule } from './services/cart/cart.module';
 // import { OrderModule } from './services/order/order.module';
@@ -71,7 +74,9 @@ const transporter = nodemailer.createTransport({
         Menu,
         Contact,
         Mail,
-        Service
+        Service,
+        MainBanner,
+        ProductInfo,
       ],
       synchronize: true,
       cache: {
@@ -122,8 +127,9 @@ const transporter = nodemailer.createTransport({
         ];
       },
     }),
+    ConfigModule.forRoot(),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

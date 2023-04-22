@@ -26,13 +26,22 @@ let ProductsController = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
     }
-    async GetAll(page = 1, limit = 16, orderBy = 'created_at', filter = '') {
+    async GetAll(page = 1, limit = 16, orderBy = 'DESC', filter = '', cat = '') {
         limit = limit > 100 ? 100 : limit;
         return await this.productsService.getAll({
             page,
             limit,
-            route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
-        }, orderBy, filter);
+            route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/products',
+        }, orderBy, filter, cat);
+    }
+    async getFeatured(page = 1, limit = 16, orderBy = 'created_at') {
+        limit = limit > 100 ? 100 : limit;
+        return await this.productsService.getFeatured({
+            page,
+            limit,
+            route: process.env.HOST ||
+                'http://localhost:4000' + '/api/v1/products/featured',
+        }, orderBy);
     }
     async Create(req, product, files) {
         return await this.productsService.create(product, files, req.body.related, req.user);
@@ -41,7 +50,7 @@ let ProductsController = class ProductsController {
         return await this.productsService.getOne(id.id);
     }
     async Update(id, product, files, req) {
-        return await this.productsService.update(id.id, product, req.body.related, files, req.user);
+        return await this.productsService.update(id.id, product, req.body.related, files.images, files.catalogue, req.user);
     }
     async Delete(id, req) {
         return await this.productsService.delete(id, req.user);
@@ -54,15 +63,26 @@ __decorate([
     __param(1, (0, common_1.Query)('limit', new common_1.DefaultValuePipe(16), common_1.ParseIntPipe)),
     __param(2, (0, common_1.Query)('orderBy')),
     __param(3, (0, common_1.Query)('filter')),
+    __param(4, (0, common_1.Query)('categoryId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, String, String]),
+    __metadata("design:paramtypes", [Number, Number, String, String, String]),
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "GetAll", null);
+__decorate([
+    (0, common_1.Get)('/featured'),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_1.Query)('page', new common_1.DefaultValuePipe(1), common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Query)('limit', new common_1.DefaultValuePipe(16), common_1.ParseIntPipe)),
+    __param(2, (0, common_1.Query)('orderBy')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number, String]),
+    __metadata("design:returntype", Promise)
+], ProductsController.prototype, "getFeatured", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
     (0, swagger_1.ApiConsumes)('multipart/form-data'),
-    (0, multiFiles_swagger_1.ApiMultiFile)('productImages'),
+    (0, multiFiles_swagger_1.ApiMultiFile)('images'),
     (0, swagger_1.ApiBody)({
         schema: {
             type: 'object',
@@ -71,7 +91,7 @@ __decorate([
                     type: 'string',
                     format: 'string',
                 },
-                productImages: {
+                images: {
                     type: 'string',
                     format: 'binary',
                 },
@@ -115,7 +135,7 @@ __decorate([
         },
     }),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([
-        { name: 'productImages', maxCount: 15 },
+        { name: 'images', maxCount: 15 },
         { name: 'descriptionImages', maxCount: 15 },
         { name: 'specsImages', maxCount: 15 },
         { name: 'catalogue', maxCount: 5 },
@@ -139,7 +159,10 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)(':id'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([{ name: 'productImages', maxCount: 5 }])),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([
+        { name: 'images', maxCount: 5 },
+        { name: 'catalogue', maxCount: 5 },
+    ])),
     openapi.ApiResponse({ status: 200, type: require("./entities/product.entity").Product }),
     __param(0, (0, common_1.Param)()),
     __param(1, (0, common_1.Body)()),

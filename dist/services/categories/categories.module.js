@@ -10,12 +10,20 @@ exports.CategoriesModule = void 0;
 const common_1 = require("@nestjs/common");
 const categories_service_1 = require("./categories.service");
 const categories_controller_1 = require("./categories.controller");
+const category_entity_1 = require("./entities/category.entity");
+const multer_config_1 = require("../../config/multer.config");
+const typeorm_1 = require("@nestjs/typeorm");
+const platform_express_1 = require("@nestjs/platform-express");
 let CategoriesModule = class CategoriesModule {
 };
 CategoriesModule = __decorate([
     (0, common_1.Module)({
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([category_entity_1.Category]),
+            platform_express_1.MulterModule.register(multer_config_1.multerOptions),
+        ],
         controllers: [categories_controller_1.CategoriesController],
-        providers: [categories_service_1.CategoriesService]
+        providers: [categories_service_1.CategoriesService],
     })
 ], CategoriesModule);
 exports.CategoriesModule = CategoriesModule;

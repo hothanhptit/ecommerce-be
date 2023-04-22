@@ -14,7 +14,7 @@ const openapi = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class ProductDTO {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, slug: { required: true, type: () => String }, status: { required: true, type: () => String }, productImages: { required: true, type: () => String }, summary: { required: true, type: () => String }, price: { required: true, type: () => String }, description: { required: true, type: () => String }, descriptionImages: { required: true, type: () => String }, catalogue: { required: true, type: () => String }, specs: { required: true, type: () => String }, specsImages: { required: true, type: () => String }, detailsDescription: { required: true, type: () => String }, categoryId: { required: true, type: () => String }, type: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, slug: { required: true, type: () => String }, status: { required: true, type: () => String }, images: { required: true, type: () => String }, isFeatured: { required: true, type: () => Number }, manufacturer: { required: true, type: () => String }, model: { required: true, type: () => String }, origin: { required: true, type: () => String }, warranty: { required: true, type: () => String }, summary: { required: true, type: () => String }, code: { required: true, type: () => String }, price: { required: true, type: () => String }, description: { required: true, type: () => String }, descriptionImages: { required: true, type: () => String }, catalogue: { required: true, type: () => String }, specs: { required: true, type: () => String }, specsImages: { required: true, type: () => String }, detailsDescription: { required: true, type: () => String }, categoryId: { required: true, type: () => String }, type: { required: true, type: () => String }, rating: { required: false, type: () => String } };
     }
 }
 __decorate([
@@ -26,9 +26,33 @@ __decorate([
     __metadata("design:type", String)
 ], ProductDTO.prototype, "status", void 0);
 __decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], ProductDTO.prototype, "isFeatured", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "manufacturer", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "model", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "origin", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "warranty", void 0);
+__decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ProductDTO.prototype, "summary", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "code", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
@@ -53,5 +77,9 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ProductDTO.prototype, "type", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductDTO.prototype, "rating", void 0);
 exports.ProductDTO = ProductDTO;
 //# sourceMappingURL=product.dto.js.map

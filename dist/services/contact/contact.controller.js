@@ -25,6 +25,8 @@ const common_1 = require("@nestjs/common");
 const contact_service_1 = require("./contact.service");
 const create_mail_dto_1 = require("./dto/create-mail.dto");
 const contact_entity_1 = require("./entities/contact.entity");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const swagger_1 = require("@nestjs/swagger");
 const nodemailer = require('nodemailer');
 let ContactController = class ContactController {
     constructor(contactService, contactRepo, mailRepo) {
@@ -36,26 +38,36 @@ let ContactController = class ContactController {
     async create(mailDTO) {
         if (!mailDTO.to_email && !mailDTO.to_phonenumber)
             throw new common_1.BadRequestException();
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'thanhh8nt@gmail.com',
-                pass: 'pjjuhkhzgghjybba',
-            },
-        });
         const mailOptions = {
-            from: 'thanhh8nt@gmail.com',
+            from: 'dinh@thietbihoboi.store',
             to: mailDTO.to_email,
             subject: mailDTO.title,
             text: mailDTO.content,
         };
+        const transporter = nodemailer.createTransport({
+            host: "smtpout.secureserver.net",
+            secure: true,
+            secureConnection: false,
+            tls: {
+                ciphers: 'SSLv3'
+            },
+            requireTLS: true,
+            port: 465,
+            debug: true,
+            auth: {
+                user: "dinh@thietbihoboi.store",
+                pass: "APeE!V2LP#"
+            }
+        });
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
+                console.log(error);
                 this.logger.getLogger('debug').debug(error);
                 throw new common_1.ServiceUnavailableException();
             }
             else {
                 this.logger.getLogger('debug').debug(info);
+                console.log(info);
             }
         });
         this.mailRepo.save(mailDTO);
@@ -65,7 +77,7 @@ let ContactController = class ContactController {
         return (0, paginate_1.paginate)(this.mailRepo, {
             page,
             limit,
-            route: process.env.host || 'http://localhost:4000' + '/api/v1/contact/mail',
+            route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/contact/mail',
         }, {
             order: {
                 createdAt: 'DESC',
@@ -95,6 +107,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ContactController.prototype, "create", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('/inbox'),
     openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Query)('page', new common_1.DefaultValuePipe(1), common_1.ParseIntPipe)),
@@ -104,6 +117,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ContactController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, (0, common_1.Body)()),
@@ -119,6 +133,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ContactController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)(':id'),
     openapi.ApiResponse({ status: 200, type: [require("./entities/contact.entity").Contact] }),
     __param(0, (0, common_1.Param)('id')),
@@ -128,6 +143,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ContactController.prototype, "update", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Delete)(':id'),
     openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)('id')),
@@ -137,6 +153,7 @@ __decorate([
 ], ContactController.prototype, "remove", null);
 ContactController = __decorate([
     (0, common_1.Controller)('/api/v1/contact'),
+    (0, swagger_1.ApiTags)('contact'),
     __param(1, (0, typeorm_2.InjectRepository)(contact_entity_1.Contact)),
     __param(2, (0, typeorm_2.InjectRepository)(mail_entity_1.Mail)),
     __metadata("design:paramtypes", [contact_service_1.ContactService,

@@ -29,16 +29,19 @@ let NewsController = class NewsController {
     create(createNewsDto, file, req) {
         return this.newsService.create(createNewsDto, file, req.user);
     }
-    async findAll(page = 1, limit = 16, orderBy = 'created_at', filter = '1,2') {
+    async findAll(page = 1, limit = 16, orderBy = 'created_at', filter = '1,2', category = '') {
         limit = limit > 100 ? 100 : limit;
         return await this.newsService.getAll({
             page,
             limit,
-            route: process.env.host || 'http://localhost:4000' + '/api/v1/products',
-        }, orderBy, filter);
+            route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/news',
+        }, orderBy, filter, category);
     }
     findRecent(take = 5) {
         return this.newsService.findRecently(take);
+    }
+    findCategory(take = 5) {
+        return this.newsService.findCategories(take);
     }
     findOne(id) {
         return this.newsService.findOne(+id);
@@ -68,9 +71,10 @@ __decorate([
     __param(0, (0, common_1.Query)('page', new common_1.DefaultValuePipe(1), common_1.ParseIntPipe)),
     __param(1, (0, common_1.Query)('limit', new common_1.DefaultValuePipe(16), common_1.ParseIntPipe)),
     __param(2, (0, common_1.Query)('orderBy')),
-    __param(3, (0, common_1.Query)('filter')),
+    __param(3, (0, common_1.Query)('category')),
+    __param(4, (0, common_1.Query)('filter')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, String, String]),
+    __metadata("design:paramtypes", [Number, Number, String, String, String]),
     __metadata("design:returntype", Promise)
 ], NewsController.prototype, "findAll", null);
 __decorate([
@@ -82,6 +86,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], NewsController.prototype, "findRecent", null);
 __decorate([
+    (0, common_1.Get)('/category'),
+    openapi.ApiResponse({ status: 200, type: [Object] }),
+    __param(0, (0, common_1.Query)('take')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], NewsController.prototype, "findCategory", null);
+__decorate([
     (0, common_1.Get)(':id'),
     openapi.ApiResponse({ status: 200, type: require("./entities/news.entity").News }),
     __param(0, (0, common_1.Param)('id')),
@@ -90,6 +102,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], NewsController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)(':id'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
     openapi.ApiResponse({ status: 200, type: Object }),
@@ -101,6 +114,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], NewsController.prototype, "update", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Delete)(':id'),
     openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Param)('id')),

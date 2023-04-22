@@ -4,6 +4,7 @@ export declare class RelatedProduct {
     productId?: string;
     name?: string;
     images?: string;
+    imagesCompress?: string;
     product: Product;
     createdAt: String;
     updatedAt: String;

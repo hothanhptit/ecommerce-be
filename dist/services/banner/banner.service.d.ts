@@ -4,11 +4,15 @@ import { User } from './../auth/entities/user.entity';
 import { CreateBannerDto } from './dto/create-banner.dto';
 import { UpdateBannerDto } from './dto/update-banner.dto';
 import { Repository } from 'typeorm';
+import { MainBanner } from './entities/main-banner.entiy';
 export declare class BannerService {
     private bannerRepository;
-    constructor(bannerRepository: Repository<Banner>);
+    private mainBannerRepository;
+    constructor(bannerRepository: Repository<Banner>, mainBannerRepository: Repository<MainBanner>);
     private logging;
     create(createBannerDto: CreateBannerDto, file: Express.Multer.File, user: User): Promise<Banner & CreateBannerDto>;
+    createMainBanner(file: Express.Multer.File, user: User): Promise<MainBanner>;
+    getMainBanner(): Promise<MainBanner[]>;
     findAll(): Promise<Banner[]>;
     findOne(id: string): Promise<Banner | null>;
     update(id: string, updateBannerDto: UpdateBannerDto, file: Express.Multer.File): Promise<{

@@ -9,14 +9,17 @@ export declare class NewsService {
     constructor(newsRepo: Repository<News>);
     create(createNewsDto: CreateNewsDto, file: any, user: User): Promise<CreateNewsDto & News>;
     findAll(): Promise<News[]>;
-    getAll(options: IPaginationOptions, orderBy: string, filter: string): Promise<Pagination<News>>;
+    getAll(options: IPaginationOptions, orderBy: string, category: string, filter: string): Promise<Pagination<News>>;
     findRecently(number: number): Promise<News[]>;
+    findCategories(number: number): Promise<any[]>;
     findOne(id: number): Promise<News>;
     update(id: number, updateNewsDto: UpdateNewsDto, file: any): Promise<{
         name: string;
-        image_path: string;
+        slug: string;
+        image: string;
         title: string;
         category: string;
+        categoryName: string;
         tags: string;
         created_by: string;
         content: string;

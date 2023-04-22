@@ -11,12 +11,16 @@ export class News {
   id: number;
   @Column()
   name: string;
+  @Column({ nullable: true })
+  slug: string;
   @Column()
-  image_path: string;
+  image: string;
   @Column()
   title: string;
   @Column()
   category: string;
+  @Column({ nullable: true })
+  categoryName: string;
   @Column({ nullable: true })
   created_by: string;
   @Column()

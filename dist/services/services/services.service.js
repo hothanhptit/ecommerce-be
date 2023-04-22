@@ -27,8 +27,7 @@ let ServicesService = class ServicesService {
         try {
             if (user.role == 'admin') {
                 let saveBanner = Object.assign(new services_entity_1.Service(), createBannerDto);
-                saveBanner.image = JSON.stringify(process.env.HOST ||
-                    'http://localhost:4000/' + file.path.replace('\\', '/'));
+                saveBanner.image = JSON.stringify(file.path.replace('\\', '/'));
                 return this.sRepository.save(saveBanner);
             }
             this.logging.getLogger('warning').warn('Unauthorize access: ' + user);
@@ -39,11 +38,18 @@ let ServicesService = class ServicesService {
         }
     }
     async findAll() {
-        return await this.sRepository.find({
+        const data = await this.sRepository.find({
             order: {
                 order: 'ASC',
             },
         });
+        if (!data)
+            throw new common_1.NotFoundException();
+        data.forEach((element, idx) => {
+            data[idx].image =
+                (process.env.HOST || 'http://localhost:4000') + JSON.parse(element.image);
+        });
+        return data;
     }
     async findOne(id) {
         const banner = await this.sRepository.findOne({ where: { id: id } });
@@ -53,8 +59,7 @@ let ServicesService = class ServicesService {
         const banner = await this.sRepository.findOne({ where: { id: id } });
         if (banner) {
             if (file)
-                updateBannerDto.image = JSON.stringify(process.env.HOST ||
-                    'http://localhost:4000/' + file.path.replace('\\', '/'));
+                updateBannerDto.image = JSON.stringify(file.path.replace('\\', '/'));
             return await this.sRepository.save(Object.assign(Object.assign({}, banner), updateBannerDto));
         }
         throw new common_1.NotFoundException();
