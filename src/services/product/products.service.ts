@@ -1,4 +1,7 @@
+import { CategoriesService } from './../categories/categories.service';
+import { Category } from './../categories/entities/category.entity';
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   ServiceUnavailableException,
@@ -30,6 +33,9 @@ export class ProductsService {
     private relatedProducts: Repository<RelatedProduct>,
     @InjectRepository(ProductInfo)
     private productInfoRepo: Repository<ProductInfo>,
+    @InjectRepository(Category)
+    private catRepo: Repository<Category>,
+    private catServices: CategoriesService,
   ) {}
 
   private logging = new LogServices();
@@ -52,7 +58,9 @@ export class ProductsService {
       queryBuilder = this.productRepository
         .createQueryBuilder('prod')
         .where('prod.status= :status', { status: 1 })
-        .andWhere('prod.categoryId= :cat', { cat: category })
+        .andWhere('prod.categoryId like :category', {
+          category: `%${category}%`,
+        })
         .orderBy('prod.updatedAt', orderBy)
         .cache('product', 30 * 1000);
     } else {
@@ -124,7 +132,8 @@ export class ProductsService {
     if (productsPage) {
       productsPage.items.forEach((item) => {
         if (item.images) item.images = JSON.parse(item.images);
-        if (item.imagesCompress) item.imagesCompress = JSON.parse(item.imagesCompress);
+        if (item.imagesCompress)
+          item.imagesCompress = JSON.parse(item.imagesCompress);
         const images = [];
         const imagesCompress = [];
         for (let image of item.images) {
@@ -162,7 +171,9 @@ export class ProductsService {
         .createQueryBuilder('prod')
         .where('prod.status= :status', { status: 1 })
         .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
-        .andWhere('prod.categoryId= :category', { category: category })
+        .andWhere('prod.categoryId like :category', {
+          category: `%${category}%`,
+        })
         .orderBy('prod.updatedAt', orderBy)
         .cache('product', 30 * 1000);
     } else {
@@ -212,7 +223,23 @@ export class ProductsService {
   ) {
     try {
       if (user.role == 'admin') {
+        let cat;
+        const categoryId = parseInt(productDTO.categoryId);
+        if (categoryId) {
+          cat = await this.catRepo.find({
+            where: {
+              id: categoryId,
+            },
+          });
+          if (!cat) throw new BadRequestException();
+        }
+
+        const traceId = await this.catServices.traceCategory(categoryId);
+
         let saveProduct = Object.assign(new Product(), productDTO);
+
+        saveProduct.categoryId = JSON.stringify(traceId);
+
         let saveProductInfo = new ProductInfo();
         if (files.catalogue) {
           const catalogue = [];

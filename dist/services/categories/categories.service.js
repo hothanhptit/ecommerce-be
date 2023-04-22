@@ -20,32 +20,75 @@ const typeorm_2 = require("typeorm");
 let CategoriesService = class CategoriesService {
     constructor(catRepo) {
         this.catRepo = catRepo;
+        this.findChildrenCat = async (parentId) => {
+            const traceId = [parentId];
+            const childrens = await this.catRepo.find({
+                where: {
+                    parent: parentId,
+                },
+            });
+            for (const [idx, element] of childrens.entries()) {
+                traceId.push(element.id);
+                if (element.parent) {
+                    const child = await this.findChildrenCat(element.id);
+                    childrens[idx].children = child[0];
+                }
+            }
+            console.log(traceId);
+            return [childrens, traceId];
+        };
+        this.traceCategory = async (parentId) => {
+            const traceId = [parentId];
+            const parent = await this.catRepo.findOne({
+                where: {
+                    id: parentId,
+                },
+            });
+            if (parent.parent) {
+                traceId.push(parent.parent);
+                this.traceCategory(parent.parent);
+            }
+            console.log(traceId);
+            return traceId;
+        };
     }
-    create(createCategoryDto, file, user) {
+    async create(createCategoryDto, file, user) {
         if (user.role == 'admin') {
             let saveCat = Object.assign(new category_entity_1.Category(), createCategoryDto);
             saveCat.image = JSON.stringify(file.path.replace('\\', '/'));
-            saveCat.children = JSON.stringify(saveCat.children);
+            if (saveCat.parent) {
+                const parent = await this.catRepo.findOne({
+                    where: { id: saveCat.parent },
+                });
+                if (!parent)
+                    throw new common_1.BadRequestException();
+            }
             return this.catRepo.save(saveCat);
         }
         throw new common_1.UnauthorizedException();
     }
     async findAll() {
-        const data = await this.catRepo.find();
+        const data = await this.catRepo.find({
+            where: {
+                parent: (0, typeorm_2.IsNull)(),
+            },
+        });
         if (!data)
             throw new common_1.NotFoundException();
-        data.forEach((element, idx) => {
+        for (const [idx, element] of data.entries()) {
             data[idx].image =
-                (process.env.HOST || 'http://localhost:4000') + JSON.parse(element.image);
-            data[idx].children = JSON.parse(element.children);
-        });
+                (process.env.HOST || 'http://localhost:4000') +
+                    JSON.parse(element.image);
+            data[idx].children = (await this.findChildrenCat(data[idx].id))[0];
+        }
         return data;
     }
     async findOne(id) {
         const cat = await this.catRepo.findOne({ where: { id: id } });
         cat.image =
             (process.env.HOST || 'http://localhost:4000') + JSON.parse(cat.image);
-        cat.children = JSON.parse(cat.children);
+        const [childrens] = await this.findChildrenCat(cat.id);
+        cat.children = childrens;
         return cat;
     }
     async update(id, updateCategoryDto, file) {

@@ -8,6 +8,8 @@ export declare class CategoriesService {
     create(createCategoryDto: CreateCategoryDto, file: any, user: any): Promise<Category & CreateCategoryDto>;
     findAll(): Promise<Category[]>;
     findOne(id: number): Promise<Category>;
+    findChildrenCat: (parentId: number) => Promise<[Category[], number[]]>;
+    traceCategory: (parentId: number) => Promise<number[]>;
     update(id: number, updateCategoryDto: UpdateCategoryDto, file: any): Promise<{
         name: string;
         image: string;
@@ -15,6 +17,7 @@ export declare class CategoriesService {
         children: string;
         description: string;
         id: number;
+        parent: number;
         created_at: String;
         updated_at: String;
     } & Category>;

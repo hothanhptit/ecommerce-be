@@ -3,6 +3,7 @@ export declare class Category {
     name: string;
     image: string;
     children: string;
+    parent: number;
     status: number;
     description: string;
     created_at: String;

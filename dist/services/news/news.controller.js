@@ -34,7 +34,7 @@ let NewsController = class NewsController {
         return await this.newsService.getAll({
             page,
             limit,
-            route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/products',
+            route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/news',
         }, orderBy, filter, category);
     }
     findRecent(take = 5) {

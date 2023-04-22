@@ -45,27 +45,46 @@ export class ContactController {
   async create(@Body() mailDTO: CreateMailDTO) {
     if (!mailDTO.to_email && !mailDTO.to_phonenumber)
       throw new BadRequestException();
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'thanhh8nt@gmail.com',
-        pass: 'pjjuhkhzgghjybba',
-      },
-    });
+    // const transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   auth: {
+    //     user: 'thanhh8nt@gmail.com',
+    //     pass: 'pjjuhkhzgghjybba',
+    //   },
+    // });
 
     const mailOptions = {
-      from: 'thanhh8nt@gmail.com',
+      from: 'dinh@thietbihoboi.store',
       to: mailDTO.to_email,
       subject: mailDTO.title,
       text: mailDTO.content,
     };
 
+    const transporter = nodemailer.createTransport({    
+      host: "smtpout.secureserver.net",  
+      secure: true,
+      secureConnection: false, // TLS requires secureConnection to be false
+      tls: {
+          ciphers:'SSLv3'
+      },
+      requireTLS:true,
+      port: 465,
+      debug: true,
+      auth: {
+          user: "dinh@thietbihoboi.store",
+          pass: "APeE!V2LP#" 
+      }
+  });
+
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
+        console.log(error);
         this.logger.getLogger('debug').debug(error);
         throw new ServiceUnavailableException();
       } else {
         this.logger.getLogger('debug').debug(info);
+        console.log(info);
+        
       }
     });
     this.mailRepo.save(mailDTO);

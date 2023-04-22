@@ -15,6 +15,7 @@ export declare class CategoriesController {
         children: string;
         description: string;
         id: number;
+        parent: number;
         created_at: String;
         updated_at: String;
     } & import("./entities/category.entity").Category>;

@@ -13,6 +13,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductsService = exports.Order = void 0;
+const categories_service_1 = require("./../categories/categories.service");
+const category_entity_1 = require("./../categories/entities/category.entity");
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const paginate_1 = require("nestjs-typeorm-paginate/dist/paginate");
@@ -25,10 +27,12 @@ const product_info_entity_1 = require("./entities/product-info.entity");
 const convertFile_ultis_1 = require("../../utils/convertFile.ultis");
 exports.Order = 'ASC' || 'DESC';
 let ProductsService = class ProductsService {
-    constructor(productRepository, relatedProducts, productInfoRepo) {
+    constructor(productRepository, relatedProducts, productInfoRepo, catRepo, catServices) {
         this.productRepository = productRepository;
         this.relatedProducts = relatedProducts;
         this.productInfoRepo = productInfoRepo;
+        this.catRepo = catRepo;
+        this.catServices = catServices;
         this.logging = new log4js_service_1.LogServices();
     }
     async getAll(options, orderBy, filter, category) {
@@ -42,7 +46,9 @@ let ProductsService = class ProductsService {
             queryBuilder = this.productRepository
                 .createQueryBuilder('prod')
                 .where('prod.status= :status', { status: 1 })
-                .andWhere('prod.categoryId= :cat', { cat: category })
+                .andWhere('prod.categoryId like :category', {
+                category: `%${category}%`,
+            })
                 .orderBy('prod.updatedAt', orderBy)
                 .cache('product', 30 * 1000);
         }
@@ -121,7 +127,9 @@ let ProductsService = class ProductsService {
                 .createQueryBuilder('prod')
                 .where('prod.status= :status', { status: 1 })
                 .andWhere('prod.slug like :slug', { slug: `%${slug}%` })
-                .andWhere('prod.categoryId= :category', { category: category })
+                .andWhere('prod.categoryId like :category', {
+                category: `%${category}%`,
+            })
                 .orderBy('prod.updatedAt', orderBy)
                 .cache('product', 30 * 1000);
         }
@@ -160,7 +168,20 @@ let ProductsService = class ProductsService {
     async create(productDTO, files, relatedProduct, user) {
         try {
             if (user.role == 'admin') {
+                let cat;
+                const categoryId = parseInt(productDTO.categoryId);
+                if (categoryId) {
+                    cat = await this.catRepo.find({
+                        where: {
+                            id: categoryId,
+                        },
+                    });
+                    if (!cat)
+                        throw new common_1.BadRequestException();
+                }
+                const traceId = await this.catServices.traceCategory(categoryId);
                 let saveProduct = Object.assign(new product_entity_1.Product(), productDTO);
+                saveProduct.categoryId = JSON.stringify(traceId);
                 let saveProductInfo = new product_info_entity_1.ProductInfo();
                 if (files.catalogue) {
                     const catalogue = [];
@@ -377,9 +398,12 @@ ProductsService = __decorate([
     __param(0, (0, typeorm_1.InjectRepository)(product_entity_1.Product)),
     __param(1, (0, typeorm_1.InjectRepository)(relatedProduct_entity_1.RelatedProduct)),
     __param(2, (0, typeorm_1.InjectRepository)(product_info_entity_1.ProductInfo)),
+    __param(3, (0, typeorm_1.InjectRepository)(category_entity_1.Category)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        typeorm_2.Repository,
+        categories_service_1.CategoriesService])
 ], ProductsService);
 exports.ProductsService = ProductsService;
 //# sourceMappingURL=products.service.js.map

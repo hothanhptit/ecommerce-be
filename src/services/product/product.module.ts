@@ -1,3 +1,5 @@
+import { CategoriesService } from './../categories/categories.service';
+import { Category } from './../categories/entities/category.entity';
 import { RelatedProduct } from './entities/relatedProduct.entity';
 import { multerOptions } from './../../config/multer.config';
 import { MulterModule } from '@nestjs/platform-express/multer';
@@ -12,10 +14,10 @@ import { ProductInfo } from './entities/product-info.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, RelatedProduct, ProductInfo]),
+    TypeOrmModule.forFeature([Product, RelatedProduct, ProductInfo, Category]),
     MulterModule.register(multerOptions),
   ],
-  providers: [ProductsService],
+  providers: [ProductsService, CategoriesService],
   controllers: [ProductsController],
 })
 export class ProductModule {}

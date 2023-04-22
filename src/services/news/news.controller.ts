@@ -52,7 +52,7 @@ export class NewsController {
       {
         page,
         limit,
-        route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/products',
+        route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/news',
       },
       orderBy,
       filter,

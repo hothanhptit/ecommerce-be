@@ -38,26 +38,36 @@ let ContactController = class ContactController {
     async create(mailDTO) {
         if (!mailDTO.to_email && !mailDTO.to_phonenumber)
             throw new common_1.BadRequestException();
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'thanhh8nt@gmail.com',
-                pass: 'pjjuhkhzgghjybba',
-            },
-        });
         const mailOptions = {
-            from: 'thanhh8nt@gmail.com',
+            from: 'dinh@thietbihoboi.store',
             to: mailDTO.to_email,
             subject: mailDTO.title,
             text: mailDTO.content,
         };
+        const transporter = nodemailer.createTransport({
+            host: "smtpout.secureserver.net",
+            secure: true,
+            secureConnection: false,
+            tls: {
+                ciphers: 'SSLv3'
+            },
+            requireTLS: true,
+            port: 465,
+            debug: true,
+            auth: {
+                user: "dinh@thietbihoboi.store",
+                pass: "APeE!V2LP#"
+            }
+        });
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
+                console.log(error);
                 this.logger.getLogger('debug').debug(error);
                 throw new common_1.ServiceUnavailableException();
             }
             else {
                 this.logger.getLogger('debug').debug(info);
+                console.log(info);
             }
         });
         this.mailRepo.save(mailDTO);

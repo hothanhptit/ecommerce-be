@@ -1,3 +1,5 @@
+import { CategoriesService } from './../categories/categories.service';
+import { Category } from './../categories/entities/category.entity';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { Pagination } from 'nestjs-typeorm-paginate/dist/pagination';
 import { User } from 'src/services/auth/entities/user.entity';
@@ -11,7 +13,9 @@ export declare class ProductsService {
     private productRepository;
     private relatedProducts;
     private productInfoRepo;
-    constructor(productRepository: Repository<Product>, relatedProducts: Repository<RelatedProduct>, productInfoRepo: Repository<ProductInfo>);
+    private catRepo;
+    private catServices;
+    constructor(productRepository: Repository<Product>, relatedProducts: Repository<RelatedProduct>, productInfoRepo: Repository<ProductInfo>, catRepo: Repository<Category>, catServices: CategoriesService);
     private logging;
     getAll(options: IPaginationOptions, orderBy: any, filter: string, category: string): Promise<Pagination<Product>>;
     getFeatured(options: IPaginationOptions, orderBy: string): Promise<Pagination<Product>>;
