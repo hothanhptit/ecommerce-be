@@ -14,7 +14,18 @@ async function bootstrap() {
     // httpsOptions,
   });
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: [
+      'http://localhost:3000',
+      'https://localhost:3000',
+      'http://thietbihoboi.store',
+      'https://thietbihoboi.store',
+      'http://thietbihoboi.online',
+      'https://thietbihoboi.online',
+      'https://0.0.0.0:3000',
+      'https://0.0.0.0:3000',
+      'https://127.0.0.1:3000',
+      'https://127.0.0.1:3000',
+    ],
     credentials: true,
   });
   // app.useGlobalPipes(new ValidationPipe());

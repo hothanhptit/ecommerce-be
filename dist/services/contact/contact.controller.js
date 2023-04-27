@@ -45,19 +45,19 @@ let ContactController = class ContactController {
             text: mailDTO.content,
         };
         const transporter = nodemailer.createTransport({
-            host: "smtpout.secureserver.net",
+            host: 'smtpout.secureserver.net',
             secure: true,
             secureConnection: false,
             tls: {
-                ciphers: 'SSLv3'
+                ciphers: 'SSLv3',
             },
             requireTLS: true,
             port: 465,
             debug: true,
             auth: {
-                user: "dinh@thietbihoboi.store",
-                pass: "APeE!V2LP#"
-            }
+                user: 'dinh@thietbihoboi.store',
+                pass: process.env.MAIL_PASSWORD || '"APeE!V2LP#" ',
+            },
         });
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
@@ -77,7 +77,8 @@ let ContactController = class ContactController {
         return (0, paginate_1.paginate)(this.mailRepo, {
             page,
             limit,
-            route: (process.env.HOST || 'http://localhost:4000') + '/api/v1/contact/mail',
+            route: (process.env.HOST || 'http://localhost:4000') +
+                '/api/v1/contact/mail',
         }, {
             order: {
                 createdAt: 'DESC',

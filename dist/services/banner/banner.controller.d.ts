@@ -10,6 +10,8 @@ export declare class BannerController {
     findAll(): Promise<Banner[]>;
     getMainbanner(): Promise<import("./entities/main-banner.entiy").MainBanner[]>;
     createMainBanner(req: any, file: Express.Multer.File): Promise<import("./entities/main-banner.entiy").MainBanner>;
+    getWhyUs(): Promise<import("./entities/main-banner.entiy").MainBanner[]>;
+    createWhyUs(req: any, file: Express.Multer.File): Promise<import("./entities/main-banner.entiy").MainBanner>;
     findOne(id: string): Promise<Banner>;
     update(id: string, updateBannerDto: UpdateBannerDto, file: Express.Multer.File): Promise<{
         name: string;

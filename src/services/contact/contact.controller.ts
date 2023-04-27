@@ -60,21 +60,21 @@ export class ContactController {
       text: mailDTO.content,
     };
 
-    const transporter = nodemailer.createTransport({    
-      host: "smtpout.secureserver.net",  
+    const transporter = nodemailer.createTransport({
+      host: 'smtpout.secureserver.net',
       secure: true,
       secureConnection: false, // TLS requires secureConnection to be false
       tls: {
-          ciphers:'SSLv3'
+        ciphers: 'SSLv3',
       },
-      requireTLS:true,
+      requireTLS: true,
       port: 465,
       debug: true,
       auth: {
-          user: "dinh@thietbihoboi.store",
-          pass: "APeE!V2LP#" 
-      }
-  });
+        user: 'dinh@thietbihoboi.store',
+        pass: process.env.MAIL_PASSWORD || '"APeE!V2LP#" ',
+      },
+    });
 
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
@@ -84,7 +84,6 @@ export class ContactController {
       } else {
         this.logger.getLogger('debug').debug(info);
         console.log(info);
-        
       }
     });
     this.mailRepo.save(mailDTO);
@@ -102,7 +101,8 @@ export class ContactController {
         page,
         limit,
         route:
-          (process.env.HOST || 'http://localhost:4000') + '/api/v1/contact/mail',
+          (process.env.HOST || 'http://localhost:4000') +
+          '/api/v1/contact/mail',
       },
       {
         order: {

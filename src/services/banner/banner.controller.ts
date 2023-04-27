@@ -45,7 +45,7 @@ export class BannerController {
   async getMainbanner(){
     return await this.bannerService.getMainBanner();
   }
-
+  
   @UseGuards(JwtAuthGuard)
   @Post('/main')
   @UseInterceptors(FileInterceptor('file'))
@@ -54,6 +54,22 @@ export class BannerController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     return await this.bannerService.createMainBanner(file, req.user);
+  }
+
+
+  @Get('/whyus')
+  async getWhyUs(){
+    return await this.bannerService.getWhyUs();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/whyus')
+  @UseInterceptors(FileInterceptor('file'))
+  async createWhyUs(
+    @Request() req,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return await this.bannerService.createWhyUs(file, req.user);
   }
 
   @Get(':id')

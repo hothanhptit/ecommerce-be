@@ -12,6 +12,8 @@ export declare class BannerService {
     private logging;
     create(createBannerDto: CreateBannerDto, file: Express.Multer.File, user: User): Promise<Banner & CreateBannerDto>;
     createMainBanner(file: Express.Multer.File, user: User): Promise<MainBanner>;
+    createWhyUs(file: Express.Multer.File, user: User): Promise<MainBanner>;
+    getWhyUs(): Promise<MainBanner[]>;
     getMainBanner(): Promise<MainBanner[]>;
     findAll(): Promise<Banner[]>;
     findOne(id: string): Promise<Banner | null>;

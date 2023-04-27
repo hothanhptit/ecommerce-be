@@ -8,7 +8,14 @@ const fs = require('fs');
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {});
     app.enableCors({
-        origin: ['http://localhost:3000'],
+        origin: [
+            'http://localhost:3000',
+            'http://localhost:3001',
+            'http://thietbihoboi.store',
+            'https://thietbihoboi.store',
+            'https://thietbihoboi.online',
+            'http://thietbihoboi.online',
+        ],
         credentials: true,
     });
     const options = new swagger_1.DocumentBuilder()
