@@ -11,12 +11,17 @@ import {
   Request,
   UploadedFile,
   UseInterceptors,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { Category } from './entities/category.entity';
 
 @Controller('api/v1/categories')
 @ApiTags('caterogies')
@@ -36,6 +41,19 @@ export class CategoriesController {
   @Get()
   findAll() {
     return this.categoriesService.findAll();
+  }
+
+  @Get('/all')
+  async index(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<Pagination<Category>> {
+    limit = limit > 100 ? 100 : limit;
+    return this.categoriesService.paginate({
+      page,
+      limit,
+      route: 'https://api.thietbihoboi.store/api/v1/categories/all',
+    });
   }
 
   @Get(':id')

@@ -10,11 +10,15 @@ async function bootstrap() {
     app.enableCors({
         origin: [
             'http://localhost:3000',
-            'http://localhost:3001',
+            'https://localhost:3000',
             'http://thietbihoboi.store',
             'https://thietbihoboi.store',
-            'https://thietbihoboi.online',
             'http://thietbihoboi.online',
+            'https://thietbihoboi.online',
+            'https://0.0.0.0:3000',
+            'https://0.0.0.0:3000',
+            'https://127.0.0.1:3000',
+            'https://127.0.0.1:3000',
         ],
         credentials: true,
     });

@@ -17,6 +17,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const common_1 = require("@nestjs/common");
 const category_entity_1 = require("./entities/category.entity");
 const typeorm_2 = require("typeorm");
+const nestjs_typeorm_paginate_1 = require("nestjs-typeorm-paginate");
 let CategoriesService = class CategoriesService {
     constructor(catRepo) {
         this.catRepo = catRepo;
@@ -82,6 +83,11 @@ let CategoriesService = class CategoriesService {
             data[idx].children = (await this.findChildrenCat(data[idx].id))[0];
         }
         return data;
+    }
+    async paginate(options) {
+        const queryBuilder = this.catRepo.createQueryBuilder('c');
+        queryBuilder.orderBy('c.id', 'DESC');
+        return (0, nestjs_typeorm_paginate_1.paginate)(queryBuilder, options);
     }
     async findOne(id) {
         const cat = await this.catRepo.findOne({ where: { id: id } });
