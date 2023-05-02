@@ -9,6 +9,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 import { IsNull, Not, Repository } from 'typeorm';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class CategoriesService {
@@ -48,6 +49,12 @@ export class CategoriesService {
       data[idx].children = (await this.findChildrenCat(data[idx].id))[0] as any;
     }
     return data;
+  }
+
+  async paginate(options: IPaginationOptions): Promise<Pagination<Category>> {
+    const queryBuilder = this.catRepo.createQueryBuilder('c');
+    queryBuilder.orderBy('c.id', 'DESC'); // Or whatever you need to do
+    return paginate<Category>(queryBuilder, options);
   }
 
   async findOne(id: number) {
@@ -97,9 +104,9 @@ export class CategoriesService {
         id: parentId,
       },
     });
-    if(parent.parent){
-      traceId.push(parent.parent)
-      this.traceCategory(parent.parent)
+    if (parent.parent) {
+      traceId.push(parent.parent);
+      this.traceCategory(parent.parent);
     }
     console.log(traceId);
 
