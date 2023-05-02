@@ -43,10 +43,6 @@ export class CategoriesController {
     return this.categoriesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
-  }
   @Get('/all')
   async index(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -59,6 +55,12 @@ export class CategoriesController {
       route: 'https://api.thietbihoboi.store/api/v1/categories/all',
     });
   }
+  
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.categoriesService.findOne(+id);
+  }
+
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')

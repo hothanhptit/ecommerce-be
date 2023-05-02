@@ -54,7 +54,13 @@ export class CategoriesService {
   async paginate(options: IPaginationOptions): Promise<Pagination<Category>> {
     const queryBuilder = this.catRepo.createQueryBuilder('c');
     queryBuilder.orderBy('c.id', 'DESC'); // Or whatever you need to do
-    return paginate<Category>(queryBuilder, options);
+    const page = await  paginate<Category>(queryBuilder, options);
+    if (page) {
+      page.items.forEach((item) => {
+        if (item.image) item.image = (process.env.HOST || 'http://localhost:4000') + JSON.parse(item.image);
+      });
+    }
+    return page;
   }
 
   async findOne(id: number) {
